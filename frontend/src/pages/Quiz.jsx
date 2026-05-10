@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { useAuthContext } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext";
 import {
   PiMountainsDuotone,
   PiBuildingsDuotone,
@@ -106,7 +106,7 @@ export default function Quiz() {
   })
   const [direction, setDirection] = useState(1)
 
-  const { user }  = useAuthContext()
+  const { user } = useAuth();
   const navigate  = useNavigate()
   const pregunta  = PREGUNTAS[paso]
   const total     = PREGUNTAS.length

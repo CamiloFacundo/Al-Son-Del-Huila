@@ -2,7 +2,7 @@ import Hero from "../components/Hero"
 
 export default function Home() {
   return (
-    <main>
+    <main style={{ minHeight: '100vh', position: 'relative' }}>
       <Hero />
     </main>
   )

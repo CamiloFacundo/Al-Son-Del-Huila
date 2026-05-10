@@ -1,35 +1,107 @@
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect } from "react";
+import api from "../services/api";
 
-const AuthContext = createContext(null)
+const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-  const [user,    setUser]    = useState(null)
-  const [loading, setLoading] = useState(true)
+// Hook personalizado para usar el contexto (exportamos 'useAuth' para consistencia)
+export const useAuth = () => useContext(AuthContext);
 
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Función para refrescar los datos del usuario desde el token actual
+  const refreshUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setUser(null);
+      return null;
+    }
+    try {
+      const response = await api.get("/perfil");
+      // El backend devuelve { id, nombre, email, ... }
+      setUser(response.data);
+      // También guardamos en localStorage para rápido acceso (opcional)
+      localStorage.setItem("user", JSON.stringify(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error al refrescar usuario:", error);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setUser(null);
+      return null;
+    }
+  };
+
+  // Al cargar la app, si hay token, pedir los datos del usuario
   useEffect(() => {
-    const saved = localStorage.getItem("user")
-    if (saved) setUser(JSON.parse(saved))
-    setLoading(false)
-  }, [])
+    const token = localStorage.getItem("token");
+    if (token) {
+      refreshUser().finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
-  const login = (userData) => {
-    setUser(userData)
-    localStorage.setItem("user",  JSON.stringify(userData))
-    localStorage.setItem("token", userData.token || "")
-  }
+  // Registro normal (email + password)
+  const register = async (nombre, email, password) => {
+    try {
+      const response = await api.post("/auth/register", {
+        nombre,
+        email,
+        password,
+      });
+      const { user: userData, token } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      console.error("Error en registro:", error);
+      throw error;
+    }
+  };
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("user")
-    localStorage.removeItem("token")
-    localStorage.removeItem("quizRespuestas")
-  }
+  // Login normal (email + password)
+  const login = async (email, password) => {
+    try {
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
+      const { user: userData, token } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      console.error("Error en login:", error);
+      throw error;
+    }
+  };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+  // Cerrar sesión
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Error en logout:", error);
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/";
+  };
 
-export const useAuthContext = () => useContext(AuthContext)
+  const value = {
+    user,
+    loading,
+    register,
+    login,
+    logout,
+    refreshUser,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

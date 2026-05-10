@@ -194,3 +194,87 @@
   font-size: 1.1rem;
   font-weight: 700;
 }
+
+/* ========== ESTILOS PARA USUARIO LOGUEADO ========== */
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255,255,255,0.08);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  margin-right: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: var(--transition);
+}
+
+.userInfo:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--color-dorado);
+}
+
+.userName {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.btnLogout {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--text-secondary);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btnLogout:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--color-dorado);
+  color: var(--text-primary);
+}
+
+/* Móvil */
+.mobileUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.mobileBtnLogout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--text-secondary);
+  padding: 0.85rem 1.2rem;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.mobileBtnLogout:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--color-dorado);
+  color: var(--text-primary);
+}

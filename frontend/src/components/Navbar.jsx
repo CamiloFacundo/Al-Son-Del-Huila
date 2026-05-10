@@ -10,7 +10,10 @@ import {
   PiUserPlusDuotone,
   PiListDuotone,
   PiXDuotone,
+  PiUserDuotone,      // 👈 Nuevo ícono para usuario
+  PiSignOutDuotone,   // 👈 Nuevo ícono para cerrar sesión
 } from "react-icons/pi"
+import { useAuth } from "../context/AuthContext"  // 👈 Importa el hook
 import styles from "./Navbar.module.css"
 import logo from "../assets/images/logo.png"
 
@@ -25,6 +28,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const { user, isAuthenticated, logout } = useAuth()  // 👈 Obtén datos de autenticación
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60)
@@ -33,6 +37,10 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => { setMenuOpen(false) }, [location])
+
+  const handleLogout = () => {
+    logout()
+  }
 
   return (
     <>
@@ -78,18 +86,40 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Auth */}
+        {/* Auth Desktop - Modificado */}
         <div className={styles.auth}>
-          <Link to="/login" className={styles.btnLogin}>
-            <PiSignInDuotone size={16} />
-            Ingresar
-          </Link>
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            <Link to="/register" className={styles.btnRegistro}>
-              <PiUserPlusDuotone size={16} />
-              Registrarse
-            </Link>
-          </motion.div>
+          {isAuthenticated ? (
+            <>
+              <div className={styles.userInfo}>
+                <PiUserDuotone size={18} />
+                <span className={styles.userName}>
+                  {user?.nombre || user?.name || "Usuario"}
+                </span>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={handleLogout}
+                className={styles.btnLogout}
+              >
+                <PiSignOutDuotone size={16} />
+                Cerrar sesión
+              </motion.button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className={styles.btnLogin}>
+                <PiSignInDuotone size={16} />
+                Ingresar
+              </Link>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                <Link to="/register" className={styles.btnRegistro}>
+                  <PiUserPlusDuotone size={16} />
+                  Registrarse
+                </Link>
+              </motion.div>
+            </>
+          )}
         </div>
 
         {/* Hamburguesa */}
@@ -104,7 +134,7 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
-      {/* Menú móvil */}
+      {/* Menú móvil - Modificado */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -128,12 +158,27 @@ export default function Navbar() {
               </motion.div>
             ))}
             <div className={styles.mobileDivider} />
-            <Link to="/login" className={styles.mobileBtnLogin}>
-              <PiSignInDuotone size={18} /> Ingresar
-            </Link>
-            <Link to="/registro" className={styles.mobileBtnRegistro}>
-              <PiUserPlusDuotone size={18} /> Registrarse
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <div className={styles.mobileUserInfo}>
+                  <PiUserDuotone size={18} />
+                  <span>{user?.nombre || user?.name || "Usuario"}</span>
+                </div>
+                <button onClick={handleLogout} className={styles.mobileBtnLogout}>
+                  <PiSignOutDuotone size={18} /> Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className={styles.mobileBtnLogin}>
+                  <PiSignInDuotone size={18} /> Ingresar
+                </Link>
+                {/* Corregí '/registro' a '/register' para que coincida con tu ruta */}
+                <Link to="/register" className={styles.mobileBtnRegistro}>
+                  <PiUserPlusDuotone size={18} /> Registrarse
+                </Link>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

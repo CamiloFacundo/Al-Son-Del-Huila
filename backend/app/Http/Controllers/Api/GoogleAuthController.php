@@ -5,24 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Log;
 
 class GoogleAuthController extends Controller
 {
-    // GET /api/auth/google
     public function redirect()
     {
-        return Socialite::driver('google')
-            ->stateless()
-            ->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
-    // GET /api/auth/google/callback
     public function callback()
     {
         try {
-            $googleUser = Socialite::driver('google')
-                ->stateless()
-                ->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
             $user = User::where('google_id', $googleUser->getId())
                 ->orWhere('email', $googleUser->getEmail())
@@ -37,7 +32,7 @@ class GoogleAuthController extends Controller
                 ]);
             } else {
                 $user = User::create([
-                    'name'         => $googleUser->getName(),
+                    'nombre'       => $googleUser->getName(),
                     'email'        => $googleUser->getEmail(),
                     'google_id'    => $googleUser->getId(),
                     'provider'     => 'google',
@@ -47,13 +42,14 @@ class GoogleAuthController extends Controller
                 ]);
             }
 
-            $token       = $user->createToken('google_auth')->plainTextToken;
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+            $token = $user->createToken('google_auth')->plainTextToken;
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
 
+            // Construir URL con los parámetros que espera tu GoogleCallback.jsx
             $params = http_build_query([
                 'token'    => $token,
                 'id'       => $user->id,
-                'name'     => $user->name,
+                'name'     => $user->nombre,   // 👈 'name' porque tu frontend espera name
                 'email'    => $user->email,
                 'foto'     => $user->foto ?? '',
                 'provider' => 'google',
@@ -62,8 +58,8 @@ class GoogleAuthController extends Controller
             return redirect($frontendUrl . '/auth/google/callback?' . $params);
 
         } catch (\Exception $e) {
-            \Log::error('Google OAuth error: ' . $e->getMessage());
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+            Log::error('Google OAuth error: ' . $e->getMessage());
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
             return redirect($frontendUrl . '/login?error=google_failed');
         }
     }

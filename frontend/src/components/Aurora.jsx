@@ -1,5 +1,5 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Aurora.css';
 
 const VERT = `#version 300 es
@@ -79,84 +79,104 @@ void main() {
 }`;
 
 export default function Aurora(props) {
-  const {
-    colorStops = ['#C4622D', '#D4A843', '#2D5A27'],
-    amplitude = 1.0,
-    blend = 0.5
-  } = props;
+  const { colorStops = ['#C4622D', '#D4A843', '#2D5A27'], amplitude = 1.0, blend = 0.5 } = props;
   const propsRef = useRef(props);
   propsRef.current = props;
   const ctnDom = useRef(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    if (hasError) return;
     const ctn = ctnDom.current;
     if (!ctn) return;
 
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: true, antialias: true });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.canvas.style.backgroundColor = 'transparent';
-
-    let program;
-
-    function resize() {
-      if (!ctn) return;
-      const width = ctn.offsetWidth;
-      const height = ctn.offsetHeight;
-      renderer.setSize(width, height);
-      if (program) program.uniforms.uResolution.value = [width, height];
+    // Verificar que el contenedor tenga dimensiones antes de crear el renderer
+    if (ctn.offsetWidth === 0 || ctn.offsetHeight === 0) {
+      const timer = setTimeout(() => {
+        if (ctnDom.current && ctnDom.current.offsetWidth > 0 && ctnDom.current.offsetHeight > 0) {
+          iniciarAurora(ctnDom.current);
+        } else {
+          setHasError(true);
+        }
+      }, 100);
+      return () => clearTimeout(timer);
     }
-    window.addEventListener('resize', resize);
+    iniciarAurora(ctn);
+  }, [hasError]);
 
-    const geometry = new Triangle(gl);
-    if (geometry.attributes.uv) delete geometry.attributes.uv;
+  function iniciarAurora(ctn) {
+    try {
+      const renderer = new Renderer({ alpha: true, premultipliedAlpha: true, antialias: true });
+      const gl = renderer.gl;
+      gl.clearColor(0, 0, 0, 0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.canvas.style.backgroundColor = 'transparent';
 
-    const colorStopsArray = colorStops.map(hex => {
-      const c = new Color(hex);
-      return [c.r, c.g, c.b];
-    });
+      let program;
 
-    program = new Program(gl, {
-      vertex: VERT,
-      fragment: FRAG,
-      uniforms: {
-        uTime:       { value: 0 },
-        uAmplitude:  { value: amplitude },
-        uColorStops: { value: colorStopsArray },
-        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uBlend:      { value: blend }
+      function resize() {
+        if (!ctn) return;
+        const width = ctn.offsetWidth;
+        const height = ctn.offsetHeight;
+        renderer.setSize(width, height);
+        if (program) program.uniforms.uResolution.value = [width, height];
       }
-    });
+      window.addEventListener('resize', resize);
 
-    const mesh = new Mesh(gl, { geometry, program });
-    ctn.appendChild(gl.canvas);
+      const geometry = new Triangle(gl);
+      if (geometry.attributes.uv) delete geometry.attributes.uv;
 
-    let animateId = 0;
-    const update = t => {
-      animateId = requestAnimationFrame(update);
-      const { time = t * 0.01, speed = 1.0 } = propsRef.current;
-      program.uniforms.uTime.value      = time * speed * 0.1;
-      program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;
-      program.uniforms.uBlend.value     = propsRef.current.blend ?? blend;
-      const stops = propsRef.current.colorStops ?? colorStops;
-      program.uniforms.uColorStops.value = stops.map(hex => {
+      const colorStopsArray = (propsRef.current.colorStops ?? colorStops).map(hex => {
         const c = new Color(hex);
         return [c.r, c.g, c.b];
       });
-      renderer.render({ scene: mesh });
-    };
-    animateId = requestAnimationFrame(update);
-    resize();
 
-    return () => {
-      cancelAnimationFrame(animateId);
-      window.removeEventListener('resize', resize);
-      if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
-    };
-  }, [amplitude]);
+      program = new Program(gl, {
+        vertex: VERT,
+        fragment: FRAG,
+        uniforms: {
+          uTime: { value: 0 },
+          uAmplitude: { value: propsRef.current.amplitude ?? amplitude },
+          uColorStops: { value: colorStopsArray },
+          uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+          uBlend: { value: propsRef.current.blend ?? blend }
+        }
+      });
 
-  return <div ref={ctnDom} className="aurora-container" />;
+      const mesh = new Mesh(gl, { geometry, program });
+      ctn.appendChild(gl.canvas);
+
+      let animateId = 0;
+      const update = t => {
+        animateId = requestAnimationFrame(update);
+        const { time = t * 0.01, speed = 1.0 } = propsRef.current;
+        program.uniforms.uTime.value = time * speed * 0.1;
+        program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? amplitude;
+        program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
+        const stops = propsRef.current.colorStops ?? colorStops;
+        program.uniforms.uColorStops.value = stops.map(hex => {
+          const c = new Color(hex);
+          return [c.r, c.g, c.b];
+        });
+        renderer.render({ scene: mesh });
+      };
+      animateId = requestAnimationFrame(update);
+      resize();
+
+      return () => {
+        cancelAnimationFrame(animateId);
+        window.removeEventListener('resize', resize);
+        if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas);
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
+      };
+    } catch (err) {
+      console.error('Aurora error:', err);
+      setHasError(true);
+    }
+  }
+
+  if (hasError) return null;
+
+  return <div ref={ctnDom} className="aurora-container" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />;
 }

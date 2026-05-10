@@ -5,51 +5,45 @@ import { PiEnvelopeDuotone, PiLockDuotone } from "react-icons/pi"
 import AuthInput    from "../components/auth/AuthInput"
 import AuthButton   from "../components/auth/AuthButton"
 import GoogleButton from "../components/auth/GoogleButton"
-import { useAuthContext } from "../context/AuthContext"
-import { login as loginApi } from "../api/auth"
-import { useLogin } from "../hooks/useAuth"
+import { useAuth } from "../context/AuthContext"
 import styles from "./Login.module.css"
 import logo from "../assets/images/logo.png"
 
 export default function Login() {
-  const {
-    fields, errors, globalError,
-    setGlobalError, loading, setLoading,
-    handleChange, validate
-  } = useLogin()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const { login } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || "/"
 
-  const { login }  = useAuthContext()
-  const navigate   = useNavigate()
-  const location   = useLocation()
-  const from       = location.state?.from?.pathname || "/"
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const err = validate()
-    if (Object.keys(err).length) return
-
+    setError("")
     setLoading(true)
     try {
-      const data = await loginApi(fields.email, fields.password)
-      login({ ...data.user, token: data.token })
+      await login(email, password)   // login del contexto
       navigate(from, { replace: true })
     } catch (err) {
-      setGlobalError(err.message || "Credenciales incorrectas")
+      setError(err.response?.data?.message || "Credenciales incorrectas")
     } finally {
       setLoading(false)
     }
   }
 
-const handleGoogle = () => {
-  window.location.href = "http://127.0.0.1:8000/api/auth/google"
-}
+  const handleGoogle = () => {
+    window.location.href = "http://localhost:8000/api/auth/google"
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.bgGlow} />
       <motion.div
         className={styles.card}
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0,  scale: 1    }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
         <Link to="/" className={styles.logoRow}>
@@ -62,13 +56,9 @@ const handleGoogle = () => {
         <h1 className={styles.heading}>Bienvenido de vuelta</h1>
         <p className={styles.subheading}>Ingresa tus datos para continuar</p>
 
-        {globalError && (
-          <motion.div
-            className={styles.errorBanner}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            ⚠ {globalError}
+        {error && (
+          <motion.div className={styles.errorBanner} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
+            ⚠ {error}
           </motion.div>
         )}
 
@@ -83,9 +73,9 @@ const handleGoogle = () => {
             label="Correo electrónico"
             type="email"
             name="email"
-            value={fields.email}
-            onChange={handleChange}
-            error={errors.email}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error=""
             icon={PiEnvelopeDuotone}
             autoComplete="email"
           />
@@ -93,9 +83,9 @@ const handleGoogle = () => {
             label="Contraseña"
             type="password"
             name="password"
-            value={fields.password}
-            onChange={handleChange}
-            error={errors.password}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error=""
             icon={PiLockDuotone}
             autoComplete="current-password"
           />
@@ -108,8 +98,7 @@ const handleGoogle = () => {
         </form>
 
         <p className={styles.footer}>
-          ¿No tienes cuenta?{" "}
-          <Link to="/register">Crear una cuenta</Link>
+          ¿No tienes cuenta? <Link to="/register">Crear una cuenta</Link>
         </p>
       </motion.div>
     </div>

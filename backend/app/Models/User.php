@@ -10,12 +10,19 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-    protected $table = 'users';
+    protected $table = 'usuarios';   // ← aquí
 
     protected $fillable = [
-        'name', 'email', 'password',
-        'bio', 'ubicacion', 'foto', 'foto_portada',
-        'google_id', 'provider', 'google_token',
+        'nombre',        // ← no 'name'
+        'email',
+        'password',
+        'bio',
+        'ubicacion_texto',
+        'foto',
+        'foto_portada',
+        'google_id',
+        'provider',
+        'google_token',
     ];
 
     protected $hidden = [
@@ -26,7 +33,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 }
