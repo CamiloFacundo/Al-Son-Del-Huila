@@ -10,10 +10,10 @@ import {
   PiUserPlusDuotone,
   PiListDuotone,
   PiXDuotone,
-  PiUserDuotone,      // 👈 Nuevo ícono para usuario
-  PiSignOutDuotone,   // 👈 Nuevo ícono para cerrar sesión
+  PiUserDuotone,
+  PiSignOutDuotone,
 } from "react-icons/pi"
-import { useAuth } from "../context/AuthContext"  // 👈 Importa el hook
+import { useAuth } from "../context/AuthContext"
 import styles from "./Navbar.module.css"
 import logo from "../assets/images/logo.png"
 
@@ -28,7 +28,19 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
-  const { user, isAuthenticated, logout } = useAuth()  // 👈 Obtén datos de autenticación
+  const { user, isAuthenticated, logout } = useAuth()
+
+  // Función para obtener el nombre mostrable, limpiando valores no válidos
+  const getDisplayName = () => {
+    if (!user) return "Usuario"
+    let name = user.nombre || user.name
+    // Si el nombre es "null", "undefined" o cadena vacía, intentar con el email
+    if (!name || name === "null" || name === "undefined") {
+      if (user.email) return user.email.split("@")[0]
+      return "Usuario"
+    }
+    return name
+  }
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60)
@@ -86,14 +98,14 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Auth Desktop - Modificado */}
+        {/* Auth Desktop */}
         <div className={styles.auth}>
           {isAuthenticated ? (
             <>
               <div className={styles.userInfo}>
                 <PiUserDuotone size={18} />
                 <span className={styles.userName}>
-                  {user?.nombre || user?.name || "Usuario"}
+                  {getDisplayName()}
                 </span>
               </div>
               <motion.button
@@ -134,7 +146,7 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
-      {/* Menú móvil - Modificado */}
+      {/* Menú móvil */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -162,7 +174,7 @@ export default function Navbar() {
               <>
                 <div className={styles.mobileUserInfo}>
                   <PiUserDuotone size={18} />
-                  <span>{user?.nombre || user?.name || "Usuario"}</span>
+                  <span>{getDisplayName()}</span>
                 </div>
                 <button onClick={handleLogout} className={styles.mobileBtnLogout}>
                   <PiSignOutDuotone size={18} /> Cerrar sesión
@@ -173,7 +185,6 @@ export default function Navbar() {
                 <Link to="/login" className={styles.mobileBtnLogin}>
                   <PiSignInDuotone size={18} /> Ingresar
                 </Link>
-                {/* Corregí '/registro' a '/register' para que coincida con tu ruta */}
                 <Link to="/register" className={styles.mobileBtnRegistro}>
                   <PiUserPlusDuotone size={18} /> Registrarse
                 </Link>

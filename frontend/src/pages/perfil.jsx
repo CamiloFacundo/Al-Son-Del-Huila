@@ -12,14 +12,14 @@ import {
   PiLockDuotone,
   PiSignOutDuotone,
 } from "react-icons/pi"
-import { useAuthContext } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext"  // 👈 Cambiado de useAuthContext a useAuth
 import { getPerfil, updatePerfil, subirFoto } from "../api/perfil"
 import { useNavigate } from "react-router-dom"
 import styles from "./Perfil.module.css"
 
 export default function Perfil() {
-  const { user, login, logout } = useAuthContext()
-  const navigate                = useNavigate()
+  const { user, login, logout } = useAuth()  // 👈 Cambiado
+  const navigate = useNavigate()
 
   const [perfil,        setPerfil]        = useState(null)
   const [loading,       setLoading]       = useState(true)
@@ -269,7 +269,7 @@ export default function Perfil() {
                     ? "Guardando..."
                     : <><PiCheckDuotone size={16} /> Guardar cambios</>
                   }
-                </motion.button>
+                 </motion.button>
               </div>
             </motion.div>
           )}
