@@ -12,6 +12,7 @@ import Actividades     from "./pages/Actividades";
 import Rutas           from "./pages/Rutas"
 import Quiz            from "./pages/Quiz"
 import Resultado       from "./pages/Resultado"
+import ChatMidTrip     from "./pages/ChatMidTrip"
 import Privacidad      from "./pages/Privacidad"
 import Terminos        from "./pages/Terminos"
 import Perfil          from "./pages/Perfil"
@@ -45,6 +46,12 @@ function App() {
         <Route path="/resultado" element={
           <ProtectedRoute>
             <Resultado />
+          </ProtectedRoute>
+        }/>
+        {/* Chat Mid-Trip — solo si está logueado */}
+        <Route path="/chat" element={
+          <ProtectedRoute>
+            <ChatMidTrip />
           </ProtectedRoute>
         }/>
       </Routes>

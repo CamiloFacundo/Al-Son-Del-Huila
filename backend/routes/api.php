@@ -7,11 +7,13 @@ use App\Http\Controllers\Api\PerfilController;
 use App\Http\Controllers\Api\DestinoController;
 use App\Http\Controllers\Api\PublicacionController;
 use App\Http\Controllers\Api\CategoriaController;
+use App\Http\Controllers\Api\RutaController;
 use App\Http\Controllers\Api\MunicipioController;
 use App\Http\Controllers\Api\EntornoController;
 use App\Http\Controllers\Api\EtiquetaController;
 use App\Http\Controllers\Api\ComentarioController;
 use App\Http\Controllers\Api\RecomendadorController;
+use App\Http\Controllers\Api\ChatController;
 
 // Rutas públicas
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -21,6 +23,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 Route::get('/destinos', [DestinoController::class, 'index']);
 Route::get('/destinos/{id}', [DestinoController::class, 'show']);
 Route::get('/publicaciones', [PublicacionController::class, 'index']);
+Route::get('/rutas', [RutaController::class, 'index']);
 
 // Rutas para opciones de filtros (públicas)
 Route::get('/categorias', [CategoriaController::class, 'index']);
@@ -37,4 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/perfil', [PerfilController::class, 'show']);
     Route::post('/publicaciones', [PublicacionController::class, 'store']);
     Route::post('/publicaciones/{id}/like', [PublicacionController::class, 'like']);
-});
+    Route::post('/rutas', [RutaController::class, 'store'])->middleware('auth:sanctum');
+    Route::delete('/rutas/{id}', [RutaController::class, 'destroy'])->middleware('auth:sanctum');
+    });

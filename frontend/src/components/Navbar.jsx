@@ -12,6 +12,7 @@ import {
   PiXDuotone,
   PiUserDuotone,
   PiSignOutDuotone,
+  PiBrainDuotone,
 } from "react-icons/pi"
 import { useAuth } from "../context/AuthContext"
 import styles from "./Navbar.module.css"
@@ -21,7 +22,7 @@ const LINKS = [
   { to: "/",            label: "Inicio",      Icon: PiHouseDuotone     },
   { to: "/catalogo",    label: "Destinos",    Icon: PiMapPinDuotone    },
   { to: "/actividades", label: "Actividades", Icon: PiLightningDuotone },
-  { to: "/rutas",       label: "Rutas",       Icon: PiCompassDuotone   },
+  { to: "/Rutas",       label: "Huily",       Icon: PiBrainDuotone     },
 ]
 
 export default function Navbar() {
