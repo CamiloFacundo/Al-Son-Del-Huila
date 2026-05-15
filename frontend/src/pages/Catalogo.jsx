@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "react-router-dom";
 import {
   PiMagnifyingGlassDuotone,
   PiGridFourDuotone,
@@ -12,27 +13,36 @@ import api from "../services/api";
 import styles from "./Catalogo.module.css";
 
 export default function Catalogo() {
+  const [searchParams] = useSearchParams();
   const [destinos, setDestinos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [vista, setVista] = useState("grid");
 
-  // Filtros seleccionados por el usuario (formato que espera el backend)
   const [filtros, setFiltros] = useState({
-    categoria: null,    // ID de la categoría
-    municipio: null,    // ID del municipio
-    entorno: null,      // ID del entorno
-    etiquetas: [],      // array de IDs de etiquetas
+    categoria: null,
+    municipio: null,
+    entorno: null,
+    etiquetas: [],
   });
 
-  // Opciones para los filtros (cargadas desde la API)
   const [categorias, setCategorias] = useState([]);
   const [municipios, setMunicipios] = useState([]);
   const [entornos, setEntornos] = useState([]);
   const [etiquetas, setEtiquetas] = useState([]);
 
-  // Cargar opciones de filtro al montar el componente
+  // Leer categoría de la URL al montar el componente
+  useEffect(() => {
+    const categoriaParam = searchParams.get("categoria");
+    if (categoriaParam) {
+      const categoriaId = parseInt(categoriaParam, 10);
+      if (!isNaN(categoriaId)) {
+        setFiltros(prev => ({ ...prev, categoria: categoriaId }));
+      }
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     const cargarOpciones = async () => {
       try {
@@ -53,7 +63,6 @@ export default function Catalogo() {
     cargarOpciones();
   }, []);
 
-  // Cargar destinos cuando cambien la búsqueda o los filtros
   const cargarDestinos = useCallback(async () => {
     setLoading(true);
     try {
@@ -79,7 +88,6 @@ export default function Catalogo() {
     cargarDestinos();
   }, [cargarDestinos]);
 
-  // Manejador de cambios en los filtros (viene del FilterSidebar)
   const handleFiltroChange = (nuevosFiltros) => {
     setFiltros(prev => ({ ...prev, ...nuevosFiltros }));
   };
@@ -148,7 +156,6 @@ export default function Catalogo() {
       </div>
 
       <div className={styles.layout}>
-        {/* Pasamos las opciones y los filtros al FilterSidebar */}
         <FilterSidebar
           filtros={filtros}
           onChange={handleFiltroChange}

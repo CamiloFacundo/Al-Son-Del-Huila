@@ -5,14 +5,13 @@ import CustomCursor    from "./components/CustomCursor"
 import ProtectedRoute  from "./components/ProtectedRoute"
 import Home            from "./pages/Home"
 import Catalogo        from "./pages/Catalogo"
-import Mapa            from "./pages/Mapa"
+import Mapa from "./pages/Mapa";
 import Login           from "./pages/Login"
 import Register        from "./pages/Register"
 import Actividades     from "./pages/Actividades";
 import Rutas           from "./pages/Rutas"
 import Quiz            from "./pages/Quiz"
 import Resultado       from "./pages/Resultado"
-import ChatMidTrip     from "./pages/ChatMidTrip"
 import Privacidad      from "./pages/Privacidad"
 import Terminos        from "./pages/Terminos"
 import Perfil          from "./pages/Perfil"
@@ -34,24 +33,16 @@ function App() {
         <Route path="/privacidad" element={<Privacidad />} />
         <Route path="/terminos"   element={<Terminos />}   />
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
-        {/* Quiz — público pero resultado protegido */}
         
         <Route path="/quiz"        element={<Quiz />}       />
         <Route path="/perfil" element={
           <ProtectedRoute>
-          <Perfil />
-        </ProtectedRoute>
-} />
-        {/* Resultado — solo si está logueado */}
+            <Perfil />
+          </ProtectedRoute>
+        } />
         <Route path="/resultado" element={
           <ProtectedRoute>
             <Resultado />
-          </ProtectedRoute>
-        }/>
-        {/* Chat Mid-Trip — solo si está logueado */}
-        <Route path="/chat" element={
-          <ProtectedRoute>
-            <ChatMidTrip />
           </ProtectedRoute>
         }/>
       </Routes>

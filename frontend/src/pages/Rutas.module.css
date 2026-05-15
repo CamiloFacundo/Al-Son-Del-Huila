@@ -1,0 +1,62 @@
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-noche);
+  overflow: hidden;
+  padding-top: 64px;
+}
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #1e1b17;
+  border-top-color: var(--color-tierra);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  z-index: 100;
+}
+.headerLeft { display: flex; align-items: center; gap: 0.75rem; }
+.headerLogo { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--color-border-gold); }
+.headerTitulo { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+.headerSub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+.headerRight { display: flex; align-items: center; gap: 0.75rem; }
+.rutaActivaBadge { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 600; color: var(--color-dorado); background: rgba(212,168,67,0.1); border: 1px solid rgba(212,168,67,0.25); padding: 0.35rem 0.85rem; border-radius: 999px; }
+.btnToggleSidebar { width: 34px; height: 34px; border-radius: 8px; background: var(--color-noche-mid); border: 1px solid var(--color-border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+.btnToggleSidebar:hover { border-color: var(--color-border-gold); color: var(--text-primary); }
+
+.layout { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+.sidebar { display: flex; flex-direction: column; border-right: 1px solid var(--color-border); background: var(--color-noche-soft); overflow: hidden; flex-shrink: 0; width: 340px; }
+.sidebarTabs { display: flex; border-bottom: 1px solid var(--color-border); flex-shrink: 0; }
+.sidebarTab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.75rem; font-size: 0.82rem; font-weight: 500; color: var(--text-muted); background: transparent; border: none; cursor: pointer; font-family: var(--font-body); position: relative; transition: color 0.2s; }
+.sidebarTab:hover { color: var(--text-primary); }
+.sidebarTabActiva { color: var(--text-primary) !important; }
+.tabIndicator { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--color-tierra); border-radius: 2px 2px 0 0; }
+.sidebarContent { flex: 1; overflow: hidden; min-height: 0; }
+.tabPane { height: 100%; overflow: hidden; }
+.mapaContainer { flex: 1; position: relative; overflow: hidden; min-width: 0; }
+
+@media (max-width: 768px) {
+  .sidebar { position: absolute; z-index: 200; height: 100%; top: 0; left: 0; }
+}

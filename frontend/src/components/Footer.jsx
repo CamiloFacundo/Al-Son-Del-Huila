@@ -12,12 +12,13 @@ import {
 } from "react-icons/pi"
 import styles from "./Footer.module.css"
 import logo from "../assets/images/logo.png"
+import { useCookie } from "../context/CookieContext"
 
 const SOCIAL = [
-  { Icon: PiInstagramLogoDuotone, href: "#", label: "Instagram" },
-  { Icon: PiFacebookLogoDuotone,  href: "#", label: "Facebook"  },
-  { Icon: PiTiktokLogoDuotone,    href: "#", label: "TikTok"    },
-  { Icon: PiYoutubeLogoDuotone,   href: "#", label: "YouTube"   },
+  { Icon: PiInstagramLogoDuotone, href: "https://huila.travel", label: "Instagram" },
+  { Icon: PiFacebookLogoDuotone,  href: "https://huila.travel", label: "Facebook"  },
+  { Icon: PiTiktokLogoDuotone,    href: "https://huila.travel", label: "TikTok"    },
+  { Icon: PiYoutubeLogoDuotone,   href: "https://huila.travel", label: "YouTube"   },
 ]
 
 const LINKS_EXPLORAR = [
@@ -28,26 +29,26 @@ const LINKS_EXPLORAR = [
 
 const LINKS_CUENTA = [
   { to: "/login",    label: "Iniciar sesión" },
-  { to: "/registro", label: "Registrarse"    },
+  { to: "/register", label: "Registrarse"    },
   { to: "/perfil",   label: "Mi perfil"      },
 ]
 
 const LINKS_LEGAL = [
-  { to: "/Privacidad", label: "Privacidad"       },
-  { to: "/Terminos", label: "Términos de uso"  },
-  { to: "/Cookies", label: "Cookies"          },
+  { to: "/privacidad", label: "Privacidad"      },
+  { to: "/terminos",   label: "Términos de uso" },
 ]
 
 export default function Footer() {
+  const { openCookieModal } = useCookie()
+
   return (
     <footer className={styles.footer}>
 
-      {/* Línea decorativa superior */}
       <div className={styles.topLine} />
 
       <div className={styles.container}>
 
-        {/* ── Marca ── */}
+        {/* Marca */}
         <div className={styles.brand}>
           <motion.img
             src={logo}
@@ -65,7 +66,6 @@ export default function Footer() {
             cada rincón de esta tierra única.
           </p>
 
-          {/* Redes sociales */}
           <div className={styles.social}>
             {SOCIAL.map(({ Icon, href, label }) => (
               <motion.a
@@ -81,7 +81,6 @@ export default function Footer() {
             ))}
           </div>
 
-          {/* Contacto */}
           <div className={styles.contact}>
             <div className={styles.contactItem}>
               <PiMapPinDuotone size={15} />
@@ -98,7 +97,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Explorar ── */}
+        {/* Explorar */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Explorar</h4>
           {LINKS_EXPLORAR.map(({ to, label }) => (
@@ -109,7 +108,7 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* ── Cuenta ── */}
+        {/* Cuenta */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Cuenta</h4>
           {LINKS_CUENTA.map(({ to, label }) => (
@@ -120,7 +119,7 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* ── Legal ── */}
+        {/* Legal */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Legal</h4>
           {LINKS_LEGAL.map(({ to, label }) => (
@@ -129,11 +128,14 @@ export default function Footer() {
               {label}
             </Link>
           ))}
+          <button onClick={openCookieModal} className={styles.colLink}>
+            <PiArrowRightDuotone size={13} />
+            Preferencias de cookies
+          </button>
         </div>
 
       </div>
 
-      {/* ── Bottom bar ── */}
       <div className={styles.bottom}>
         <div className={styles.bottomLine} />
         <div className={styles.bottomContent}>

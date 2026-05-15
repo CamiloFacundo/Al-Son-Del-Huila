@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import {
+  PiHeartDuotone,
+  PiHeartFill,
+  PiCameraDuotone,
+  PiMapPinDuotone,
+  PiTrashDuotone,
+  PiXDuotone,
+} from 'react-icons/pi';
 import styles from './Actividades.module.css';
 
 function timeAgo(date) {
@@ -13,7 +21,7 @@ function timeAgo(date) {
     { label: 'día', seconds: 86400 },
     { label: 'hora', seconds: 3600 },
     { label: 'minuto', seconds: 60 },
-    { label: 'segundo', seconds: 1 }
+    { label: 'segundo', seconds: 1 },
   ];
   for (const interval of intervals) {
     const count = Math.floor(diff / interval.seconds);
@@ -33,10 +41,16 @@ export default function Actividades() {
   const [formData, setFormData] = useState({ imagen: null, descripcion: '', ubicacion: '' });
   const [subiendo, setSubiendo] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [toast, setToast] = useState(null); // para notificaciones simples
 
   useEffect(() => {
     cargarPublicaciones();
   }, []);
+
+  const mostrarToast = (mensaje, tipo = 'info') => {
+    setToast({ mensaje, tipo });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const cargarPublicaciones = async () => {
     try {
@@ -44,6 +58,7 @@ export default function Actividades() {
       setPublicaciones(res.data);
     } catch (err) {
       console.error(err);
+      mostrarToast('Error al cargar publicaciones', 'error');
     } finally {
       setLoading(false);
     }
@@ -56,8 +71,8 @@ export default function Actividades() {
     }
     try {
       const res = await api.post(`/publicaciones/${id}/like`);
-      setPublicaciones(prev =>
-        prev.map(pub =>
+      setPublicaciones((prev) =>
+        prev.map((pub) =>
           pub.id === id
             ? { ...pub, likes: res.data.likes, liked_by_user: res.data.liked }
             : pub
@@ -65,6 +80,24 @@ export default function Actividades() {
       );
     } catch (err) {
       console.error(err);
+      mostrarToast('Error al dar like', 'error');
+    }
+  };
+
+  const handleEliminar = async (id, usuarioId) => {
+    if (!isAuthenticated || user?.id !== usuarioId) {
+      mostrarToast('No puedes eliminar esta publicación', 'error');
+      return;
+    }
+    const confirmar = window.confirm('¿Eliminar esta publicación permanentemente?');
+    if (!confirmar) return;
+    try {
+      await api.delete(`/publicaciones/${id}`);
+      setPublicaciones((prev) => prev.filter((pub) => pub.id !== id));
+      mostrarToast('Publicación eliminada', 'success');
+    } catch (err) {
+      console.error(err);
+      mostrarToast('Error al eliminar', 'error');
     }
   };
 
@@ -80,21 +113,27 @@ export default function Actividades() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.imagen) return;
+    if (!formData.imagen) {
+      mostrarToast('Selecciona una imagen', 'error');
+      return;
+    }
     setSubiendo(true);
     const data = new FormData();
     data.append('imagen', formData.imagen);
     data.append('descripcion', formData.descripcion);
     data.append('ubicacion', formData.ubicacion);
     try {
-      const res = await api.post('/publicaciones', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const res = await api.post('/publicaciones', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       setPublicaciones([res.data, ...publicaciones]);
       setShowModal(false);
       setFormData({ imagen: null, descripcion: '', ubicacion: '' });
       setPreviewUrl(null);
+      mostrarToast('Publicación creada', 'success');
     } catch (err) {
       console.error(err);
-      alert('Error al publicar');
+      mostrarToast('Error al publicar', 'error');
     } finally {
       setSubiendo(false);
     }
@@ -129,26 +168,52 @@ export default function Actividades() {
 
       <div className={styles.feed}>
         {publicaciones.length === 0 ? (
-          <p className={styles.vacio}>No hay publicaciones aún. ¡Sé el primero en compartir tu experiencia!</p>
+          <p className={styles.vacio}>
+            No hay publicaciones aún. ¡Sé el primero en compartir tu experiencia!
+          </p>
         ) : (
-          publicaciones.map(pub => (
+          publicaciones.map((pub) => (
             <div key={pub.id} className={styles.post}>
               <div className={styles.postHeader}>
                 <img
-                  src={pub.user?.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(pub.user?.nombre || 'U')}&background=random`}
+                  src={
+                    pub.user?.foto ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      pub.user?.nombre || 'U'
+                    )}&background=random`
+                  }
                   alt="avatar"
                   className={styles.avatar}
                 />
                 <div className={styles.userInfo}>
                   <strong className={styles.userName}>{pub.user?.nombre || 'Usuario'}</strong>
-                  {pub.ubicacion && <span className={styles.ubicacionUnder}>📍 {pub.ubicacion}</span>}
+                  {pub.ubicacion && (
+                    <span className={styles.ubicacionUnder}>
+                      <PiMapPinDuotone size={12} /> {pub.ubicacion}
+                    </span>
+                  )}
                 </div>
                 <span className={styles.postTimeRight}>{timeAgo(pub.created_at)}</span>
+                {/* Botón eliminar (solo para dueños) */}
+                {isAuthenticated && user?.id === pub.user_id && (
+                  <button
+                    className={styles.btnEliminar}
+                    onClick={() => handleEliminar(pub.id, pub.user_id)}
+                    title="Eliminar publicación"
+                  >
+                    <PiTrashDuotone size={18} />
+                  </button>
+                )}
               </div>
               <img src={pub.imagen} alt="publicación" className={styles.postImage} />
               <div className={styles.postActions}>
                 <button onClick={() => handleLike(pub.id)} className={styles.actionBtn}>
-                  {pub.liked_by_user ? '❤️' : '🤍'} {pub.likes}
+                  {pub.liked_by_user ? (
+                    <PiHeartFill size={18} color="#e05252" />
+                  ) : (
+                    <PiHeartDuotone size={18} />
+                  )}
+                  <span>{pub.likes}</span>
                 </button>
               </div>
               {pub.descripcion && (
@@ -162,7 +227,7 @@ export default function Actividades() {
                   month: 'long',
                   day: 'numeric',
                   hour: '2-digit',
-                  minute: '2-digit'
+                  minute: '2-digit',
                 })}
               </small>
             </div>
@@ -170,13 +235,15 @@ export default function Actividades() {
         )}
       </div>
 
-      {/* Modal mejorado */}
+      {/* Modal para nueva publicación */}
       {showModal && (
         <div className={styles.modalOverlay} onClick={handleCancelModal}>
-          <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>
+          <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2>Compartir experiencia</h2>
-              <button className={styles.closeBtn} onClick={handleCancelModal}>✕</button>
+              <button className={styles.closeBtn} onClick={handleCancelModal}>
+                <PiXDuotone size={24} />
+              </button>
             </div>
             <form onSubmit={handleSubmit} className={styles.modalForm}>
               <div className={styles.imageUploadArea}>
@@ -197,7 +264,9 @@ export default function Actividades() {
                 ) : (
                   <label className={styles.uploadLabel}>
                     <input type="file" accept="image/*" onChange={handleFileChange} required />
-                    <div className={styles.uploadIcon}>📸</div>
+                    <div className={styles.uploadIcon}>
+                      <PiCameraDuotone size={48} />
+                    </div>
                     <span>Subir foto</span>
                   </label>
                 )}
@@ -216,7 +285,7 @@ export default function Actividades() {
                   name="ubicacion"
                   value={formData.ubicacion}
                   onChange={handleInputChange}
-                  placeholder="📍 Ubicación (ej: Desierto de la Tatacoa)"
+                  placeholder="Ubicación (ej: Desierto de la Tatacoa)"
                   className={styles.input}
                 />
               </div>
@@ -230,6 +299,13 @@ export default function Actividades() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Toast de notificación (simple) */}
+      {toast && (
+        <div className={`${styles.toast} ${styles[toast.tipo]}`}>
+          {toast.mensaje}
         </div>
       )}
     </div>

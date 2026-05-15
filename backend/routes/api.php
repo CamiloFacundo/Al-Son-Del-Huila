@@ -25,6 +25,7 @@ Route::get('/destinos/{id}', [DestinoController::class, 'show']);
 Route::get('/publicaciones', [PublicacionController::class, 'index']);
 Route::get('/rutas', [RutaController::class, 'index']);
 
+
 // Rutas para opciones de filtros (públicas)
 Route::get('/categorias', [CategoriaController::class, 'index']);
 Route::get('/municipios', [MunicipioController::class, 'index']);

@@ -1,0 +1,111 @@
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background: rgba(13, 12, 11, 0.98);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-border-gold);
+  padding: 1rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.icon {
+  color: var(--color-dorado);
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.text a {
+  color: var(--color-dorado);
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btnPrimary,
+.btnSecondary,
+.btnSettings {
+  padding: 0.5rem 1rem;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, #C4622D, #D4A843);
+  color: white;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+}
+
+.btnSecondary {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--text-secondary);
+}
+
+.btnSecondary:hover {
+  border-color: var(--color-dorado);
+  color: var(--text-primary);
+}
+
+.btnSettings {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btnSettings:hover {
+  color: var(--color-dorado);
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .actions {
+    justify-content: center;
+  }
+}

@@ -171,8 +171,7 @@ export default function Quiz() {
 
       {/* Header con progreso */}
       <div className={styles.header}>
-        <img src={logo} alt="logo" className={styles.logoImg} />
-        <div className={styles.progressBar}>
+          <div className={styles.progressBar}>
           <motion.div
             className={styles.progressFill}
             animate={{ width: `${progreso}%` }}

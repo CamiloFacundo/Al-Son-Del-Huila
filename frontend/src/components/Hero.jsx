@@ -57,6 +57,10 @@ const STATS = [
 export default function Hero() {
   const navigate = useNavigate()
 
+  const handleSelectCategory = (categoriaId) => {
+    navigate(`/catalogo?categoria=${categoriaId}`)
+  }
+
   return (
     <section className={styles.hero}>
 
@@ -134,13 +138,13 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Categorías */}
+          {/* Categorías (ahora con funcionalidad) */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0  }}
             transition={{ duration: 0.7, delay: 0.7 }}
           >
-            <Categories />
+            <Categories onSelectCategory={handleSelectCategory} />
           </motion.div>
 
           {/* Stats */}

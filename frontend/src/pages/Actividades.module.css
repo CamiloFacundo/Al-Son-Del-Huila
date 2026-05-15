@@ -339,3 +339,39 @@
   padding: 3rem;
   color: #888;
 }
+
+/* Botón eliminar y toast */
+.btnEliminar {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.btnEliminar:hover {
+  color: #e05252;
+  background: rgba(224, 82, 82, 0.1);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1b17;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  z-index: 3000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(8px);
+  border-left: 4px solid;
+}
+.toast.success { border-left-color: #2ecc71; }
+.toast.error { border-left-color: #e05252; }
+.toast.info { border-left-color: #D4A843; }

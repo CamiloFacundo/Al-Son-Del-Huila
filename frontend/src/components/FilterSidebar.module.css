@@ -1,21 +1,26 @@
- .sidebar {
+/* ========== SIDEBAR CON SCROLL VERTICAL ========== */
+.sidebar {
   width: 260px;
   flex-shrink: 0;
   background: var(--color-noche-soft);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  height: fit-content;
   position: sticky;
   top: 6rem;
+  max-height: calc(100vh - 7rem); /* Ajusta según tu header */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Evita desborde del contenedor */
 }
 
-/* Header */
+/* Header y chips fijos (no se desplazan) */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.25rem;
+  flex-shrink: 0;
 }
 
 .headerLeft {
@@ -63,13 +68,13 @@
   border-color: var(--color-tierra);
 }
 
-/* Chips activos */
 .activeChips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
   margin-bottom: 1.25rem;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .chip {
@@ -96,13 +101,34 @@
 
 .chip button:hover { opacity: 1; }
 
-/* Secciones */
+/* Contenedor de las secciones de filtros (scroll aquí) */
 .sections {
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  margin-top: 0.1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #D4A843 #1e1b17; /* Para Firefox */
 }
 
+/* WebKit (Chrome, Edge, Safari) */
+.sections::-webkit-scrollbar {
+  width: 3px;
+}
+.sections::-webkit-scrollbar-track {
+  background: #1e1b17;
+  border-radius: 10px;
+}
+.sections::-webkit-scrollbar-thumb {
+  background: #D4A843;
+  border-radius: 10px;
+}
+.sections::-webkit-scrollbar-thumb:hover {
+  background: #C4622D;
+}
+/* Secciones individuales */
 .section {
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.25rem;
@@ -132,7 +158,7 @@
   padding-bottom: 0.5rem;
 }
 
-/* Items */
+/* Items de filtro */
 .filterItem {
   display: flex;
   align-items: center;
@@ -148,10 +174,8 @@
 }
 
 .filterItem:hover { color: var(--text-primary); }
-
 .filterItem.selected { color: var(--text-primary); }
 
-/* Checkbox */
 .checkbox {
   width: 16px;
   height: 16px;

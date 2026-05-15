@@ -68,7 +68,6 @@ public function buscar(Request $request)
         return response()->json([]);
     }
 
-    // Búsqueda full-text en nombre, descripción, categoría, municipio
     $destinos = Destino::with(['categoria', 'municipio'])
         ->where('estado', true)
         ->where(function($q) use ($query) {
@@ -86,6 +85,4 @@ public function buscar(Request $request)
 
     return response()->json($destinos);
 }
-
-
 }

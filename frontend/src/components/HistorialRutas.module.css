@@ -1,0 +1,194 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.btnNueva {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-dorado);
+  background: rgba(212,168,67,0.1);
+  border: 1px solid rgba(212,168,67,0.25);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+
+.btnNueva:hover { background: rgba(212,168,67,0.2); }
+
+.lista {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lista::-webkit-scrollbar       { width: 3px; }
+.lista::-webkit-scrollbar-thumb { background: #1e1b17; }
+
+/* Ruta card */
+.rutaCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+}
+
+.rutaCard:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--color-border);
+}
+
+.activa {
+  background: rgba(196,98,45,0.08) !important;
+  border-color: rgba(196,98,45,0.3) !important;
+}
+
+.rutaImagen {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rutaNumDestinos {
+  background: rgba(0,0,0,0.6);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+.rutaInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rutaNombre {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rutaMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.rutaMeta span {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.rutaMeta svg { color: var(--color-tierra); }
+
+.rutaAcciones {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.btnEliminar {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+}
+
+.rutaCard:hover .btnEliminar { opacity: 1; }
+
+.btnEliminar:hover {
+  color: #e05252;
+  background: rgba(224,82,82,0.1);
+}
+
+.arrow {
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.arrowActive { color: var(--color-tierra); }
+
+/* Empty */
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.empty span:first-child { font-size: 2rem; opacity: 0.4; }
+
+.empty p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.emptyHint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
