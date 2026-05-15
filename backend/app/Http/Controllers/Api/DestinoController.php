@@ -59,4 +59,33 @@ class DestinoController extends Controller
 
         return response()->json($destino);
     }
+
+    // GET /api/destinos/buscar?q=aventura+rio
+public function buscar(Request $request)
+{
+    $query = $request->input('q', '');
+    if (strlen($query) < 2) {
+        return response()->json([]);
+    }
+
+    // Búsqueda full-text en nombre, descripción, categoría, municipio
+    $destinos = Destino::with(['categoria', 'municipio'])
+        ->where('estado', true)
+        ->where(function($q) use ($query) {
+            $q->where('nombre', 'like', "%{$query}%")
+              ->orWhere('descripcion', 'like', "%{$query}%")
+              ->orWhereHas('categoria', function($cat) use ($query) {
+                  $cat->where('nombre', 'like', "%{$query}%");
+              })
+              ->orWhereHas('municipio', function($mun) use ($query) {
+                  $mun->where('nombre', 'like', "%{$query}%");
+              });
+        })
+        ->limit(10)
+        ->get();
+
+    return response()->json($destinos);
+}
+
+
 }

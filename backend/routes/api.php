@@ -30,6 +30,7 @@ Route::get('/categorias', [CategoriaController::class, 'index']);
 Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/entornos', [EntornoController::class, 'index']);
 Route::get('/etiquetas', [EtiquetaController::class, 'index']);
+Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
 
 Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
 
