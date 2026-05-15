@@ -21,7 +21,8 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 Route::get('/destinos', [DestinoController::class, 'index']);
-Route::get('/destinos/{id}', [DestinoController::class, 'show']);
+Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
+Route::get('/destinos/{id}', [DestinoController::class, 'show'])->whereNumber('id');
 Route::get('/publicaciones', [PublicacionController::class, 'index']);
 Route::get('/rutas', [RutaController::class, 'index']);
 
@@ -31,7 +32,6 @@ Route::get('/categorias', [CategoriaController::class, 'index']);
 Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/entornos', [EntornoController::class, 'index']);
 Route::get('/etiquetas', [EtiquetaController::class, 'index']);
-Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
 
 Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
 

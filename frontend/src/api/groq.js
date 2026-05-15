@@ -137,7 +137,7 @@ export async function enviarMensaje(mensajes, contexto = null) {
 
     // 7. Elegir modelo: con visión si hay imagen, si no el mejor para texto
     const tieneImagen = mensajes.some(m => m.imagen)
-    const modelo = tieneImagen ? "llama-3.2-11b-vision-preview" : "llama-3.3-70b-versatile"
+    const modelo = tieneImagen ? "llama-3.5-11b-vision-preview" : "llama-3.3-70b-versatile"
 
     const payload = {
       model: modelo,

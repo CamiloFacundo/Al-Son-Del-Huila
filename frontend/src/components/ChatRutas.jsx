@@ -89,7 +89,7 @@ export default function ChatRutas({
         ? { rutaActiva: rutaActiva.nombre, destinos: rutaActiva.destinos }
         : null
 
-      const respuesta = await enviarMensaje(historial, contexto)
+      const respuesta = await enviarMensaje(historial, contexto, todosDestinos)
 
       const destinosEncontrados = extraerDestinos(respuesta, todosDestinos)
       const rutaGenerada        = extraerRuta(respuesta, todosDestinos)
