@@ -10,9 +10,14 @@ use Illuminate\Support\Facades\Storage;
 
 class PublicacionController extends Controller
 {
+    /**
+     * Listar todas las publicaciones (feed público)
+     * Si el usuario está autenticado, devuelve liked_by_user para cada publicación
+     */
     public function index()
     {
         $user = auth()->user();
+        
         $publicaciones = Publicacion::with('user')
             ->withCount('likes')
             ->orderBy('created_at', 'desc')
@@ -31,6 +36,9 @@ class PublicacionController extends Controller
         return response()->json($publicaciones);
     }
 
+    /**
+     * Crear una nueva publicación (solo usuarios autenticados)
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -53,6 +61,9 @@ class PublicacionController extends Controller
         return response()->json($publicacion->load('user'), 201);
     }
 
+    /**
+     * Toggle like (dar o quitar like) – solo usuarios autenticados
+     */
     public function like($id)
     {
         $user = auth()->user();
@@ -79,6 +90,9 @@ class PublicacionController extends Controller
         }
     }
 
+    /**
+     * Obtener las publicaciones del usuario autenticado (para el perfil)
+     */
     public function misPublicaciones(Request $request)
     {
         $user = $request->user();
@@ -92,10 +106,16 @@ class PublicacionController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $publicaciones->each(function ($pub) use ($user) {
+            $pub->liked_by_user = $pub->isLikedByUser($user->id);
+        });
+
         return response()->json($publicaciones);
     }
 
-    // 👇 NUEVO MÉTODO UPDATE
+    /**
+     * Actualizar una publicación (solo el dueño)
+     */
     public function update(Request $request, $id)
     {
         $user = $request->user();
@@ -117,7 +137,9 @@ class PublicacionController extends Controller
         return response()->json($publicacion);
     }
 
-    // 👇 NUEVO MÉTODO DESTROY
+    /**
+     * Eliminar una publicación (solo el dueño)
+     */
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
@@ -126,9 +148,6 @@ class PublicacionController extends Controller
         if ($publicacion->user_id !== $user->id) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
-
-        // Opcional: eliminar archivo de imagen
-        // Storage::disk('public')->delete(str_replace('/storage/', '', $publicacion->imagen));
 
         $publicacion->delete();
 

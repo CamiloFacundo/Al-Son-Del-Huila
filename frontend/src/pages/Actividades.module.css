@@ -375,3 +375,14 @@
 .toast.success { border-left-color: #2ecc71; }
 .toast.error { border-left-color: #e05252; }
 .toast.info { border-left-color: #D4A843; }
+
+.ubicacionIcon {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* Corazón rojo para el like */
+.heartRed {
+  color: #e74c3c;
+}

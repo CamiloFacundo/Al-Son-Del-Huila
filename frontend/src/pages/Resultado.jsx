@@ -13,6 +13,7 @@ import {
   PiFilePdfDuotone,
 } from "react-icons/pi";
 import { recomendar } from "../api/recomendador";
+import DestinoModal from "../components/DestinoModal";
 import styles from "./Resultado.module.css";
 import logo from "../assets/images/logo.png";
 
@@ -24,6 +25,10 @@ export default function Resultado() {
   const navigate = useNavigate();
   const itinerarioRef = useRef(null);
   const [todosDestinos, setTodosDestinos] = useState([]);
+  
+  // Estados para el modal de destino
+  const [selectedDestino, setSelectedDestino] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const navbar = document.querySelector('nav');
@@ -36,6 +41,18 @@ export default function Resultado() {
   useEffect(() => {
     setTodosDestinos(itinerario.flatMap(dia => dia.destinos));
   }, [itinerario]);
+
+  // Función para abrir el modal de destino
+  const openDestinoModal = (destino) => {
+    setSelectedDestino(destino);
+    setModalOpen(true);
+  };
+
+  // Función para cerrar el modal
+  const closeDestinoModal = () => {
+    setModalOpen(false);
+    setSelectedDestino(null);
+  };
 
   // Escapa texto para HTML
   const escapeHTML = (str) => {
@@ -314,7 +331,10 @@ export default function Resultado() {
                           <span>{destino.categoria || 'Categoría no especificada'}</span>
                         </div>
                       </div>
-                      <button className={styles.destinoBtn}>
+                      <button 
+                        className={styles.destinoBtn} 
+                        onClick={() => openDestinoModal(destino)}
+                      >
                         <PiArrowRightDuotone size={14} />
                       </button>
                     </div>
@@ -332,18 +352,25 @@ export default function Resultado() {
             </button>
           </div>
         </div>
-          <div className={styles.mapaWrapper}>
-            {todosDestinos.length > 0 ? (
-              <Mapa destinos={todosDestinos} />
-            ) : (
-              <div className={styles.mapaPlaceholder}>
-                <PiMapPinDuotone size={48} className={styles.mapaIcon} />
-                <h3>Mapa interactivo</h3>
-                <p>Cargando destinos...</p>
-              </div>
-            )}
-          </div>  
+        <div className={styles.mapaWrapper}>
+          {todosDestinos.length > 0 ? (
+            <Mapa destinos={todosDestinos} onDestinoClick={openDestinoModal} />
+          ) : (
+            <div className={styles.mapaPlaceholder}>
+              <PiMapPinDuotone size={48} className={styles.mapaIcon} />
+              <h3>Mapa interactivo</h3>
+              <p>Cargando destinos...</p>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Modal de destino */}
+      <DestinoModal 
+        destino={selectedDestino} 
+        isOpen={modalOpen} 
+        onClose={closeDestinoModal} 
+      />
+    </div>
   );
 }

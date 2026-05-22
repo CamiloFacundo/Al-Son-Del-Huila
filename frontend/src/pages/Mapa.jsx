@@ -10,7 +10,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-export default function Mapa({ destinos }) {
+export default function Mapa({ destinos, onDestinoClick }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -43,13 +43,29 @@ export default function Mapa({ destinos }) {
         const lat = parseFloat(destino.latitud);
         const lng = parseFloat(destino.longitud);
         if (!isNaN(lat) && !isNaN(lng)) {
+          // Crear el marcador
           const marker = L.marker([lat, lng])
             .bindPopup(`
               <b>${destino.nombre}</b><br>
               ${destino.municipio || ''}<br>
-              ${destino.categoria || ''}
+              ${destino.categoria || ''}<br>
+              <button class="ver-mapa-btn" data-id="${destino.id}">🔍 Ver más</button>
             `)
             .addTo(mapRef.current);
+          
+          // Agregar evento al popup cuando se abre
+          marker.on('popupopen', () => {
+            const btn = document.querySelector(`.ver-mapa-btn[data-id="${destino.id}"]`);
+            if (btn && onDestinoClick) {
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                onDestinoClick(destino);
+                // Cerrar el popup después de abrir el modal (opcional)
+                marker.closePopup();
+              });
+            }
+          });
+          
           bounds.push([lat, lng]);
         }
       });
@@ -68,7 +84,7 @@ export default function Mapa({ destinos }) {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [destinos]);
+  }, [destinos, onDestinoClick]);
 
   return <div id="mapa" style={{ height: '100%', width: '100%', borderRadius: '16px' }} />;
 }

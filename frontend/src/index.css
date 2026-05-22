@@ -35,3 +35,20 @@ button { cursor: none; border: none; font-family: var(--font-body); }
   background: rgba(212,168,67,0.3);
   color: white;
 }
+
+.ver-mapa-btn {
+  background: #C4622D;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  margin-top: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ver-mapa-btn:hover {
+  background: #D4A843;
+  transform: scale(1.02);
+}

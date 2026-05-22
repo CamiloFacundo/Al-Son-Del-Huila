@@ -12,14 +12,15 @@ import {
   PiLockDuotone,
   PiSignOutDuotone,
   PiTrashDuotone,
+  PiChatDuotone,
 } from "react-icons/pi";
 import { useAuth } from "../context/AuthContext";
 import { getPerfil, updatePerfil, subirFoto, cambiarPassword } from "../api/perfil";
 import { getMisPublicaciones, updatePublicacion, deletePublicacion } from "../api/publicaciones";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 import styles from "./Perfil.module.css";
 
-// Función para calcular tiempo relativo (mismo que en Actividades)
 function timeAgo(date) {
   const now = new Date();
   const diff = Math.floor((now - new Date(date)) / 1000);
@@ -41,7 +42,7 @@ function timeAgo(date) {
 }
 
 export default function Perfil() {
-  const { logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const [perfil, setPerfil] = useState(null);
@@ -97,6 +98,7 @@ export default function Perfil() {
     setCargandoPublicaciones(true);
     try {
       const data = await getMisPublicaciones();
+      console.log("Mis publicaciones recibidas:", data);
       setMisPublicaciones(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error cargando mis publicaciones:", err);
@@ -104,6 +106,25 @@ export default function Perfil() {
       setMisPublicaciones([]);
     } finally {
       setCargandoPublicaciones(false);
+    }
+  };
+
+  const handleLikePublicacion = async (id) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    try {
+      const res = await api.post(`/publicaciones/${id}/like`);
+      setMisPublicaciones(prev =>
+        prev.map(pub =>
+          pub.id === id
+            ? { ...pub, likes_count: res.data.likes, liked_by_user: res.data.liked }
+            : pub
+        )
+      );
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -326,6 +347,7 @@ export default function Perfil() {
         </div>
 
         <div className={styles.tabContent}>
+          {/* Mi información */}
           {tabActiva === "info" && (
             <div className={styles.infoGrid}>
               <div className={styles.infoCard}>
@@ -347,6 +369,7 @@ export default function Perfil() {
             </div>
           )}
 
+          {/* Mis publicaciones (con diseño unificado a Actividades) */}
           {tabActiva === "mis-publicaciones" && (
             <div className={styles.misPublicacionesContainer}>
               {cargandoPublicaciones ? (
@@ -364,6 +387,7 @@ export default function Perfil() {
                 <div className={styles.feed}>
                   {misPublicaciones.map(pub => (
                     <div key={pub.id} className={styles.post}>
+                      {/* Header: avatar, nombre, ubicación debajo, tiempo a la derecha */}
                       <div className={styles.postHeader}>
                         <img
                           src={pub.user?.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(pub.user?.nombre || 'U')}&background=random`}
@@ -372,27 +396,36 @@ export default function Perfil() {
                         />
                         <div className={styles.userInfo}>
                           <strong className={styles.userName}>{pub.user?.nombre || 'Usuario'}</strong>
-                          {pub.ubicacion && <span className={styles.ubicacionUnder}>📍 {pub.ubicacion}</span>}
+                          {pub.ubicacion && (
+                            <span className={styles.ubicacionUnder}>
+                              <PiMapPinDuotone size={12} className={styles.ubicacionIcon} /> {pub.ubicacion}
+                            </span>
+                          )}
                         </div>
                         <span className={styles.postTimeRight}>{timeAgo(pub.created_at)}</span>
                       </div>
 
+                      {/* Imagen */}
                       <img src={pub.imagen} alt="publicación" className={styles.postImage} />
 
+                      {/* Botones de acción */}
                       <div className={styles.postActions}>
-                        <button className={styles.actionBtn}>
-                          ❤️ {pub.likes}
+                        <button 
+                          onClick={() => handleLikePublicacion(pub.id)} 
+                          className={styles.actionBtn}
+                        >
+                          {pub.liked_by_user ? '❤️' : '🤍'} {pub.likes_count || 0}
                         </button>
-                        {/* Botón de comentarios (opcional, descomentar si lo tienes) */}
-                        {/* <button className={styles.actionBtn}>💬 {pub.comentarios_count || 0}</button> */}
                       </div>
 
+                      {/* Descripción */}
                       {pub.descripcion && (
                         <p className={styles.descripcion}>
                           <strong>{pub.user?.nombre || 'Usuario'}</strong> {pub.descripcion}
                         </p>
                       )}
 
+                      {/* Fecha completa */}
                       <small className={styles.fecha}>
                         {new Date(pub.created_at).toLocaleDateString('es-CO', {
                           year: 'numeric',
@@ -403,7 +436,7 @@ export default function Perfil() {
                         })}
                       </small>
 
-                      {/* Botones de editar/eliminar (opcional, manténlos si los quieres) */}
+                      {/* Botones de editar/eliminar (solo en perfil) */}
                       <div className={styles.publicacionAcciones}>
                         <button onClick={() => iniciarEdicionPost(pub)} className={styles.editPostBtn}>
                           <PiPencilDuotone size={16} /> Editar
@@ -419,6 +452,7 @@ export default function Perfil() {
             </div>
           )}
 
+          {/* Seguridad */}
           {tabActiva === "seguridad" && (
             <div className={styles.seguridadSection}>
               <div className={styles.seguridadCard}>
