@@ -23,6 +23,7 @@ const SOCIAL = [
 
 const LINKS_EXPLORAR = [
   { to: "/catalogo",    label: "Destinos"    },
+  { to: "/mapa",        label: "Mapa"        },
   { to: "/actividades", label: "Actividades" },
   { to: "/rutas",       label: "Rutas"       },
 ]

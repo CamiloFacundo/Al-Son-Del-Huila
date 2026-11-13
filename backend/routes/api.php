@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\EtiquetaController;
 use App\Http\Controllers\Api\TipoViajeroController;
 use App\Http\Controllers\Api\RecomendadorController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\EstadisticaController;
 use App\Http\Controllers\Api\Admin\DestinoAdminController;
 
 // ── Rutas públicas ───────────────────────────────────────────────
@@ -46,6 +47,7 @@ Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/entornos', [EntornoController::class, 'index']);
 Route::get('/etiquetas', [EtiquetaController::class, 'index']);
 Route::get('/tipos-viajero', [TipoViajeroController::class, 'index']);
+Route::get('/estadisticas', [EstadisticaController::class, 'index']);
 
 Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
 

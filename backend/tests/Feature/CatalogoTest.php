@@ -86,6 +86,16 @@ class CatalogoTest extends TestCase
         $this->assertCount(3, $res->json('itinerario.0.destinos'));
     }
 
+    public function test_estadisticas_de_la_portada_salen_de_la_bd(): void
+    {
+        $this->getJson('/api/estadisticas')->assertOk()->assertExactJson([
+            'destinos'   => DB::table('destinos')->where('estado', 1)->count(),
+            'municipios' => DB::table('destinos')->where('estado', 1)->distinct()->count('municipio_id'),
+            'categorias' => DB::table('categorias')->count(),
+            'resenas'    => 0,
+        ]);
+    }
+
     public function test_recomendador_valida_los_datos(): void
     {
         $this->postJson('/api/recomendar', ['dias' => 99])->assertStatus(422);

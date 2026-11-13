@@ -1,9 +1,10 @@
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import {
   PiArrowRightDuotone,
   PiMapPinDuotone,
-  PiUsersDuotone,
+  PiTagDuotone,
   PiMountainsDuotone,
 } from "react-icons/pi"
 import styles from "./Hero.module.css"
@@ -11,6 +12,7 @@ import Aurora from "./Aurora"
 import CardSwap, { Card } from "./CardSwap"
 import Categories from "./Categories"
 import logo from "../assets/images/logo.png"
+import api from "../services/api"
 
 import imgTatacoa from "../assets/images/tatacoa.jpg"
 import imgSanAgustin from "../assets/images/san-agustin.jpg"
@@ -48,14 +50,20 @@ const DESTINOS = [
   },
 ]
 
+// Cifras reales de la base de datos (antes estaban escritas a mano: "120+ destinos", "50K+ viajeros")
 const STATS = [
-  { Icon: PiMapPinDuotone,    valor: "37",  label: "Municipios" },
-  { Icon: PiMountainsDuotone, valor: "120+",label: "Destinos"   },
-  { Icon: PiUsersDuotone,     valor: "50K+",label: "Viajeros"   },
+  { Icon: PiMapPinDuotone,    clave: "municipios", label: "Municipios" },
+  { Icon: PiMountainsDuotone, clave: "destinos",   label: "Destinos"   },
+  { Icon: PiTagDuotone,       clave: "categorias", label: "Categorías" },
 ]
 
 export default function Hero() {
   const navigate = useNavigate()
+  const [cifras, setCifras] = useState(null)
+
+  useEffect(() => {
+    api.get("/estadisticas").then(r => setCifras(r.data)).catch(() => {})
+  }, [])
 
   const handleSelectCategory = (categoriaId) => {
     navigate(`/catalogo?categoria=${categoriaId}`)
@@ -154,10 +162,10 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1 }}
           >
-            {STATS.map(({ Icon, valor, label }) => (
+            {STATS.map(({ Icon, clave, label }) => (
               <div key={label} className={styles.stat}>
                 <Icon size={18} className={styles.statIcon} />
-                <span className={styles.statValor}>{valor}</span>
+                <span className={styles.statValor}>{cifras?.[clave] ?? "—"}</span>
                 <span className={styles.statLabel}>{label}</span>
               </div>
             ))}

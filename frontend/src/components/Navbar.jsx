@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import {
   PiHouseDuotone,
   PiMapPinDuotone,
-  PiCompassDuotone,
+  PiMapTrifoldDuotone,
   PiLightningDuotone,
   PiSignInDuotone,
   PiUserPlusDuotone,
@@ -22,8 +22,9 @@ import logo from "../assets/images/logo.png"
 const LINKS = [
   { to: "/",            label: "Inicio",      Icon: PiHouseDuotone     },
   { to: "/catalogo",    label: "Destinos",    Icon: PiMapPinDuotone    },
+  { to: "/mapa",        label: "Mapa",        Icon: PiMapTrifoldDuotone },
   { to: "/actividades", label: "Actividades", Icon: PiLightningDuotone },
-  { to: "/Rutas",       label: "Huily",       Icon: PiBrainDuotone     },
+  { to: "/rutas",       label: "Huily",       Icon: PiBrainDuotone     },
 ]
 
 export default function Navbar() {
