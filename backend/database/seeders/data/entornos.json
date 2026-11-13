@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "nombre": "Rural"
+    },
+    {
+        "id": 2,
+        "nombre": "Urbano"
+    },
+    {
+        "id": 3,
+        "nombre": "Natural"
+    },
+    {
+        "id": 4,
+        "nombre": "Montañoso"
+    },
+    {
+        "id": 5,
+        "nombre": "Desierto"
+    },
+    {
+        "id": 6,
+        "nombre": "Río"
+    },
+    {
+        "id": 7,
+        "nombre": "Cascadas"
+    }
+]

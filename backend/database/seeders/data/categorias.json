@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "nombre": "Naturaleza"
+    },
+    {
+        "id": 2,
+        "nombre": "Cultural"
+    },
+    {
+        "id": 3,
+        "nombre": "Arqueológico"
+    },
+    {
+        "id": 4,
+        "nombre": "Aventura"
+    },
+    {
+        "id": 5,
+        "nombre": "Gastronómico"
+    },
+    {
+        "id": 6,
+        "nombre": "Religioso"
+    },
+    {
+        "id": 7,
+        "nombre": "Histórico"
+    },
+    {
+        "id": 8,
+        "nombre": "Astronómico"
+    },
+    {
+        "id": 9,
+        "nombre": "Eventos y festivales"
+    },
+    {
+        "id": 10,
+        "nombre": "Bienestar y descanso"
+    }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "nombre": "Parejas"
+    },
+    {
+        "id": 2,
+        "nombre": "Familia"
+    },
+    {
+        "id": 3,
+        "nombre": "Caminatas"
+    },
+    {
+        "id": 4,
+        "nombre": "Fotografía"
+    },
+    {
+        "id": 5,
+        "nombre": "Historia"
+    },
+    {
+        "id": 6,
+        "nombre": "Tranquilo"
+    },
+    {
+        "id": 7,
+        "nombre": "Extremo"
+    }
+]

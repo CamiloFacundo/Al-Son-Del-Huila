@@ -1,0 +1,150 @@
+[
+    {
+        "id": 1,
+        "nombre": "Acevedo"
+    },
+    {
+        "id": 2,
+        "nombre": "Aipe"
+    },
+    {
+        "id": 3,
+        "nombre": "Algeciras"
+    },
+    {
+        "id": 4,
+        "nombre": "Altamira"
+    },
+    {
+        "id": 5,
+        "nombre": "Baraya"
+    },
+    {
+        "id": 6,
+        "nombre": "Campoalegre"
+    },
+    {
+        "id": 7,
+        "nombre": "Colombia"
+    },
+    {
+        "id": 8,
+        "nombre": "Elías"
+    },
+    {
+        "id": 9,
+        "nombre": "El Agrado"
+    },
+    {
+        "id": 10,
+        "nombre": "Garzón"
+    },
+    {
+        "id": 11,
+        "nombre": "Gigante"
+    },
+    {
+        "id": 12,
+        "nombre": "Guadalupe"
+    },
+    {
+        "id": 13,
+        "nombre": "Hobo"
+    },
+    {
+        "id": 14,
+        "nombre": "Íquira"
+    },
+    {
+        "id": 15,
+        "nombre": "Isnos"
+    },
+    {
+        "id": 16,
+        "nombre": "La Argentina"
+    },
+    {
+        "id": 17,
+        "nombre": "La Plata"
+    },
+    {
+        "id": 18,
+        "nombre": "Nátaga"
+    },
+    {
+        "id": 19,
+        "nombre": "Neiva"
+    },
+    {
+        "id": 20,
+        "nombre": "Oporapa"
+    },
+    {
+        "id": 21,
+        "nombre": "Paicol"
+    },
+    {
+        "id": 22,
+        "nombre": "Palermo"
+    },
+    {
+        "id": 23,
+        "nombre": "Palestina"
+    },
+    {
+        "id": 24,
+        "nombre": "Pital"
+    },
+    {
+        "id": 25,
+        "nombre": "Pitalito"
+    },
+    {
+        "id": 26,
+        "nombre": "Rivera"
+    },
+    {
+        "id": 27,
+        "nombre": "Saladoblanco"
+    },
+    {
+        "id": 28,
+        "nombre": "Santa María"
+    },
+    {
+        "id": 29,
+        "nombre": "San Agustín"
+    },
+    {
+        "id": 30,
+        "nombre": "Suaza"
+    },
+    {
+        "id": 31,
+        "nombre": "Tarqui"
+    },
+    {
+        "id": 32,
+        "nombre": "Tello"
+    },
+    {
+        "id": 33,
+        "nombre": "Teruel"
+    },
+    {
+        "id": 34,
+        "nombre": "Tesalia"
+    },
+    {
+        "id": 35,
+        "nombre": "Timaná"
+    },
+    {
+        "id": 36,
+        "nombre": "Villavieja"
+    },
+    {
+        "id": 37,
+        "nombre": "Yaguará"
+    }
+]
