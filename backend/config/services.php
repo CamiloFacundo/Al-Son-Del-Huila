@@ -35,6 +35,16 @@ return [
         ],
     ],
 
+    'groq' => [
+        'key'          => env('GROQ_API_KEY'),
+        'model'        => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+        'vision_model' => env('GROQ_VISION_MODEL', 'meta-llama/llama-4-scout-17b-16e-instruct'),
+        // En XAMPP/Windows sin certificados CA configurados puede hacer falta false (solo desarrollo)
+        'verify_ssl'   => env('GROQ_VERIFY_SSL', true),
+    ],
+
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
+
     'google' => [
     'client_id'     => env('GOOGLE_CLIENT_ID'),
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import { API_URL } from "../api/config"
 import { motion } from "framer-motion"
 import {
   PiUserDuotone,
@@ -35,7 +36,7 @@ function PasswordStrength({ password }) {
 export default function Register() {
   const { fields, errors, globalError, loading, handleChange, handleSubmit } = useRegister()
 const handleGoogle = () => {
-  window.location.href = "http://127.0.0.1:8000/api/auth/google"
+  window.location.href = `${API_URL}/auth/google`
 }
   return (
     <div className={styles.page}>

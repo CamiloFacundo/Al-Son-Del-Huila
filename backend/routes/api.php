@@ -20,6 +20,7 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
+Route::post('/auth/google/exchange', [GoogleAuthController::class, 'exchange'])->middleware('throttle:10,1');
 Route::get('/destinos', [DestinoController::class, 'index']);
 Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
 Route::get('/destinos/{id}', [DestinoController::class, 'show'])->whereNumber('id');
@@ -34,6 +35,9 @@ Route::get('/entornos', [EntornoController::class, 'index']);
 Route::get('/etiquetas', [EtiquetaController::class, 'index']);
 
 Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
+
+// Asistente Huily (proxy a Groq; la API key solo vive en el backend)
+Route::post('/chat', [ChatController::class, 'enviar'])->middleware('throttle:20,1');
 
 
 // Rutas protegidas (requieren autenticación)

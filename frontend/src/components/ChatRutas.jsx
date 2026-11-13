@@ -12,13 +12,24 @@ import {
 import { enviarMensaje, extraerDestinos, extraerRuta } from "../api/groq"
 import styles from "./ChatRutas.module.css"
 
+// Escapa el HTML antes de aplicar el formato: el texto viene del usuario y de la IA,
+// y sin esto un "<img onerror=...>" se ejecutaría y podría robar el token de localStorage.
+function escaparHTML(texto) {
+  return String(texto ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
 function renderTexto(texto) {
-  return texto
+  return escaparHTML(texto)
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g,     "<em>$1</em>")
     .replace(/\n/g,            "<br/>")
     .replace(/\[DESTINOS:.*?\]/g, "")
-    .replace(/\[RUTA:.*?\]/g,    "")
+    .replace(/\[RUTA:\s*\{.*?\}\]/g, "")
 }
 
 export default function ChatRutas({

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { API_URL } from "../api/config"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { motion } from "framer-motion"
 import { PiEnvelopeDuotone, PiLockDuotone } from "react-icons/pi"
@@ -35,7 +36,7 @@ export default function Login() {
 
   const handleGoogle = () => {
     localStorage.setItem('redirectAfterGoogle', window.location.pathname + window.location.search);
-    window.location.href = "http://localhost:8000/api/auth/google"
+    window.location.href = `${API_URL}/auth/google`
   }
 
   return (

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
+import { API_URL } from "../api/config"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   PiMapPinDuotone,
@@ -35,7 +36,7 @@ export default function Rutas() {
     const cargar = async () => {
       try {
         const [resDestinos, resRutas] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/destinos").then(r => r.json()),
+          fetch(`${API_URL}/destinos`).then(r => r.json()),
           getRutas().catch(() => [])
         ])
         setTodosDestinos(resDestinos)

@@ -1,0 +1,28 @@
+# Secretos / configuración local
+.env
+.env.*
+!.env.example
+
+# Dependencias
+vendor/
+node_modules/
+
+# Builds
+dist/
+backend/public/build/
+backend/public/hot
+
+# Laravel
+backend/public/storage
+backend/storage/*.key
+backend/.phpunit.result.cache
+
+# Dumps con datos personales (hashes, tokens, sesiones)
+database/al_son_del_huila_backup.sql
+
+# Logs y sistema
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

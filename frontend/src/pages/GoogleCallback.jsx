@@ -1,59 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import api from "../services/api";
 
 export default function GoogleCallback() {
   const [params] = useSearchParams();
+  const yaEjecutado = useRef(false); // StrictMode ejecuta el efecto dos veces y el código solo sirve una vez
 
   useEffect(() => {
-    // Si ya hay token, redirigir a la página guardada (o al inicio)
-    if (localStorage.getItem("token")) {
-      const redirectPath = localStorage.getItem("redirectAfterGoogle") || "/";
+    if (yaEjecutado.current) return;
+    yaEjecutado.current = true;
+
+    const redirigir = (ruta) => {
       localStorage.removeItem("redirectAfterGoogle");
-      window.location.href = redirectPath;
-      return;
-    }
-
-    const token = params.get("token");
-    const id = params.get("id");
-    let name = params.get("name") || params.get("nombre");
-    const email = params.get("email");
-    const foto = params.get("foto");
-    const provider = params.get("provider");
-    const error = params.get("error");
-
-    if (error || !token || !id) {
-      // Si hay error, también limpiamos la redirección pendiente
-      localStorage.removeItem("redirectAfterGoogle");
-      window.location.href = "/login?error=google_failed";
-      return;
-    }
-
-    // Si el nombre es "null" (string) o vacío, extraer del email
-    if (!name || name === "null" || name === "undefined") {
-      name = email ? email.split("@")[0] : "Usuario";
-      console.log("Nombre extraído del email:", name);
-    }
-
-    const userData = {
-      id: id,
-      nombre: name,
-      email: email,
-      foto: foto,
-      provider: provider,
-      token: token,
+      window.location.href = ruta;
     };
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.removeItem("usuario");
+    // Si ya hay token, redirigir a la página guardada (o al inicio)
+    if (localStorage.getItem("token")) {
+      redirigir(localStorage.getItem("redirectAfterGoogle") || "/");
+      return;
+    }
 
-    // Obtener la ruta guardada antes de redirigir a Google
-    const redirectPath = localStorage.getItem("redirectAfterGoogle") || "/";
-    localStorage.removeItem("redirectAfterGoogle");
+    const code = params.get("code");
+    if (params.get("error") || !code) {
+      redirigir("/login?error=google_failed");
+      return;
+    }
 
-    // Redirigir a la página original (no al perfil)
-    window.location.href = redirectPath;
-  }, []);
+    // El backend manda un código de un solo uso (no el token) y aquí lo cambiamos por el token
+    api
+      .post("/auth/google/exchange", { code })
+      .then(({ data }) => {
+        const { token, user } = data;
+        if (!user.nombre) {
+          user.nombre = user.email ? user.email.split("@")[0] : "Usuario";
+        }
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.removeItem("usuario");
+
+        // Volver a la página donde estaba el usuario antes de ir a Google
+        redirigir(localStorage.getItem("redirectAfterGoogle") || "/");
+      })
+      .catch(() => redirigir("/login?error=google_failed"));
+  }, [params]);
 
   return <div>Iniciando sesión con Google...</div>;
 }
