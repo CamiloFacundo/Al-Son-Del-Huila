@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\RutaController;
 use App\Http\Controllers\Api\MunicipioController;
 use App\Http\Controllers\Api\EntornoController;
 use App\Http\Controllers\Api\EtiquetaController;
-use App\Http\Controllers\Api\ComentarioController;
 use App\Http\Controllers\Api\RecomendadorController;
 use App\Http\Controllers\Api\ChatController;
 

@@ -7,9 +7,9 @@ import {
   PiLockDuotone,
   PiShieldDuotone,
 } from "react-icons/pi"
-import AuthInput    from "../components/auth/AuthInput"
-import AuthButton   from "../components/auth/AuthButton"
-import GoogleButton from "../components/auth/GoogleButton"
+import AuthInput    from "../components/Auth/AuthInput"
+import AuthButton   from "../components/Auth/AuthButton"
+import GoogleButton from "../components/Auth/GoogleButton"
 import { useRegister, getPasswordStrength } from "../hooks/useAuth"
 import styles from "./Register.module.css"
 import logo from "../assets/images/logo.png"
