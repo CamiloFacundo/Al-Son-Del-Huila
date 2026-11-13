@@ -10,7 +10,9 @@ return new class extends Migration
     {
         Schema::create('rutas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('usuarios')->onDelete('cascade');
+            // usuarios.id es int(11) con signo: foreignId() (bigint unsigned) no encaja y la FK falla
+            $table->integer('user_id');
+            $table->foreign('user_id')->references('id')->on('usuarios')->onDelete('cascade');
             $table->string('nombre');
             $table->integer('dias')->nullable();
             $table->json('destinos')->nullable();
