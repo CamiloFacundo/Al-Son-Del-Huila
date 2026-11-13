@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 /**
  * Publicaciones de bienvenida del muro de Actividades, firmadas por la cuenta del equipo.
  * Las fotos salen de public/images/Destinos/{id}.webp (ya están en el repositorio).
- * Si la cuenta del equipo ya tiene publicaciones, no hace nada.
+ * Si la cuenta del equipo ya tiene publicaciones, no las duplica: solo regenera las fotos que falten.
  */
 class PublicacionesSeeder extends Seeder
 {
@@ -48,14 +48,14 @@ class PublicacionesSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        if (DB::table('publicaciones')->where('user_id', $idUsuario)->exists()) {
-            $this->command?->info('  Las publicaciones del equipo ya existen: no se crean de nuevo');
+        $existentes = DB::table('publicaciones')->where('user_id', $idUsuario)->get(['id', 'imagen', 'descripcion']);
+        if ($existentes->isNotEmpty()) {
+            $this->repararFotos($existentes);
             return;
         }
 
         foreach (self::PUBLICACIONES as $i => [$destinoId, $ubicacion, $texto]) {
-            $origen = public_path("images/Destinos/{$destinoId}.webp");
-            $webp = is_file($origen) ? Imagenes::webp(file_get_contents($origen), 1400, 80) : null;
+            $webp = $this->foto($destinoId);
             if ($webp === null) {
                 $this->command?->warn("  Sin foto para el destino {$destinoId}: se omite");
                 continue;
@@ -78,5 +78,41 @@ class PublicacionesSeeder extends Seeder
         }
 
         $this->command?->info('  ' . count(self::PUBLICACIONES) . ' publicaciones del equipo creadas');
+    }
+
+    /**
+     * Si la base se copió de otro equipo, las filas llegan sin sus fotos (storage no está en git).
+     * Se regenera cada foto que falte con el mismo nombre de archivo: likes y comentarios se conservan.
+     */
+    private function repararFotos($existentes): void
+    {
+        $destinoPorTexto = collect(self::PUBLICACIONES)->mapWithKeys(fn ($p) => [$p[2] => $p[0]]);
+        $reparadas = 0;
+
+        foreach ($existentes as $pub) {
+            $archivo = preg_replace('#^storage/#', '', (string) $pub->imagen);
+            if (Storage::disk('public')->exists($archivo)) {
+                continue;
+            }
+            $destinoId = $destinoPorTexto[$pub->descripcion] ?? null;
+            $webp = $destinoId ? $this->foto($destinoId) : null;
+            if ($webp === null || !str_starts_with($archivo, 'publicaciones/')) {
+                $this->command?->warn("  La publicación {$pub->id} no tiene foto y no se pudo regenerar");
+                continue;
+            }
+            Storage::disk('public')->put($archivo, $webp);
+            $reparadas++;
+        }
+
+        $this->command?->info($reparadas
+            ? "  Fotos regeneradas: {$reparadas} (las publicaciones del equipo ya existían)"
+            : '  Las publicaciones del equipo ya existen y tienen sus fotos');
+    }
+
+    /** Foto del destino convertida a WebP para el muro (null si no se puede). */
+    private function foto(int $destinoId): ?string
+    {
+        $origen = public_path("images/Destinos/{$destinoId}.webp");
+        return is_file($origen) ? Imagenes::webp(file_get_contents($origen), 1400, 80) : null;
     }
 }
