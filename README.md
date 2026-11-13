@@ -22,7 +22,20 @@ Aplicación web de turismo para el departamento del Huila (Colombia): catálogo 
 - **MySQL/MariaDB** (el de XAMPP vale). El cliente `mysql` tiene que estar en el `PATH`
   (p. ej. `C:\xampp\mysql\bin`), porque Laravel lo usa para cargar el esquema.
 
-## Puesta en marcha
+## Puesta en marcha rápida (Windows)
+
+Con los requisitos instalados, desde la carpeta del proyecto:
+
+1. **`instalar.cmd`** (una sola vez): revisa PHP, Composer, MySQL y Node; crea `backend\.env` y pide las claves
+   de Groq y Google si faltan; instala las dependencias; crea la base de datos con los 185 destinos (si ya tiene
+   tablas, no la toca).
+2. **`iniciar.cmd`** (cada vez): enciende MySQL de XAMPP si está apagado, abre las ventanas «API» (puerto 8000)
+   y «Web» (puerto 5173) y abre `http://localhost:5173`. Para apagar, cierra esas dos ventanas.
+
+Los scripts buscan PHP 8.3+ en `C:\php84`, `C:\php83` o el `PATH`; si está en otro sitio, define la variable
+`PHP_BIN` con la ruta de `php.exe`. Abajo están los pasos manuales equivalentes.
+
+## Puesta en marcha manual
 
 ### 1. Backend
 
