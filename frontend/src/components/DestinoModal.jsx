@@ -5,12 +5,13 @@ import {
   PiTreeDuotone,
   PiHouseLineDuotone,
   PiClockDuotone,
-  PiStarDuotone,
   PiTextAlignLeftDuotone,
   PiXDuotone,
 } from "react-icons/pi";
 import styles from "./DestinoModal.module.css";
 import CreditoImagen from "./CreditoImagen";
+import BotonFavorito from "./BotonFavorito";
+import Resenas from "./Resenas";
 import { visualCategoria } from "../utils/categoriaVisual";
 
 export default function DestinoModal({ destino, isOpen, onClose }) {
@@ -53,7 +54,10 @@ export default function DestinoModal({ destino, isOpen, onClose }) {
             <CreditoImagen destino={destino} />
 
             {/* Título */}
-            <h2 className={styles.modalTitle}>{destino.nombre}</h2>
+            <div className={styles.modalTituloFila}>
+              <h2 className={styles.modalTitle}>{destino.nombre}</h2>
+              <BotonFavorito destino={destino} />
+            </div>
 
             {/* Información detallada */}
             <div className={styles.modalInfo}>
@@ -119,17 +123,9 @@ export default function DestinoModal({ destino, isOpen, onClose }) {
                 </div>
               )}
 
-              {/* ⭐ Valoración */}
-              {destino.rating_promedio > 0 && (
-                <div className={styles.modalRow}>
-                  <PiStarDuotone size={18} className={styles.modalIcon} />
-                  <div className={styles.modalColumn}>
-                    <strong>Valoración</strong>
-                    <span>{destino.rating_promedio} / 5 ({destino.total_reseñas || 0} reseñas)</span>
-                  </div>
-                </div>
-              )}
             </div>
+
+            <Resenas destinoId={destino.id} />
           </motion.div>
         </motion.div>
       )}

@@ -13,6 +13,7 @@ import {
   PiUserDuotone,
   PiSignOutDuotone,
   PiBrainDuotone,
+  PiGearSixDuotone,
 } from "react-icons/pi"
 import { useAuth } from "../context/AuthContext"
 import styles from "./Navbar.module.css"
@@ -30,6 +31,10 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const { user, isAuthenticated, logout } = useAuth()
+  // Los administradores ven además el enlace al panel
+  const enlaces = user?.rol === "admin"
+    ? [...LINKS, { to: "/admin", label: "Admin", Icon: PiGearSixDuotone }]
+    : LINKS
 
   // Función para obtener el nombre mostrable, limpiando valores no válidos
   const getDisplayName = () => {
@@ -81,7 +86,7 @@ export default function Navbar() {
 
         {/* Links desktop */}
         <ul className={styles.links}>
-          {LINKS.map(({ to, label, Icon }) => (
+          {enlaces.map(({ to, label, Icon }) => (
             <li key={to}>
               <Link
                 to={to}
@@ -161,7 +166,7 @@ export default function Navbar() {
             exit={{    opacity: 0, y: -20  }}
             transition={{ duration: 0.25 }}
           >
-            {LINKS.map(({ to, label, Icon }, i) => (
+            {enlaces.map(({ to, label, Icon }, i) => (
               <motion.div
                 key={to}
                 initial={{ opacity: 0, x: -20 }}

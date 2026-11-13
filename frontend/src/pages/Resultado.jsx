@@ -11,6 +11,7 @@ import {
   PiFilePdfDuotone,
 } from "react-icons/pi";
 import { recomendar } from "../api/recomendador";
+import { getPreferencias } from "../api/destinos";
 import DestinoModal from "../components/DestinoModal";
 import styles from "./Resultado.module.css";
 import logo from "../assets/images/logo.png";
@@ -267,8 +268,9 @@ export default function Resultado() {
     const cargar = async () => {
       try {
         const saved = localStorage.getItem("quizRespuestas");
-        if (!saved) { navigate("/quiz"); return; }
-        const respuestas = JSON.parse(saved);
+        // Si no hay respuestas en este navegador, usar las guardadas en la cuenta
+        const respuestas = saved ? JSON.parse(saved) : await getPreferencias().catch(() => null);
+        if (!respuestas) { navigate("/quiz"); return; }
         const data = await recomendar(respuestas);
         setItinerario(data.itinerario || []);
       } catch (err) {

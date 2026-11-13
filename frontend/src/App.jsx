@@ -20,6 +20,9 @@ const Privacidad     = lazy(() => import("./pages/Privacidad"))
 const Terminos       = lazy(() => import("./pages/Terminos"))
 const Perfil         = lazy(() => import("./pages/Perfil"))
 const GoogleCallback = lazy(() => import("./pages/GoogleCallback"))
+const Recuperar      = lazy(() => import("./pages/Recuperar"))
+const Restablecer    = lazy(() => import("./pages/Restablecer"))
+const Admin          = lazy(() => import("./pages/Admin"))
 
 function App() {
   return (
@@ -38,6 +41,13 @@ function App() {
         <Route path="/privacidad" element={<Privacidad />} />
         <Route path="/terminos"   element={<Terminos />}   />
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        <Route path="/recuperar"   element={<Recuperar />}  />
+        <Route path="/restablecer" element={<Restablecer />} />
+        <Route path="/admin" element={
+          <ProtectedRoute soloAdmin>
+            <Admin />
+          </ProtectedRoute>
+        } />
         
         <Route path="/quiz"        element={<Quiz />}       />
         <Route path="/perfil" element={

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -34,5 +36,19 @@ class AppServiceProvider extends ServiceProvider
 
         // Asistente Huily (cada mensaje cuesta una llamada a Groq): 20 por minuto
         RateLimiter::for('chat', fn (Request $r) => Limit::perMinute(20)->by('chat|' . $porUsuarioOIp($r)));
+
+        // Recuperar contraseña: el enlace del correo abre la página de React, no una de Laravel
+        ResetPassword::createUrlUsing(fn ($user, string $token) => config('services.frontend_url')
+            . '/restablecer?' . http_build_query(['token' => $token, 'email' => $user->getEmailForPasswordReset()]));
+
+        ResetPassword::toMailUsing(fn ($user, string $token) => (new MailMessage)
+            ->subject('Restablece tu contraseña — Al Son del Huila')
+            ->greeting('¡Hola, ' . $user->nombre . '!')
+            ->line('Recibimos una solicitud para restablecer la contraseña de tu cuenta.')
+            ->action('Elegir nueva contraseña', config('services.frontend_url') . '/restablecer?'
+                . http_build_query(['token' => $token, 'email' => $user->getEmailForPasswordReset()]))
+            ->line('El enlace caduca en 60 minutos.')
+            ->line('Si no pediste este cambio, ignora este correo: tu contraseña seguirá siendo la misma.')
+            ->salutation('Equipo Al Son del Huila'));
     }
 }

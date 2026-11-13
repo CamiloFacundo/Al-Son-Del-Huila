@@ -73,6 +73,7 @@ La web queda en `http://localhost:5173`.
 | `php artisan catalogo:exportar` | Si cambias destinos/categorías/etiquetas en tu BD, regenera `database/seeders/data/*.json` para que los demás reciban los cambios |
 | `php artisan destinos:buscar-fotos` | Busca fotos con licencia libre en Wikimedia Commons para los destinos sin foto y genera `storage/app/fotos-commons/revision.html` para revisarlas |
 | `php artisan destinos:importar-fotos` | Descarga las fotos elegidas de Commons y/o importa fotos propias de `storage/app/fotos-propias/{id}.jpg` (con `--autor="Nombre"`), las convierte a WebP y guarda los créditos |
+| `php artisan usuarios:admin correo@ejemplo.com` | Da el rol de administrador (acceso a `/admin` para gestionar destinos, etiquetas y fotos). Con `--quitar` lo retira |
 | `php artisan schedule:work` | Ejecuta las tareas programadas (borrado diario de tokens caducados) |
 | `php artisan route:list --path=api` | Lista los endpoints |
 
@@ -104,6 +105,18 @@ frontend/
 El esquema actual está en `backend/database/schema/mysql-schema.sql`. Para cualquier cambio nuevo
 (columnas, tablas) crea una migración con `php artisan make:migration ...`; no edites el esquema a mano.
 Cuando acumules varias, puedes regenerarlo con `php artisan schema:dump`.
+
+## Funciones para usuarios
+
+- **Reseñas**: 1 a 5 estrellas y comentario por destino (una por usuario, editable).
+- **Favoritos**: el corazón de cada destino; se ven en *Perfil → Favoritos*.
+- **Preferencias del quiz**: con sesión, las respuestas se guardan en la cuenta; el perfil muestra un resumen
+  y permite ver la ruta recomendada sin repetir el quiz.
+- **Recuperar contraseña**: *Login → ¿Olvidaste tu contraseña?* envía un enlace a `/restablecer`.
+  En local los correos no se envían: se escriben en `backend/storage/logs/laravel.log` (`MAIL_MAILER=log`).
+  Para enviarlos de verdad configura `MAIL_MAILER=smtp` y `MAIL_HOST`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` en `backend/.env`.
+- **Panel de administración** (`/admin`, solo rol admin): crear, editar y desactivar destinos, asignar etiquetas y
+  tipos de viajero y subir fotos. Después de cambiar el catálogo ejecuta `php artisan catalogo:exportar`.
 
 ## Integración continua
 

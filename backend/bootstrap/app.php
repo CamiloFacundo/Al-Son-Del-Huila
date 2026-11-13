@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Esta app no tiene página de login en Laravel (el login está en React):
         // en /api/* no se redirige, se responde 401 en JSON.
         $middleware->redirectGuestsTo(fn ($request) => $request->is('api/*') ? null : config('services.frontend_url') . '/login');
+
+        // Rutas /api/admin/*: solo usuarios con rol "admin"
+        $middleware->alias(['admin' => \App\Http\Middleware\EsAdmin::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Las rutas /api/* siempre responden en JSON (p. ej. 401 si el token caducó),

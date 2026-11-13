@@ -47,6 +47,15 @@ class Destino extends Model
         return $this->belongsTo(Entorno::class);
     }
 
+    public function resenas() {
+        return $this->hasMany(Resena::class);
+    }
+
+    /** Usuarios que guardaron el destino como favorito */
+    public function favoritoDe() {
+        return $this->belongsToMany(User::class, 'favoritos', 'destino_id', 'usuario_id');
+    }
+
     public function etiquetas() {
         // Tabla real del esquema: destinos_etiquetas (destino_etiquetas era una tabla de prueba)
         return $this->belongsToMany(Etiqueta::class, 'destinos_etiquetas', 'destino_id', 'etiqueta_id');

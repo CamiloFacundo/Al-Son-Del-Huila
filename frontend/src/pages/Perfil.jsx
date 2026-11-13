@@ -20,6 +20,9 @@ import { getMisPublicaciones, updatePublicacion, deletePublicacion } from "../ap
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import styles from "./Perfil.module.css";
+import DestinoCard from "../components/DestinoCard";
+import PreferenciasResumen from "../components/PreferenciasResumen";
+import { getFavoritos } from "../api/destinos";
 
 function timeAgo(date) {
   const now = new Date();
@@ -64,6 +67,7 @@ export default function Perfil() {
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [cambiando, setCambiando] = useState(false);
 
+  const [favoritos, setFavoritos] = useState(null); // null = cargando
   const fotoRef = useRef(null);
   const portadaRef = useRef(null);
 
@@ -74,6 +78,10 @@ export default function Perfil() {
   useEffect(() => {
     if (tabActiva === "mis-publicaciones") {
       cargarMisPublicaciones();
+    }
+    if (tabActiva === "favoritos") {
+      setFavoritos(null);
+      getFavoritos().then(setFavoritos).catch(() => setFavoritos([]));
     }
   }, [tabActiva]);
 
@@ -245,6 +253,7 @@ export default function Perfil() {
   const TABS = [
     { id: "info", label: "Mi información" },
     { id: "mis-publicaciones", label: "Mis publicaciones" },
+    { id: "favoritos", label: "Favoritos" },
     { id: "seguridad", label: "Seguridad" },
   ];
 
@@ -367,6 +376,33 @@ export default function Perfil() {
                 <div><span className={styles.infoLabel}>Miembro desde</span><span className={styles.infoValor}>{new Date(perfil?.fecha_registro).toLocaleDateString('es-CO')}</span></div>
               </div>
             </div>
+          )}
+
+          {tabActiva === "info" && <PreferenciasResumen />}
+
+          {/* Destinos guardados con el corazón */}
+          {tabActiva === "favoritos" && (
+            favoritos === null ? (
+              <div className={styles.loading}>Cargando tus favoritos...</div>
+            ) : favoritos.length === 0 ? (
+              <div className={styles.emptyState}>
+                <PiHeartDuotone size={40} className={styles.emptyIcon} />
+                <h3>Aún no tienes favoritos</h3>
+                <p>Toca el corazón de un destino en el catálogo para guardarlo aquí.</p>
+                <button className={styles.btnIrCatalogo} onClick={() => navigate("/catalogo")}>Explorar destinos</button>
+              </div>
+            ) : (
+              <div className={styles.favoritosGrid}>
+                {favoritos.map((d, i) => (
+                  <DestinoCard
+                    key={d.id}
+                    destino={d}
+                    index={i}
+                    onFavoritoChange={(es) => { if (!es) setFavoritos(prev => prev.filter(f => f.id !== d.id)); }}
+                  />
+                ))}
+              </div>
+            )
           )}
 
           {/* Mis publicaciones (con diseño unificado a Actividades) */}

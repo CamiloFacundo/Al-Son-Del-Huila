@@ -25,6 +25,7 @@ class PerfilController extends Controller
             'foto'          => $user->foto,
             'foto_portada'  => $user->foto_portada,
             'provider'      => $user->provider ?? 'local',
+            'rol'           => $user->rol ?? 'turista',
             'fecha_registro'=> $user->created_at,
         ]);
     }
@@ -114,15 +115,5 @@ class PerfilController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Contraseña actualizada']);
-    }
-
-    /**
-     * Listar favoritos (pendiente de implementación).
-     * GET /api/perfil/favoritos
-     */
-    public function favoritos(Request $request)
-    {
-        // Devuelve un array vacío por ahora
-        return response()->json([]);
     }
 }

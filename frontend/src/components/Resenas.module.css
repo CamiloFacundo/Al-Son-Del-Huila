@@ -1,0 +1,175 @@
+.seccion {
+  margin: 0 1rem 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.cabecera h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #D4A843;
+  letter-spacing: 0.02em;
+}
+
+.media {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sinResenas,
+.cargando {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.estrellas {
+  display: inline-flex;
+  gap: 2px;
+  color: #D4A843;
+}
+
+.llena { color: #D4A843; }
+.vacia { color: rgba(255, 255, 255, 0.25); }
+
+.estrellaBtn {
+  background: none;
+  border: none;
+  padding: 2px;
+  color: #D4A843;
+  cursor: pointer;
+  line-height: 0;
+  transition: transform 0.1s ease;
+}
+
+.estrellaBtn:hover { transform: scale(1.15); }
+.estrellaBtn:focus-visible { outline: 2px solid #D4A843; border-radius: 4px; }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.etiqueta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #eee;
+}
+
+.form textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #1c1c1c;
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.form textarea:focus {
+  outline: none;
+  border-color: #C4622D;
+}
+
+.error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #e05252;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.primario,
+.secundario {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.primario {
+  background: #C4622D;
+  color: #fff;
+}
+
+.primario:hover:not(:disabled) { background: #d4733d; }
+
+.secundario {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.primario:disabled,
+.secundario:disabled { opacity: 0.6; cursor: default; }
+
+.invitacion {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.invitacion a { color: #D4A843; }
+
+.lista {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.item:last-child { border-bottom: none; }
+
+.autor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.autor strong { color: #eee; }
+
+.autor time {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.item p {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.75);
+}

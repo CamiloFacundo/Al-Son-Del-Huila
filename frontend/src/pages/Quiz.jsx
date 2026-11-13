@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../context/AuthContext";
+import { getPreferencias, guardarPreferencias } from "../api/destinos";
 import {
   PiMountainsDuotone,
   PiBuildingsDuotone,
@@ -106,6 +107,14 @@ export default function Quiz() {
   const [direction, setDirection] = useState(1)
 
   const { user } = useAuth();
+
+  // Con sesión: empezar con las respuestas guardadas en la cuenta (si las hay)
+  useEffect(() => {
+    if (!user) return
+    getPreferencias()
+      .then(p => { if (p) setRespuestas(prev => ({ ...prev, ...p, dias: p.dias ?? prev.dias })) })
+      .catch(() => {})
+  }, [user])
   const navigate  = useNavigate()
   const pregunta  = PREGUNTAS[paso]
   const total     = PREGUNTAS.length
@@ -141,11 +150,13 @@ export default function Quiz() {
   const siguiente = () => {
     if (paso < total - 1) {
       setDirection(1)
-      setPaso(p => p + 1)
+      setPaso(p => Math.min(p + 1, total - 1)) // Math.min: un doble clic rápido no debe saltarse el final
     } else {
       // Guardar respuestas y navegar
       localStorage.setItem("quizRespuestas", JSON.stringify(respuestas))
       if (user) {
+        // Guardar en la cuenta para verlas en el perfil y en otros dispositivos
+        guardarPreferencias(respuestas).catch(() => {})
         navigate("/resultado")
       } else {
         navigate("/login", { state: { from: { pathname: "/resultado" } } })
@@ -155,7 +166,7 @@ export default function Quiz() {
 
   const anterior = () => {
     setDirection(-1)
-    setPaso(p => p - 1)
+    setPaso(p => Math.max(p - 1, 0))
   }
 
   const variants = {

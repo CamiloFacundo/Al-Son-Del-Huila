@@ -30,6 +30,17 @@ class User extends Authenticatable
         'password', 'remember_token', 'google_token',
     ];
 
+    /** Destinos guardados como favoritos (tabla favoritos) */
+    public function favoritos()
+    {
+        return $this->belongsToMany(Destino::class, 'favoritos', 'usuario_id', 'destino_id')->withPivot('fecha');
+    }
+
+    public function esAdmin(): bool
+    {
+        return $this->rol === 'admin';
+    }
+
     protected function casts(): array
     {
         return [

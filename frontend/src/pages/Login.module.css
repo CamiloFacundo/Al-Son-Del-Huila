@@ -151,3 +151,11 @@
   .card { padding: 2rem 1.5rem; }
   .heading { font-size: 1.5rem; }
 }
+.successBanner {
+  background: rgba(82, 192, 122, 0.08);
+  border: 1px solid rgba(82, 192, 122, 0.25);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: #6fd394;
+}

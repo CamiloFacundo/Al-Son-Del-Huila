@@ -102,7 +102,7 @@ export default function Login() {
             autoComplete="current-password"
           />
           <div className={styles.forgotRow}>
-            <Link to="/forgot-password" className={styles.forgotLink}>
+            <Link to="/recuperar" className={styles.forgotLink}>
               ¿Olvidaste tu contraseña?
             </Link>
           </div>

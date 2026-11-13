@@ -1,0 +1,29 @@
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(8, 8, 8, 0.55);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.boton:hover {
+  transform: scale(1.08);
+  background: rgba(8, 8, 8, 0.75);
+}
+
+.boton:focus-visible {
+  outline: 2px solid #D4A843;
+  outline-offset: 2px;
+}
+
+.activo {
+  color: #e0453a;
+}

@@ -13,6 +13,7 @@ class DestinoController extends Controller
     {
         $query = Destino::with(['categoria', 'municipio', 'entorno'])
             ->where('estado', true);
+        $this->marcarFavoritos($query);
 
         // Filtro por categoría
         if ($request->has('categoria')) {
@@ -47,11 +48,19 @@ class DestinoController extends Controller
         return response()->json($query->get());
     }
 
+    /** Añade es_favorito (true/false) a cada destino según el usuario con sesión, si lo hay */
+    private function marcarFavoritos($query): void
+    {
+        $userId = auth('sanctum')->id() ?? 0;
+        $query->withExists(['favoritoDe as es_favorito' => fn ($q) => $q->where('usuario_id', $userId)]);
+    }
+
     // GET /api/destinos/{id}
     public function show($id)
     {
-        $destino = Destino::with(['categoria', 'municipio', 'entorno', 'etiquetas', 'tiposViajero'])
-            ->findOrFail($id);
+        $query = Destino::with(['categoria', 'municipio', 'entorno', 'etiquetas', 'tiposViajero']);
+        $this->marcarFavoritos($query);
+        $destino = $query->findOrFail($id);
 
         return response()->json($destino);
     }

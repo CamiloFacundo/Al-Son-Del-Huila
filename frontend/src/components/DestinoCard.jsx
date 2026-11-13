@@ -7,14 +7,15 @@ import {
   PiTreeDuotone,
   PiHouseLineDuotone,
   PiClockDuotone,
-  PiStarDuotone,
   PiTextAlignLeftDuotone,
 } from "react-icons/pi";
 import styles from "./DestinoCard.module.css";
 import CreditoImagen from "./CreditoImagen";
+import BotonFavorito from "./BotonFavorito";
+import Resenas from "./Resenas";
 import { visualCategoria } from "../utils/categoriaVisual";
 
-export default function DestinoCard({ destino, index }) {
+export default function DestinoCard({ destino, index, onFavoritoChange }) {
   const [showModal, setShowModal] = useState(false);
 
   const openModal = (e) => {
@@ -42,6 +43,7 @@ export default function DestinoCard({ destino, index }) {
           }}
         >
           {!destino.imagen && <IconoCategoria className={styles.iconoSinFoto} aria-hidden="true" />}
+          <BotonFavorito destino={destino} className={styles.favorito} onChange={onFavoritoChange} />
           <span className={styles.categoria}>
             {destino.categoria?.nombre}
           </span>
@@ -116,7 +118,10 @@ export default function DestinoCard({ destino, index }) {
               <CreditoImagen destino={destino} />
 
               {/* Título */}
-              <h2 className={styles.modalTitle}>{destino.nombre}</h2>
+              <div className={styles.modalTituloFila}>
+                <h2 className={styles.modalTitle}>{destino.nombre}</h2>
+                <BotonFavorito destino={destino} />
+              </div>
 
               {/* Información detallada */}
               <div className={styles.modalInfo}>
@@ -182,17 +187,6 @@ export default function DestinoCard({ destino, index }) {
                   </div>
                 )}
 
-                {/* Valoración */}
-                {destino.rating_promedio > 0 && (
-                  <div className={styles.modalRow}>
-                    <PiStarDuotone size={18} className={styles.modalIcon} />
-                    <div className={styles.modalColumn}>
-                      <strong>Valoración</strong>
-                      <span>{destino.rating_promedio} / 5 ({destino.total_reseñas} reseñas)</span>
-                    </div>
-                  </div>
-                )}
-
                 {/* Etiquetas */}
                 {destino.etiquetas?.length > 0 && (
                   <div className={styles.modalTags}>
@@ -210,6 +204,8 @@ export default function DestinoCard({ destino, index }) {
                   </div>
                 )}
               </div>
+
+              <Resenas destinoId={destino.id} />
             </motion.div>
           </motion.div>
         )}

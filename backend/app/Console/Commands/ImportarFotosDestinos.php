@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Destino;
+use App\Support\ImagenDestino;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -23,9 +24,6 @@ class ImportarFotosDestinos extends Command
     protected $signature = 'destinos:importar-fotos {--solo-propias} {--solo-commons} {--autor= : crédito para las fotos propias} {--sobrescribir : reemplaza fotos ya asignadas}';
 
     protected $description = 'Descarga/convierte las fotos elegidas y las asigna a los destinos';
-
-    private const ANCHO_MAX = 1200;
-    private const CALIDAD = 72;
 
     public function handle(): int
     {
@@ -118,27 +116,6 @@ class ImportarFotosDestinos extends Command
         return $n;
     }
 
-    /** Las fotos de móvil guardan la rotación en EXIF; GD no la aplica, así que se gira a mano. */
-    private function corregirOrientacion(\GdImage $img, string $bytes): \GdImage
-    {
-        if (!function_exists('exif_read_data') || !str_starts_with($bytes, "\xFF\xD8")) {
-            return $img; // solo JPEG y si la extensión exif está activa
-        }
-        $exif = @exif_read_data('data://image/jpeg;base64,' . base64_encode($bytes));
-        $angulo = match ($exif['Orientation'] ?? 1) {
-            3 => 180,
-            6 => -90,
-            8 => 90,
-            default => 0,
-        };
-        if ($angulo === 0) {
-            return $img;
-        }
-        $girada = imagerotate($img, $angulo, 0);
-        imagedestroy($img);
-        return $girada;
-    }
-
     /** Descarga con pausas entre peticiones; si Commons responde 429, espera y reintenta. */
     private function descargar(string $url): ?string
     {
@@ -160,29 +137,12 @@ class ImportarFotosDestinos extends Command
         return null;
     }
 
-    /** Reduce a máx. 1200 px de ancho, guarda en WebP y actualiza el destino. */
     private function guardar(Destino $destino, string $bytes, array $creditos): bool
     {
-        $img = @imagecreatefromstring($bytes);
-        if (!$img) {
+        if (!ImagenDestino::guardar($destino, $bytes, $creditos)) {
             $this->warn("  #{$destino->id}: no es una imagen válida");
             return false;
         }
-
-        $img = $this->corregirOrientacion($img, $bytes);
-
-        $ancho = imagesx($img);
-        if ($ancho > self::ANCHO_MAX) {
-            $reducida = imagescale($img, self::ANCHO_MAX, -1, IMG_BICUBIC);
-            imagedestroy($img);
-            $img = $reducida;
-        }
-
-        $relativa = "images/Destinos/{$destino->id}.webp";
-        imagewebp($img, public_path($relativa), self::CALIDAD);
-        imagedestroy($img);
-
-        $destino->forceFill(['imagen' => $relativa] + $creditos)->save();
         return true;
     }
 }
