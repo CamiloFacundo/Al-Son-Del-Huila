@@ -1,63 +1,71 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { capaClara } from "../utils/mapas";
 
-// Arreglar los iconos por defecto de Leaflet (Webpack/Vite)
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+const HUILA = [2.5359, -75.5277];
 
-export default function Mapa({ destinos }) {
+// Texto seguro para el HTML de los popups de Leaflet
+const escapar = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nombreDe = (v) => (v && typeof v === 'object' ? v.nombre : v) || '';
+
+// Mapa con un marcador por destino. Al pulsar "Ver más" en el popup llama a onDestinoClick(destino).
+// Lo usan la página /mapa y el resultado del quiz.
+export default function Mapa({ destinos = [], onDestinoClick }) {
+  const contenedorRef = useRef(null);
   const mapRef = useRef(null);
+  const capaMarcadores = useRef(null);
+  const onClickRef = useRef(onDestinoClick);
+  useEffect(() => { onClickRef.current = onDestinoClick; }, [onDestinoClick]);
 
+  // Crear el mapa una sola vez
   useEffect(() => {
-    if (!mapRef.current && destinos && destinos.length > 0) {
-      // Centrar en el primer destino o coordenadas por defecto (Neiva)
-      const primerDestino = destinos[0];
-      const lat = primerDestino.latitud ? parseFloat(primerDestino.latitud) : 2.9276;
-      const lng = primerDestino.longitud ? parseFloat(primerDestino.longitud) : -75.2818;
-      
-      const map = L.map('mapa').setView([lat, lng], 9);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB',
-        subdomains: 'abcd',
-        maxZoom: 19,
-      }).addTo(map);
-      mapRef.current = map;
-    }
+    const map = L.map(contenedorRef.current).setView(HUILA, 8);
+    capaClara(map);
+    capaMarcadores.current = L.layerGroup().addTo(map);
+    mapRef.current = map;
 
-    // Agregar marcadores cuando cambien los destinos
-    if (mapRef.current && destinos && destinos.length > 0) {
-      // Limpiar marcadores existentes (opcional, para evitar duplicados)
-      mapRef.current.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-          mapRef.current.removeLayer(layer);
-        }
-      });
+    const alRedimensionar = () => map.invalidateSize();
+    window.addEventListener('resize', alRedimensionar);
+    return () => {
+      window.removeEventListener('resize', alRedimensionar);
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
 
-      const bounds = [];
-      destinos.forEach((destino) => {
-        const lat = parseFloat(destino.latitud);
-        const lng = parseFloat(destino.longitud);
-        if (!isNaN(lat) && !isNaN(lng)) {
-          L.marker([lat, lng])
-            .bindPopup(`<b>${destino.nombre}</b><br>${destino.municipio || ''}<br>${destino.categoria || ''}`)
-            .addTo(mapRef.current);
-          bounds.push([lat, lng]);
-        }
-      });
-      
-      // Ajustar vista para mostrar todos los marcadores
-      if (bounds.length > 0) {
-        mapRef.current.fitBounds(bounds);
+  // Pintar los marcadores cuando cambian los destinos
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    capaMarcadores.current.clearLayers();
+
+    const puntos = [];
+    destinos.forEach((destino) => {
+      const lat = parseFloat(destino.latitud);
+      const lng = parseFloat(destino.longitud);
+      if (isNaN(lat) || isNaN(lng)) return;
+
+      const popup = document.createElement('div');
+      popup.innerHTML = `<b>${escapar(destino.nombre)}</b><br>${escapar(nombreDe(destino.municipio))}<br>${escapar(nombreDe(destino.categoria))}`;
+      if (onClickRef.current) {
+        const boton = document.createElement('button');
+        boton.textContent = 'Ver más';
+        boton.className = 'ver-mapa-btn';
+        boton.addEventListener('click', () => onClickRef.current?.(destino));
+        popup.appendChild(document.createElement('br'));
+        popup.appendChild(boton);
       }
+      L.marker([lat, lng]).bindPopup(popup).addTo(capaMarcadores.current);
+      puntos.push([lat, lng]);
+    });
+
+    if (puntos.length > 0) {
+      map.fitBounds(puntos, { padding: [30, 30], maxZoom: 13 });
     }
+    // El contenedor puede haber cambiado de tamaño al cargar los datos
+    setTimeout(() => map.invalidateSize(), 0);
   }, [destinos]);
 
-  return <div id="mapa" style={{ height: '100%', width: '100%', borderRadius: '16px' }} />;
+  return <div ref={contenedorRef} style={{ height: '100%', width: '100%', minHeight: 320, borderRadius: '16px' }} />;
 }

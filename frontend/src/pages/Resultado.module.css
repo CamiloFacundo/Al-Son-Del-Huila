@@ -382,3 +382,39 @@
   cursor: pointer;
   border: none;
 }
+/* Guardar el itinerario en "Mis rutas" */
+.guardarRuta {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.guardarRuta p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6fd394;
+}
+
+.guardarRuta a {
+  color: #D4A843;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.btnGuardar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 999px;
+  background: #C4622D;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnGuardar:hover:not(:disabled) { background: #d4733d; }
+.btnGuardar:disabled { opacity: 0.6; cursor: default; }
+
+.guardarRuta .errorGuardar { margin-top: 0.5rem; color: #ef7b7b; }

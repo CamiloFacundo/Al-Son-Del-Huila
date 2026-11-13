@@ -45,7 +45,8 @@ export default function Login() {
   }
 
   const handleGoogle = () => {
-    localStorage.setItem('redirectAfterGoogle', window.location.pathname + window.location.search);
+    // Volver a la página que pidió el login (p. ej. /resultado), no al propio /login
+    localStorage.setItem('redirectAfterGoogle', from);
     window.location.href = `${API_URL}/auth/google`
   }
 

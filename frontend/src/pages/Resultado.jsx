@@ -9,9 +9,11 @@ import {
   PiArrowLeftDuotone,
   PiFileImageDuotone,
   PiFilePdfDuotone,
+  PiFloppyDiskDuotone,
 } from "react-icons/pi";
 import { recomendar } from "../api/recomendador";
 import { getPreferencias } from "../api/destinos";
+import { crearRuta } from "../api/rutas";
 import DestinoModal from "../components/DestinoModal";
 import styles from "./Resultado.module.css";
 import logo from "../assets/images/logo.png";
@@ -28,6 +30,24 @@ export default function Resultado() {
   // Estados para el modal de destino
   const [selectedDestino, setSelectedDestino] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [guardado, setGuardado] = useState("idle"); // idle | guardando | ok | error
+
+  // Guardar el itinerario en "Mis rutas" (privada; luego se puede abrir con Huily)
+  const guardarRuta = async () => {
+    setGuardado("guardando");
+    try {
+      const fecha = new Date().toLocaleDateString("es-CO", { day: "numeric", month: "short" });
+      await crearRuta({
+        nombre: `Mi ruta de ${itinerario.length} ${itinerario.length === 1 ? "día" : "días"} · ${fecha}`,
+        dias: itinerario.length,
+        destinos: itinerario.flatMap(d => d.destinos.map(x => x.id)),
+        publica: false,
+      });
+      setGuardado("ok");
+    } catch {
+      setGuardado("error");
+    }
+  };
 
   useEffect(() => {
     const navbar = document.querySelector('nav');
@@ -319,7 +339,9 @@ export default function Resultado() {
                 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}>
                 <div className={styles.diaHeader}>
                   <PiCalendarDuotone size={16} /> <span>Día {dia.dia}</span>
-                  <span className={styles.diaCount}>{dia.destinos.length} destinos</span>
+                  <span className={styles.diaCount}>
+                    {dia.destinos.length} destinos{dia.distancia_km > 0 && ` · ~${dia.distancia_km} km`}
+                  </span>
                 </div>
                 <div className={styles.destinosList}>
                   {dia.destinos.map((destino, j) => (
@@ -345,6 +367,16 @@ export default function Resultado() {
                 </div>
               </motion.div>
             ))}
+          </div>
+          <div className={styles.guardarRuta}>
+            {guardado === "ok" ? (
+              <p>✓ Ruta guardada. <a onClick={() => navigate("/rutas")} role="link" tabIndex={0} onKeyDown={e => e.key === "Enter" && navigate("/rutas")}>Verla en Mis rutas</a></p>
+            ) : (
+              <button className={styles.btnGuardar} onClick={guardarRuta} disabled={guardado === "guardando" || itinerario.length === 0}>
+                <PiFloppyDiskDuotone size={18} /> {guardado === "guardando" ? "Guardando…" : "Guardar en mis rutas"}
+              </button>
+            )}
+            {guardado === "error" && <p className={styles.errorGuardar}>No se pudo guardar. Inténtalo de nuevo.</p>}
           </div>
           <div className={styles.botonesDescarga}>
             <button className={styles.btnDescarga} onClick={() => capturarItinerario('png')}>

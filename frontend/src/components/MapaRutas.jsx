@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { PiMapPinDuotone } from "react-icons/pi"
 import styles from "./MapaRutas.module.css"
+import { capaOscura } from "../utils/mapas"
 
 export default function MapaRutas({ destinos = [], onDestinoClick }) {
   const mapaRef     = useRef(null)
@@ -15,18 +16,9 @@ export default function MapaRutas({ destinos = [], onDestinoClick }) {
       await import("leaflet/dist/leaflet.css")
       if (instanceRef.current || !mapaRef.current) return
 
-      delete L.Icon.Default.prototype._getIconUrl
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-        iconUrl:       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-        shadowUrl:     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-      })
 
       const mapa = L.map(mapaRef.current, { center: [2.0, -75.5], zoom: 8, zoomControl: false, attributionControl: true })
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '© <a href="https://carto.com">CARTO</a>',
-        maxZoom: 19,
-      }).addTo(mapa)
+      capaOscura(mapa)
       L.control.zoom({ position: "bottomright" }).addTo(mapa)
       instanceRef.current = mapa
       setListo(true)
