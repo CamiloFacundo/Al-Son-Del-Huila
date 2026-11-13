@@ -5,9 +5,12 @@ const authHeader = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`
 })
 
-// GET /api/rutas — rutas públicas
+// GET /api/rutas — rutas públicas + las privadas del usuario si hay sesión
 export async function getRutas() {
-  const res = await fetch(`${API_URL}/rutas`)
+  const token = localStorage.getItem('token')
+  const res = await fetch(`${API_URL}/rutas`, {
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+  })
   if (!res.ok) throw new Error('Error al cargar rutas')
   return res.json()
 }

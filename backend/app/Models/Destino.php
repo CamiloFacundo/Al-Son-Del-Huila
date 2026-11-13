@@ -30,10 +30,12 @@ class Destino extends Model
     }
 
     public function etiquetas() {
-        return $this->belongsToMany(Etiqueta::class, 'destino_etiquetas');
+        // Tabla real del esquema: destinos_etiquetas (destino_etiquetas era una tabla de prueba)
+        return $this->belongsToMany(Etiqueta::class, 'destinos_etiquetas', 'destino_id', 'etiqueta_id');
     }
 
     public function tiposViajero() {
-        return $this->belongsToMany(TipoViajero::class, 'destino_tipo_viajero', 'destino_id', 'tipo_viajero_id');
+        // Tabla real: destinos_tipos_viajero (antes apuntaba a destino_tipo_viajero, que no existe → error 500)
+        return $this->belongsToMany(TipoViajero::class, 'destinos_tipos_viajero', 'destino_id', 'tipo_viajero_id');
     }
 }

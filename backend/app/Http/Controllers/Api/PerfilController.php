@@ -43,8 +43,13 @@ class PerfilController extends Controller
 
         $user = $request->user();
         $user->nombre = $request->nombre ?? $user->nombre;
-        $user->bio = $request->bio ?? $user->bio;
-        $user->ubicacion_texto = $request->ubicacion ?? $user->ubicacion_texto;
+        // has() en vez de ??: así se puede vaciar la bio o la ubicación enviando "" o null
+        if ($request->has('bio')) {
+            $user->bio = $request->bio;
+        }
+        if ($request->has('ubicacion')) {
+            $user->ubicacion_texto = $request->ubicacion;
+        }
         $user->save();
 
         return response()->json([

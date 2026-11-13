@@ -16,22 +16,15 @@ class PublicacionController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        
+        // Ruta pública (sin middleware auth:sanctum): hay que pedir el guard sanctum
+        // explícitamente, si no auth()->user() siempre es null y liked_by_user sale false.
+        $user = auth('sanctum')->user();
+
         $publicaciones = Publicacion::with('user')
             ->withCount('likes')
+            ->withExists(['likes as liked_by_user' => fn ($q) => $q->where('usuario_id', $user?->id ?? 0)])
             ->orderBy('created_at', 'desc')
             ->get();
-
-        if ($user) {
-            $publicaciones->each(function ($pub) use ($user) {
-                $pub->liked_by_user = $pub->isLikedByUser($user->id);
-            });
-        } else {
-            $publicaciones->each(function ($pub) {
-                $pub->liked_by_user = false;
-            });
-        }
 
         return response()->json($publicaciones);
     }
@@ -103,12 +96,9 @@ class PublicacionController extends Controller
         $publicaciones = Publicacion::where('user_id', $user->id)
             ->with('user')
             ->withCount('likes')
+            ->withExists(['likes as liked_by_user' => fn ($q) => $q->where('usuario_id', $user->id)])
             ->orderBy('created_at', 'desc')
             ->get();
-
-        $publicaciones->each(function ($pub) use ($user) {
-            $pub->liked_by_user = $pub->isLikedByUser($user->id);
-        });
 
         return response()->json($publicaciones);
     }
@@ -147,6 +137,14 @@ class PublicacionController extends Controller
 
         if ($publicacion->user_id !== $user->id) {
             return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        // Borrar también el archivo de la imagen (la BD guarda la URL completa .../storage/publicaciones/x.jpg)
+        $ruta = str_contains($publicacion->imagen, '/storage/')
+            ? substr($publicacion->imagen, strpos($publicacion->imagen, '/storage/') + strlen('/storage/'))
+            : null;
+        if ($ruta && str_starts_with($ruta, 'publicaciones/')) {
+            Storage::disk('public')->delete($ruta);
         }
 
         $publicacion->delete();
