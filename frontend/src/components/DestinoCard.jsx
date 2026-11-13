@@ -11,6 +11,8 @@ import {
   PiTextAlignLeftDuotone,
 } from "react-icons/pi";
 import styles from "./DestinoCard.module.css";
+import CreditoImagen from "./CreditoImagen";
+import { visualCategoria } from "../utils/categoriaVisual";
 
 export default function DestinoCard({ destino, index }) {
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +23,7 @@ export default function DestinoCard({ destino, index }) {
   };
 
   const closeModal = () => setShowModal(false);
+  const { Icon: IconoCategoria, fondo } = visualCategoria(destino.categoria_id);
 
   return (
     <>
@@ -35,11 +38,10 @@ export default function DestinoCard({ destino, index }) {
         <div
           className={styles.imagen}
           style={{
-            backgroundImage: destino.imagen
-              ? `url(${destino.imagen})`
-              : `linear-gradient(145deg, #C4622Dcc, #C4622D44)`,
+            backgroundImage: destino.imagen ? `url(${destino.imagen})` : fondo,
           }}
         >
+          {!destino.imagen && <IconoCategoria className={styles.iconoSinFoto} aria-hidden="true" />}
           <span className={styles.categoria}>
             {destino.categoria?.nombre}
           </span>
@@ -106,11 +108,12 @@ export default function DestinoCard({ destino, index }) {
                 {destino.imagen ? (
                   <img src={destino.imagen} alt={destino.nombre} />
                 ) : (
-                  <div className={styles.modalImagePlaceholder}>
-                    <span>🏞️</span>
+                  <div className={styles.modalImagePlaceholder} style={{ background: fondo }}>
+                    <IconoCategoria aria-hidden="true" />
                   </div>
                 )}
               </div>
+              <CreditoImagen destino={destino} />
 
               {/* Título */}
               <h2 className={styles.modalTitle}>{destino.nombre}</h2>

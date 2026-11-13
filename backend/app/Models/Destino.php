@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Destino extends Model
@@ -10,11 +11,28 @@ class Destino extends Model
     public    $timestamps = false;
 
     protected $fillable = [
-        'nombre', 'descripcion', 'imagen',
+        'nombre', 'descripcion', 'imagen', 'imagen_autor', 'imagen_licencia', 'imagen_fuente',
         'latitud', 'longitud',
         'categoria_id', 'municipio_id', 'entorno_id',
         'direccion', 'horario', 'estado'
     ];
+
+    /**
+     * En la BD `imagen` guarda una ruta relativa (images/Destinos/12.webp);
+     * la API la devuelve como URL completa según APP_URL.
+     */
+    public static function urlImagen(?string $ruta): ?string
+    {
+        if (!$ruta) {
+            return null;
+        }
+        return preg_match('#^https?://#', $ruta) ? $ruta : asset($ruta);
+    }
+
+    protected function imagen(): Attribute
+    {
+        return Attribute::get(fn (?string $valor) => self::urlImagen($valor));
+    }
 
     // Relaciones
     public function categoria() {

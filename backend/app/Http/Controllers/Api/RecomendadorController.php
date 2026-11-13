@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Destino;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -94,6 +95,7 @@ class RecomendadorController extends Controller
                 ->take($limite)
                 ->map(function ($d) {
                     unset($d->desempate, $d->categoria_id, $d->entorno_id);
+                    $d->imagen = Destino::urlImagen($d->imagen);
                     return $d;
                 })
                 ->values();

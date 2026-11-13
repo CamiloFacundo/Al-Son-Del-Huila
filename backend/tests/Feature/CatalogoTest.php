@@ -20,6 +20,22 @@ class CatalogoTest extends TestCase
             ->assertJsonStructure(['id', 'nombre', 'categoria', 'municipio', 'etiquetas', 'tipos_viajero']);
     }
 
+    public function test_imagen_se_devuelve_como_url_completa_con_creditos(): void
+    {
+        DB::table('destinos')->where('id', 1)->update([
+            'imagen' => 'images/Destinos/1.webp',
+            'imagen_autor' => 'Fotógrafa',
+            'imagen_licencia' => 'CC BY-SA 4.0',
+            'imagen_fuente' => 'https://commons.wikimedia.org/wiki/File:X.jpg',
+        ]);
+
+        $this->getJson('/api/destinos/1')->assertOk()->assertJson([
+            'imagen' => url('images/Destinos/1.webp'),
+            'imagen_autor' => 'Fotógrafa',
+            'imagen_licencia' => 'CC BY-SA 4.0',
+        ]);
+    }
+
     public function test_filtro_por_etiqueta(): void
     {
         $esperados = DB::table('destinos_etiquetas')->where('etiqueta_id', 7)->distinct()->count('destino_id');

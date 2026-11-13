@@ -10,9 +10,13 @@ import {
   PiXDuotone,
 } from "react-icons/pi";
 import styles from "./DestinoModal.module.css";
+import CreditoImagen from "./CreditoImagen";
+import { visualCategoria } from "../utils/categoriaVisual";
 
 export default function DestinoModal({ destino, isOpen, onClose }) {
   if (!isOpen || !destino) return null;
+
+  const { Icon: IconoCategoria, fondo } = visualCategoria(destino.categoria_id);
 
   return (
     <AnimatePresence>
@@ -41,11 +45,12 @@ export default function DestinoModal({ destino, isOpen, onClose }) {
               {destino.imagen ? (
                 <img src={destino.imagen} alt={destino.nombre} />
               ) : (
-                <div className={styles.modalImagePlaceholder}>
-                  <span>🏞️</span>
+                <div className={styles.modalImagePlaceholder} style={{ background: fondo }}>
+                  <IconoCategoria aria-hidden="true" />
                 </div>
               )}
             </div>
+            <CreditoImagen destino={destino} />
 
             {/* Título */}
             <h2 className={styles.modalTitle}>{destino.nombre}</h2>
