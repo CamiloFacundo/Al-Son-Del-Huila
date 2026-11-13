@@ -720,6 +720,7 @@
         },
         {
             "name": "guzzlehttp/guzzle",
+<<<<<<< Updated upstream
             "version": "8.5.0",
             "source": {
                 "type": "git",
@@ -730,10 +731,23 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f8aca40edffeae0ec508b92f4594766083c6e203",
                 "reference": "f8aca40edffeae0ec508b92f4594766083c6e203",
+=======
+            "version": "7.16.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "81755d989b3007ca7f88a069857553cd08e7dc2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/81755d989b3007ca7f88a069857553cd08e7dc2e",
+                "reference": "81755d989b3007ca7f88a069857553cd08e7dc2e",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
+<<<<<<< Updated upstream
                 "guzzlehttp/promises": "^3.1",
                 "guzzlehttp/psr7": "^3.4",
                 "php": "^7.4 || ^8.0",
@@ -742,6 +756,14 @@
                 "symfony/deprecation-contracts": "^2.5 || ^3.0",
                 "symfony/polyfill-php80": "^1.25",
                 "symfony/polyfill-php82": "^1.27"
+=======
+                "guzzlehttp/promises": "^2.6",
+                "guzzlehttp/psr7": "^2.13.2",
+                "php": "^7.2.5 || ^8.0",
+                "psr/http-client": "^1.0",
+                "symfony/deprecation-contracts": "^2.5 || ^3.0",
+                "symfony/polyfill-php80": "^1.25"
+>>>>>>> Stashed changes
             },
             "provide": {
                 "psr/http-client-implementation": "1.0"
@@ -749,10 +771,17 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "ext-curl": "*",
+<<<<<<< Updated upstream
                 "guzzle/client-integration-tests": "4.0.1",
                 "guzzlehttp/test-server": "^1.1",
                 "php-http/message-factory": "^1.1",
                 "phpunit/phpunit": "^9.6.34",
+=======
+                "guzzle/client-integration-tests": "3.0.3",
+                "guzzlehttp/test-server": "^0.7",
+                "php-http/message-factory": "^1.1",
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34",
+>>>>>>> Stashed changes
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
@@ -827,7 +856,11 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
+<<<<<<< Updated upstream
                 "source": "https://github.com/guzzle/guzzle/tree/8.5.0"
+=======
+                "source": "https://github.com/guzzle/guzzle/tree/7.16.1"
+>>>>>>> Stashed changes
             },
             "funding": [
                 {
@@ -843,6 +876,7 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< Updated upstream
             "time": "2026-11-13T03:12:32+00:00"
         },
         {
@@ -861,11 +895,35 @@
             },
             "require": {
                 "php": "^7.4 || ^8.0",
+=======
+            "time": "2026-10-25T21:35:21+00:00"
+        },
+        {
+            "name": "guzzlehttp/promises",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/promises.git",
+                "reference": "3d88c829bd5f13d13847b39067dbf09a60af2154"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/3d88c829bd5f13d13847b39067dbf09a60af2154",
+                "reference": "3d88c829bd5f13d13847b39067dbf09a60af2154",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5 || ^8.0",
+>>>>>>> Stashed changes
                 "symfony/deprecation-contracts": "^2.5 || ^3.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
+<<<<<<< Updated upstream
                 "phpunit/phpunit": "^9.6.34"
+=======
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34"
+>>>>>>> Stashed changes
             },
             "type": "library",
             "extra": {
@@ -911,7 +969,11 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
+<<<<<<< Updated upstream
                 "source": "https://github.com/guzzle/promises/tree/3.1.0"
+=======
+                "source": "https://github.com/guzzle/promises/tree/2.6.0"
+>>>>>>> Stashed changes
             },
             "funding": [
                 {
@@ -927,6 +989,7 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< Updated upstream
             "time": "2026-10-18T12:48:16+00:00"
         },
         {
@@ -950,6 +1013,31 @@
                 "symfony/deprecation-contracts": "^2.5 || ^3.0",
                 "symfony/polyfill-php80": "^1.25",
                 "symfony/polyfill-php82": "^1.27"
+=======
+            "time": "2026-10-18T12:46:59+00:00"
+        },
+        {
+            "name": "guzzlehttp/psr7",
+            "version": "2.13.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/psr7.git",
+                "reference": "6d3cd8285a97eaa352956a4ada92fa03ecce1c4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/6d3cd8285a97eaa352956a4ada92fa03ecce1c4e",
+                "reference": "6d3cd8285a97eaa352956a4ada92fa03ecce1c4e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5 || ^8.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "ralouphie/getallheaders": "^3.0",
+                "symfony/deprecation-contracts": "^2.5 || ^3.0",
+                "symfony/polyfill-php80": "^1.25"
+>>>>>>> Stashed changes
             },
             "provide": {
                 "psr/http-factory-implementation": "1.1",
@@ -959,8 +1047,12 @@
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "http-interop/http-factory-tests": "1.1.0",
                 "jshttp/mime-db": "1.54.0.1",
+<<<<<<< Updated upstream
                 "php-http/psr7-integration-tests": "^1.5.1",
                 "phpunit/phpunit": "^9.6.34"
+=======
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34"
+>>>>>>> Stashed changes
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
@@ -1031,7 +1123,11 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
+<<<<<<< Updated upstream
                 "source": "https://github.com/guzzle/psr7/tree/3.4.0"
+=======
+                "source": "https://github.com/guzzle/psr7/tree/2.13.3"
+>>>>>>> Stashed changes
             },
             "funding": [
                 {
@@ -1047,7 +1143,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< Updated upstream
             "time": "2026-11-13T03:03:24+00:00"
+=======
+            "time": "2026-11-12T15:57:42+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "guzzlehttp/uri-template",
@@ -5240,6 +5340,7 @@
             "time": "2026-09-25T15:50:05+00:00"
         },
         {
+<<<<<<< Updated upstream
             "name": "symfony/polyfill-php82",
             "version": "v1.43.0",
             "source": {
@@ -5329,6 +5430,17 @@
             },
             "dist": {
                 "type": "zip",
+=======
+            "name": "symfony/polyfill-php84",
+            "version": "v1.43.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php84.git",
+                "reference": "22c6548499cbe5c5bb072fc0c42312dff062a015"
+            },
+            "dist": {
+                "type": "zip",
+>>>>>>> Stashed changes
                 "url": "https://api.github.com/repos/symfony/polyfill-php84/zipball/22c6548499cbe5c5bb072fc0c42312dff062a015",
                 "reference": "22c6548499cbe5c5bb072fc0c42312dff062a015",
                 "shasum": ""

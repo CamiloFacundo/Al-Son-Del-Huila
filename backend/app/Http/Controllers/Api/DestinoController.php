@@ -11,7 +11,12 @@ class DestinoController extends Controller
     // GET /api/destinos
     public function index(Request $request)
     {
+<<<<<<< Updated upstream
         $query = Destino::with(['categoria', 'municipio', 'entorno'])
+=======
+        // Cargar relaciones y también las imágenes relacionadas
+        $query = Destino::with(['categoria', 'municipio', 'entorno', 'imagenesDestino'])
+>>>>>>> Stashed changes
             ->where('estado', true);
 
         // Filtro por categoría
@@ -50,7 +55,11 @@ class DestinoController extends Controller
     // GET /api/destinos/{id}
     public function show($id)
     {
+<<<<<<< Updated upstream
         $destino = Destino::with(['categoria', 'municipio', 'entorno', 'etiquetas', 'tiposViajero'])
+=======
+        $destino = Destino::with(['categoria', 'municipio', 'entorno', 'imagenesDestino', 'etiquetas'])
+>>>>>>> Stashed changes
             ->findOrFail($id);
 
         return response()->json($destino);
@@ -64,7 +73,7 @@ public function buscar(Request $request)
         return response()->json([]);
     }
 
-    $destinos = Destino::with(['categoria', 'municipio'])
+    $destinos = Destino::with(['categoria', 'municipio', 'entorno', 'imagenesDestino'])
         ->where('estado', true)
         ->where(function($q) use ($query) {
             $q->where('nombre', 'like', "%{$query}%")
