@@ -56,6 +56,11 @@ class Destino extends Model
         return $this->belongsToMany(User::class, 'favoritos', 'destino_id', 'usuario_id');
     }
 
+    /** Fotos adicionales del destino (tabla imagenes_destino), para una futura galería */
+    public function imagenesDestino() {
+        return $this->hasMany(ImagenDestino::class, 'destino_id');
+    }
+
     public function etiquetas() {
         // Tabla real del esquema: destinos_etiquetas (destino_etiquetas era una tabla de prueba)
         return $this->belongsToMany(Etiqueta::class, 'destinos_etiquetas', 'destino_id', 'etiqueta_id');
