@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Proxy hacia Groq para el asistente Huily.
@@ -47,7 +48,14 @@ class ChatController extends Controller
             ->first(fn ($m) => $m['rol'] === 'user' && empty($m['imagen']))['texto'] ?? '';
 
         $destinos = $this->buscarDestinos($consulta);
-        if ($destinos->isEmpty()) {
+        $hayFoto = collect($mensajes)->contains(fn ($m) => !empty($m['imagen']));
+        if ($hayFoto) {
+            // Con una foto no hay texto que buscar: se pasa una lista amplia de destinos representativos
+            // (los que tienen foto) para que la IA pueda relacionar la imagen con lugares reales
+            $destinos = $destinos->concat(
+                Destino::with(['categoria', 'municipio'])->where('estado', true)->whereNotNull('imagen')->get()
+            )->unique('id')->take(100)->values();
+        } elseif ($destinos->isEmpty()) {
             $destinos = $this->destinosBase();
         }
 
@@ -102,31 +110,66 @@ class ChatController extends Controller
         }
     }
 
+    // Palabras de la pregunta que no ayudan a buscar
+    private const VACIAS = ['quiero', 'quisiera', 'busco', 'buscar', 'donde', 'puedo', 'puede', 'para', 'como', 'cual', 'cuales',
+        'que', 'una', 'unos', 'unas', 'algo', 'algun', 'alguna', 'sitio', 'sitios', 'lugar', 'lugares', 'recomiendas', 'recomienda',
+        'recomendar', 'recomendacion', 'visitar', 'conocer', 'ir', 'hacer', 'huila', 'cerca', 'mejor', 'mejores', 'tiene', 'hay',
+        'esta', 'este', 'estos', 'esas', 'esos', 'con', 'sin', 'por', 'los', 'las', 'del', 'mas', 'muy', 'dias', 'dia', 'plan'];
+
+    // Palabras habituales que no aparecen tal cual en el catálogo → términos que sí aparecen
+    private const SINONIMOS = [
+        'estrellas' => ['astronom', 'observatorio', 'tatacoa'], 'estrella' => ['astronom', 'observatorio'],
+        'cielo' => ['astronom', 'observatorio'], 'noche' => ['astronom', 'observatorio'],
+        'desierto' => ['desierto', 'tatacoa'], 'piscina' => ['piscina', 'balneario'], 'banarse' => ['balneario', 'charco', 'piscina'],
+        'termales' => ['termal'], 'relajarme' => ['termal', 'descanso'], 'descansar' => ['descanso', 'termal'],
+        'comer' => ['gastronom', 'restaurante'], 'comida' => ['gastronom', 'restaurante'], 'cafe' => ['cafe', 'cafetero'],
+        'arqueologia' => ['arqueolog'], 'estatuas' => ['arqueolog', 'estatua'], 'historia' => ['historic', 'museo'],
+        'aventura' => ['aventura', 'rafting', 'parapente'], 'cascada' => ['cascada', 'salto'], 'cascadas' => ['cascada', 'salto'],
+        'rio' => ['rio', 'magdalena'], 'iglesia' => ['iglesia', 'catedral', 'religios'], 'senderismo' => ['sender', 'caminata'],
+    ];
+
+    /**
+     * Busca los destinos relacionados con la pregunta: palabra por palabra (con sinónimos)
+     * en nombre, descripción, categoría y municipio, ordenados por número de coincidencias.
+     * Antes se buscaba la frase entera y casi nunca encontraba nada.
+     */
     private function buscarDestinos(string $consulta): Collection
     {
-        $consulta = trim($consulta);
-        if (mb_strlen($consulta) < 3) {
+        $palabras = collect(preg_split('/[^a-z0-9ñ]+/u', Str::lower(Str::ascii($consulta))))
+            ->filter(fn ($p) => mb_strlen($p) >= 3 && !in_array($p, self::VACIAS))
+            ->flatMap(fn ($p) => array_merge([rtrim($p, 's')], self::SINONIMOS[$p] ?? []))
+            ->unique()->values();
+
+        if ($palabras->isEmpty()) {
             return collect();
         }
 
-        return Destino::with(['categoria', 'municipio'])
-            ->where('estado', true)
-            ->where(function ($q) use ($consulta) {
-                $q->where('nombre', 'like', "%{$consulta}%")
-                  ->orWhere('descripcion', 'like', "%{$consulta}%")
-                  ->orWhereHas('categoria', fn ($c) => $c->where('nombre', 'like', "%{$consulta}%"))
-                  ->orWhereHas('municipio', fn ($m) => $m->where('nombre', 'like', "%{$consulta}%"));
+        $destinos = Destino::with(['categoria', 'municipio'])->where('estado', true)->get();
+
+        return $destinos
+            ->map(function ($d) use ($palabras) {
+                $texto = Str::lower(Str::ascii($d->nombre . ' ' . $d->descripcion . ' ' . ($d->categoria->nombre ?? '') . ' ' . ($d->municipio->nombre ?? '')));
+                $nombre = Str::lower(Str::ascii($d->nombre));
+                // Coincidir en el nombre vale más que en la descripción
+                $d->relevancia = $palabras->sum(fn ($p) => (str_contains($nombre, $p) ? 3 : 0) + (str_contains($texto, $p) ? 1 : 0));
+                return $d;
             })
-            ->limit(6)
-            ->get();
+            ->filter(fn ($d) => $d->relevancia > 0)
+            ->sortByDesc('relevancia')
+            ->take(8)
+            ->values();
     }
 
+    /** Sin coincidencias: una muestra variada (un destino de cada categoría) en vez de los primeros de la lista */
     private function destinosBase(): Collection
     {
         return Destino::with(['categoria', 'municipio'])
             ->where('estado', true)
-            ->limit(6)
-            ->get();
+            ->get()
+            ->groupBy('categoria_id')
+            ->map(fn ($grupo) => $grupo->random())
+            ->take(8)
+            ->values();
     }
 
     private function promptSistema(Collection $destinos, ?array $contexto): string
