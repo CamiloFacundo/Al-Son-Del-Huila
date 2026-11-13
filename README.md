@@ -1,5 +1,7 @@
 # Al Son del Huila
 
+[![CI](https://github.com/CamiloFacundo/Al-Son-Del-Huila/actions/workflows/ci.yml/badge.svg)](https://github.com/CamiloFacundo/Al-Son-Del-Huila/actions/workflows/ci.yml)
+
 Aplicación web de turismo para el departamento del Huila (Colombia): catálogo de destinos, mapa, rutas personalizadas, un quiz que recomienda itinerarios, el asistente **Huily** (IA) y un muro de experiencias.
 
 | Parte | Tecnología | Carpeta |
@@ -100,6 +102,11 @@ frontend/
 El esquema actual está en `backend/database/schema/mysql-schema.sql`. Para cualquier cambio nuevo
 (columnas, tablas) crea una migración con `php artisan make:migration ...`; no edites el esquema a mano.
 Cuando acumules varias, puedes regenerarlo con `php artisan schema:dump`.
+
+## Integración continua
+
+En cada push a `main` y en cada pull request, GitHub Actions (`.github/workflows/ci.yml`) ejecuta
+ESLint y el build del frontend, y los tests de la API contra un MariaDB 10.4.
 
 ## Seguridad
 
