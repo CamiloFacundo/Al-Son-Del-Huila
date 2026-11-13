@@ -1,111 +1,151 @@
 import { useEffect, useRef, useState } from "react"
-import { PiMapPinDuotone } from "react-icons/pi"
-import styles from "./MapaRutas.module.css"
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
+import { PiMapTrifoldDuotone, PiCaretDownBold } from "react-icons/pi"
 import { capaOscura } from "../utils/mapas"
+import styles from "./MapaRutas.module.css"
 
-export default function MapaRutas({ destinos = [], onDestinoClick }) {
-  const mapaRef     = useRef(null)
-  const instanceRef = useRef(null)
-  const markersRef  = useRef([])
-  const lineaRef    = useRef(null)
-  const [listo,     setListo] = useState(false)
+const HUILA = [2.5359, -75.5277]
+const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]))
+const nombreDe = (v) => (v && typeof v === "object" ? v.nombre : v) || ""
+const esMovil = () => window.matchMedia("(max-width: 900px)").matches
+const relleno = () => (esMovil() ? [36, 36] : [70, 70])
+
+function pin(numero, activo) {
+  return L.divIcon({
+    className: "",
+    html: `<span class="${styles.pin} ${activo ? styles.pinActivo : ""}">${numero}</span>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -16],
+  })
+}
+
+/**
+ * Mapa de Huily: los destinos de la ruta o de la respuesta, numerados y unidos en orden.
+ * @param destinos  lista de destinos (con latitud/longitud)
+ * @param titulo    nombre de la ruta (si es una ruta)
+ * @param destacado id del destino a resaltar y abrir
+ */
+export default function MapaRutas({ destinos = [], titulo = null, destacado = null, onVerFicha }) {
+  const contenedorRef = useRef(null)
+  const mapaRef = useRef(null)
+  const capaRef = useRef(null)
+  const marcadoresRef = useRef(new Map())
+  const puntosRef = useRef([])
+  const fichaRef = useRef(onVerFicha)
+  useEffect(() => { fichaRef.current = onVerFicha }, [onVerFicha])
+  // En el celular la lista de paradas empieza plegada para no tapar el mapa
+  const [leyendaAbierta, setLeyendaAbierta] = useState(() => !esMovil())
 
   useEffect(() => {
-    const init = async () => {
-      const L = (await import("leaflet")).default
-      await import("leaflet/dist/leaflet.css")
-      if (instanceRef.current || !mapaRef.current) return
-
-
-      const mapa = L.map(mapaRef.current, { center: [2.0, -75.5], zoom: 8, zoomControl: false, attributionControl: true })
-      capaOscura(mapa)
-      L.control.zoom({ position: "bottomright" }).addTo(mapa)
-      instanceRef.current = mapa
-      setListo(true)
-    }
-    init()
-    return () => { if (instanceRef.current) { instanceRef.current.remove(); instanceRef.current = null } }
+    const mapa = L.map(contenedorRef.current, { zoomControl: false }).setView(HUILA, 8)
+    capaOscura(mapa)
+    L.control.zoom({ position: "bottomright" }).addTo(mapa)
+    capaRef.current = L.layerGroup().addTo(mapa)
+    mapaRef.current = mapa
+    // Si cambia el tamaño del contenedor (giro del celular, columnas), se recalcula y se vuelve a encuadrar
+    const observador = new ResizeObserver(() => {
+      mapa.invalidateSize()
+      const puntos = puntosRef.current
+      if (puntos.length > 1) mapa.fitBounds(puntos, { padding: relleno(), maxZoom: 12 })
+      else if (puntos.length === 1) mapa.setView(puntos[0], 12)
+    })
+    observador.observe(contenedorRef.current)
+    return () => { observador.disconnect(); mapa.remove(); mapaRef.current = null }
   }, [])
 
+  // Pintar destinos, línea de la ruta y encuadre
   useEffect(() => {
-    if (!listo || !instanceRef.current) return
-    const actualizar = async () => {
-      const L = (await import("leaflet")).default
-      markersRef.current.forEach(m => m.remove())
-      markersRef.current = []
-      if (lineaRef.current) lineaRef.current.remove()
-      if (destinos.length === 0) return
-      const puntos = []
-      destinos.forEach((destino, i) => {
-        if (!destino.latitud || !destino.longitud) return
-        const lat = parseFloat(destino.latitud)
-        const lng = parseFloat(destino.longitud)
-        const icono = L.divIcon({
-          className: "",
-          html: `
-            <div style="position: relative; width: 40px; height: 40px;">
-              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C4622D,#D4A843);border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;font-family:sans-serif;overflow:hidden;">
-                ${destino.imagen ? `<img src="${destino.imagen}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />` : `${i + 1}`}
-              </div>
-              <div style="position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #C4622D;"></div>
-            </div>
-          `,
-          iconSize: [40, 48],
-          iconAnchor: [20, 48],
-          popupAnchor: [0, -48],
-        })
-        const marker = L.marker([lat, lng], { icon: icono })
-          .bindPopup(`
-            <div style="font-family:sans-serif;min-width:200px;background:#0d0c0b;color:white;border-radius:8px;overflow:hidden;margin:-13px -20px -10px;">
-              ${destino.imagen ? `<img src="${destino.imagen}" style="width:100%;height:110px;object-fit:cover" onerror="this.style.display='none'" />` : `<div style="height:80px;background:linear-gradient(135deg,#C4622D44,#D4A84344);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#D4A843;font-weight:bold;">${i+1}</div>`}
-              <div style="padding:10px 12px">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                  <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#C4622D,#D4A843);color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;">${i+1}</div>
-                  <strong style="color:#D4A843;font-size:13px">${destino.nombre}</strong>
-                </div>
-                <div style="color:#888;font-size:11px">
-                  <span>Ubicación: </span>${destino.municipio?.nombre || destino.municipio || "Huila"}
-                  &nbsp;·&nbsp;
-                  <span>Tipo: </span>${destino.categoria?.nombre || destino.categoria || ""}
-                </div>
-                ${destino.descripcion ? `<p style="color:#aaa;font-size:11px;margin-top:6px;line-height:1.4">${destino.descripcion?.slice(0, 80)}...</p>` : ""}
-              </div>
-            </div>
-          `, { maxWidth: 220, className: "popup-oscuro" })
-          .addTo(instanceRef.current)
-        if (onDestinoClick) marker.on("click", () => onDestinoClick(destino))
-        markersRef.current.push(marker)
-        puntos.push([lat, lng])
-      })
-      if (puntos.length > 1) lineaRef.current = L.polyline(puntos, { color: "#D4A843", weight: 3, opacity: 0.7, dashArray: "8, 6", lineJoin: "round" }).addTo(instanceRef.current)
-      if (puntos.length > 0) instanceRef.current.fitBounds(puntos, { padding: [60, 60] })
+    const mapa = mapaRef.current
+    if (!mapa) return
+    capaRef.current.clearLayers()
+    marcadoresRef.current.clear()
+
+    const validos = destinos.filter(d => !isNaN(parseFloat(d.latitud)) && !isNaN(parseFloat(d.longitud)))
+    const puntos = validos.map(d => [parseFloat(d.latitud), parseFloat(d.longitud)])
+    puntosRef.current = puntos
+
+    if (titulo && puntos.length > 1) {
+      L.polyline(puntos, { color: "#D4A843", weight: 3, opacity: 0.75, dashArray: "8 8", lineJoin: "round" }).addTo(capaRef.current)
     }
-    actualizar()
-  }, [destinos, listo])
+
+    validos.forEach((d, i) => {
+      const popup = document.createElement("div")
+      popup.className = styles.popup
+      popup.innerHTML = `
+        ${d.imagen ? `<img src="${escapar(d.imagen)}" alt="">` : ""}
+        <div class="${styles.popupCuerpo}">
+          <span class="${styles.popupNumero}">${titulo ? `Parada ${i + 1}` : `Sugerencia ${i + 1}`}</span>
+          <strong>${escapar(d.nombre)}</strong>
+          <span>${escapar(nombreDe(d.municipio))} · ${escapar(nombreDe(d.categoria))}</span>
+        </div>`
+      if (fichaRef.current) {
+        const boton = document.createElement("button")
+        boton.type = "button"
+        boton.className = styles.popupBoton
+        boton.textContent = "Ver ficha"
+        boton.addEventListener("click", () => fichaRef.current?.(d))
+        popup.querySelector(`.${styles.popupCuerpo}`).appendChild(boton)
+      }
+      const m = L.marker(puntos[i], { icon: pin(i + 1, d.id === destacado), title: d.nombre, riseOnHover: true })
+        .bindPopup(popup, { className: styles.popupLeaflet, minWidth: 220, maxWidth: 240 })
+        .addTo(capaRef.current)
+      marcadoresRef.current.set(d.id, m)
+    })
+
+    if (puntos.length === 1) mapa.flyTo(puntos[0], 12, { duration: 0.8 })
+    else if (puntos.length > 1) mapa.flyToBounds(puntos, { padding: relleno(), maxZoom: 12, duration: 0.8 })
+    else mapa.flyTo(HUILA, 8, { duration: 0.6 })
+  }, [destinos, titulo, destacado])
+
+  // Abrir el destino destacado (p. ej. al pulsar su nombre en el chat)
+  useEffect(() => {
+    if (!destacado) return
+    const m = marcadoresRef.current.get(destacado)
+    if (m) setTimeout(() => m.openPopup(), 850)
+  }, [destacado, destinos])
+
+  const enfocar = (d) => {
+    const m = marcadoresRef.current.get(d.id)
+    if (!m || !mapaRef.current) return
+    if (esMovil()) setLeyendaAbierta(false)
+    mapaRef.current.flyTo(m.getLatLng(), Math.max(mapaRef.current.getZoom(), 12), { duration: 0.7 })
+    setTimeout(() => m.openPopup(), 720)
+  }
 
   return (
     <div className={styles.wrapper}>
-      <div ref={mapaRef} className={styles.mapa} />
-      {destinos.length > 0 && (
+      <div ref={contenedorRef} className={styles.mapa} />
+
+      {destinos.length > 0 ? (
         <div className={styles.leyenda}>
-          <div className={styles.leyendaHeader}><span>- {destinos.length} destinos</span>{destinos.length > 1 && <span className={styles.rutaTag}>Ruta trazada</span>}</div>
-          <div className={styles.leyendaLista}>
+          <button type="button" className={styles.leyendaCabecera} onClick={() => setLeyendaAbierta(a => !a)}
+            aria-expanded={leyendaAbierta} aria-controls="leyenda-paradas">
+            <span className={styles.leyendaTitulos}>
+              <strong>{titulo || "Destinos sugeridos"}</strong>
+              <span>{destinos.length} {destinos.length === 1 ? "parada" : "paradas"}</span>
+            </span>
+            <PiCaretDownBold size={13} aria-hidden="true" className={`${styles.leyendaFlecha} ${leyendaAbierta ? styles.leyendaFlechaAbierta : ""}`} />
+          </button>
+          <ol id="leyenda-paradas" className={styles.leyendaLista} hidden={!leyendaAbierta}>
             {destinos.map((d, i) => (
-              <div key={d.id} className={styles.leyendaItem} onClick={() => onDestinoClick?.(d)}>
-                <div className={styles.leyendaNum}>{i + 1}</div>
-                <div className={styles.leyendaInfo}>
-                  <span className={styles.leyendaNombre}>{d.nombre}</span>
-                  <span className={styles.leyendaMuni}>{d.municipio?.nombre || d.municipio}</span>
-                </div>
-              </div>
+              <li key={d.id}>
+                <button type="button" className={`${styles.leyendaItem} ${d.id === destacado ? styles.leyendaActiva : ""}`} onClick={() => enfocar(d)}>
+                  <span className={styles.leyendaNum}>{i + 1}</span>
+                  <span className={styles.leyendaInfo}>
+                    <span className={styles.leyendaNombre}>{d.nombre}</span>
+                    <span className={styles.leyendaMuni}>{nombreDe(d.municipio)}</span>
+                  </span>
+                </button>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
-      )}
-      {destinos.length === 0 && (
-        <div className={styles.empty}>
-          <div className={styles.emptyIcon}><PiMapPinDuotone size={48} /></div>
-          <p>Habla con Huily para explorar destinos en el mapa</p>
+      ) : (
+        <div className={styles.vacio}>
+          <PiMapTrifoldDuotone size={34} aria-hidden="true" />
+          <p>Pídele una ruta a Huily o elige una de tus rutas: aparecerá aquí.</p>
         </div>
       )}
     </div>

@@ -1,241 +1,121 @@
-import { useState, useEffect, useCallback } from "react"
-import { API_URL } from "../api/config"
-import { motion, AnimatePresence } from "framer-motion"
-import {
-  PiMapPinDuotone,
-  PiRobotDuotone,
-  PiListDuotone,
-  PiCaretLeftDuotone,
-} from "react-icons/pi"
-import { useAuth }    from "../context/AuthContext"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { PiChatCircleDotsDuotone, PiMapTrifoldDuotone } from "react-icons/pi"
+import { useAuth } from "../context/AuthContext"
+import { getDestinos } from "../api/destinos"
 import { getRutas, crearRuta, eliminarRuta } from "../api/rutas"
-import HistorialRutas        from "../components/HistorialRutas"
-import ChatRutas             from "../components/ChatRutas"
-import MapaRutas             from "../components/MapaRutas"
+import HistorialRutas from "../components/HistorialRutas"
+import ChatRutas from "../components/ChatRutas"
+import MapaRutas from "../components/MapaRutas"
+import DestinoModal from "../components/DestinoModal"
 import styles from "./Rutas.module.css"
-import logo from "../assets/images/logo.png"
 
-const TABS_SIDEBAR = [
-  { id: "historial", label: "Rutas",  Icon: PiListDuotone  },
-  { id: "chat",      label: "Huily",  Icon: PiRobotDuotone },
-]
-
+// Huily: chat para armar rutas + "Mis rutas" + mapa con las paradas
 export default function Rutas() {
   const { user } = useAuth()
 
-  const [rutas,         setRutas]         = useState([])
-  const [rutaActiva,    setRutaActiva]    = useState(null)
-  const [destinosMapa,  setDestinosMapa]  = useState([])
   const [todosDestinos, setTodosDestinos] = useState([])
-  const [tabActiva,     setTabActiva]     = useState("chat")
-  const [sidebarOpen,   setSidebarOpen]   = useState(true)
-  const [loading,       setLoading]       = useState(true)
+  const [rutasApi, setRutasApi] = useState([])
+  const [cargandoRutas, setCargandoRutas] = useState(true)
+  const [pestana, setPestana] = useState("chat")
+  const [rutaActiva, setRutaActiva] = useState(null)
+  const [mapa, setMapa] = useState({ destinos: [], titulo: null, destacado: null })
+  const [ficha, setFicha] = useState(null)
+  const [aviso, setAviso] = useState("")
 
-  // Cargar destinos y rutas
   useEffect(() => {
-    const cargar = async () => {
-      try {
-        const [resDestinos, resRutas] = await Promise.all([
-          fetch(`${API_URL}/destinos`).then(r => r.json()),
-          getRutas().catch(() => [])
-        ])
-        setTodosDestinos(resDestinos)
-        setRutas(resRutas)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    cargar()
+    getDestinos().then(setTodosDestinos).catch(() => {})
   }, [])
 
-  const handleSeleccionarRuta = useCallback((ruta) => {
-    setRutaActiva(ruta)
-    setDestinosMapa(ruta.destinos || [])
-    setTabActiva("chat")
-  }, [])
-
-  const handleDestinosChange = useCallback((destinos) => {
-    setDestinosMapa(destinos)
-  }, [])
-
-  const handleRutaGenerada = useCallback(async (ruta, guardar = false) => {
-    setDestinosMapa(ruta.destinos || [])
-
-    if (guardar && user) {
-      try {
-        const nueva = await crearRuta({
-          nombre:    ruta.nombre,
-          destinos:  ruta.destinos?.map(d => d.id),
-          dias:      ruta.dias,
-          publica:   true,
-        })
-        setRutas(prev => [nueva, ...prev])
-        setRutaActiva(nueva)
-        setTabActiva("historial")
-      } catch (err) {
-        console.error("Error guardando ruta:", err)
-      }
-    }
+  // Sin sesión no se pide nada: "Mis rutas" muestra la invitación a iniciar sesión
+  useEffect(() => {
+    if (!user) return
+    getRutas().then(setRutasApi).catch(() => setRutasApi([])).finally(() => setCargandoRutas(false))
   }, [user])
 
-  const handleEliminarRuta = useCallback(async (id) => {
+  // Las rutas guardan solo los IDs de sus destinos: se convierten en destinos completos para el mapa
+  const misRutas = useMemo(() => {
+    const porId = new Map(todosDestinos.map(d => [d.id, d]))
+    return rutasApi
+      .filter(r => user && r.user_id === user.id)
+      .map(r => ({ ...r, destinos: (r.destinos || []).map(id => porId.get(Number(id))).filter(Boolean) }))
+  }, [rutasApi, todosDestinos, user])
+
+  const mostrarAviso = (texto) => { setAviso(texto); setTimeout(() => setAviso(""), 3000) }
+
+  const verEnMapa = useCallback((destinos, ruta = null, destacado = null) => {
+    setMapa({ destinos: destinos || [], titulo: ruta?.nombre || null, destacado })
+  }, [])
+
+  const seleccionarRuta = useCallback((ruta) => {
+    setRutaActiva(ruta)
+    setMapa({ destinos: ruta.destinos, titulo: ruta.nombre, destacado: null })
+  }, [])
+
+  const guardarRuta = useCallback(async (ruta) => {
+    const nueva = await crearRuta({
+      nombre: ruta.nombre,
+      dias: ruta.dias,
+      destinos: ruta.destinos.map(d => d.id),
+      publica: false,
+    })
+    setRutasApi(prev => [nueva, ...prev])
+    mostrarAviso("Ruta guardada en Mis rutas")
+  }, [])
+
+  const eliminar = useCallback(async (id) => {
     try {
       await eliminarRuta(id)
-      setRutas(prev => prev.filter(r => r.id !== id))
+      setRutasApi(prev => prev.filter(r => r.id !== id))
       if (rutaActiva?.id === id) {
         setRutaActiva(null)
-        setDestinosMapa([])
+        setMapa({ destinos: [], titulo: null, destacado: null })
       }
-    } catch (err) {
-      console.error(err)
+      mostrarAviso("Ruta eliminada")
+    } catch {
+      mostrarAviso("No se pudo eliminar la ruta. Inténtalo de nuevo.")
     }
   }, [rutaActiva])
 
-  const handleDestinoClick = useCallback((destino) => {
-    setDestinosMapa([destino])
-  }, [])
-
-  if (loading) return (
-    <div className={styles.loading}>
-      <div className={styles.spinner} />
-      <p>Cargando rutas...</p>
-    </div>
-  )
-
   return (
     <div className={styles.page}>
+      <h1 className={styles.soloLectores}>Huily: arma tu ruta por el Huila</h1>
 
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <img src={logo} alt="logo" className={styles.headerLogo} />
-          <div>
-            <h1 className={styles.headerTitulo}>Rutas del Huila</h1>
-            <p className={styles.headerSub}>
-              {destinosMapa.length > 0
-                ? `${destinosMapa.length} destinos en el mapa`
-                : "Explora y crea rutas personalizadas"
-              }
-            </p>
-          </div>
-        </div>
-
-        <div className={styles.headerRight}>
-          {rutaActiva && (
-            <motion.div
-              className={styles.rutaActivaBadge}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <PiMapPinDuotone size={14} />
-              {rutaActiva.nombre}
-            </motion.div>
-          )}
-          <button
-            className={styles.btnToggleSidebar}
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            <PiCaretLeftDuotone
-              size={18}
-              style={{
-                transform: sidebarOpen ? "rotate(0deg)" : "rotate(180deg)",
-                transition: "transform 0.3s"
-              }}
-            />
+      <aside className={styles.panel}>
+        <div className={styles.pestanas} role="tablist" aria-label="Huily">
+          <button type="button" role="tab" aria-selected={pestana === "chat"} id="tab-chat" aria-controls="panel-chat"
+            className={`${styles.pestana} ${pestana === "chat" ? styles.pestanaActiva : ""}`} onClick={() => setPestana("chat")}>
+            <PiChatCircleDotsDuotone size={16} aria-hidden="true" /> Huily
+          </button>
+          <button type="button" role="tab" aria-selected={pestana === "rutas"} id="tab-rutas" aria-controls="panel-rutas"
+            className={`${styles.pestana} ${pestana === "rutas" ? styles.pestanaActiva : ""}`} onClick={() => setPestana("rutas")}>
+            <PiMapTrifoldDuotone size={16} aria-hidden="true" /> Mis rutas
+            {user && misRutas.length > 0 && <span className={styles.contador}>{misRutas.length}</span>}
           </button>
         </div>
-      </div>
 
-      {/* Layout principal */}
-      <div className={styles.layout}>
-
-        {/* Sidebar */}
-        <AnimatePresence>
-          {sidebarOpen && (
-            <motion.aside
-              className={styles.sidebar}
-              initial={{ width: 0,   opacity: 0 }}
-              animate={{ width: 340, opacity: 1 }}
-              exit={{   width: 0,   opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.4,0,0.2,1] }}
-            >
-              {/* Tabs del sidebar */}
-              <div className={styles.sidebarTabs}>
-                {TABS_SIDEBAR.map(tab => (
-                  <button
-                    key={tab.id}
-                    className={`${styles.sidebarTab} ${tabActiva === tab.id ? styles.sidebarTabActiva : ""}`}
-                    onClick={() => setTabActiva(tab.id)}
-                  >
-                    <tab.Icon size={16} />
-                    {tab.label}
-                    {tabActiva === tab.id && (
-                      <motion.div
-                        className={styles.tabIndicator}
-                        layoutId="sidebarTabIndicator"
-                      />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Contenido del sidebar */}
-              <div className={styles.sidebarContent}>
-                <AnimatePresence mode="wait">
-                  {tabActiva === "historial" ? (
-                    <motion.div
-                      key="historial"
-                      className={styles.tabPane}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0   }}
-                      exit={{   opacity: 0, x: -10   }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <HistorialRutas
-                        rutas={rutas}
-                        rutaActiva={rutaActiva}
-                        onSeleccionar={handleSeleccionarRuta}
-                        onEliminar={handleEliminarRuta}
-                        onNueva={() => setTabActiva("chat")}
-                        usuario={user}
-                      />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="chat"
-                      className={styles.tabPane}
-                      initial={{ opacity: 0, x: 10 }}
-                      animate={{ opacity: 1, x: 0  }}
-                      exit={{   opacity: 0, x: 10  }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChatRutas
-                        onDestinosChange={handleDestinosChange}
-                        onRutaGenerada={handleRutaGenerada}
-                        rutaActiva={rutaActiva}
-                        todosDestinos={todosDestinos}
-                        usuario={user}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.aside>
-          )}
-        </AnimatePresence>
-
-        {/* Mapa principal */}
-        <div className={styles.mapaContainer}>
-          <MapaRutas
-            destinos={destinosMapa}
+        {/* Los dos paneles siguen montados: la conversación no se pierde al cambiar de pestaña */}
+        <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" className={styles.contenido} hidden={pestana !== "chat"}>
+          <ChatRutas rutaActiva={rutaActiva} usuario={user} onVerEnMapa={verEnMapa} onGuardarRuta={guardarRuta} />
+        </div>
+        <div id="panel-rutas" role="tabpanel" aria-labelledby="tab-rutas" className={styles.contenido} hidden={pestana !== "rutas"}>
+          <HistorialRutas
+            rutas={misRutas}
             rutaActiva={rutaActiva}
-            onDestinoClick={handleDestinoClick}
+            onSeleccionar={seleccionarRuta}
+            onEliminar={eliminar}
+            onIrAlChat={() => setPestana("chat")}
+            usuario={user}
+            cargando={cargandoRutas}
           />
         </div>
+      </aside>
 
-      </div>
+      <section className={styles.mapaZona} aria-label="Mapa de la ruta">
+        <MapaRutas destinos={mapa.destinos} titulo={mapa.titulo} destacado={mapa.destacado} onVerFicha={setFicha} />
+      </section>
+
+      {aviso && <div className={styles.aviso} role="status">{aviso}</div>}
+      <DestinoModal destino={ficha} isOpen={!!ficha} onClose={() => setFicha(null)} />
     </div>
   )
 }

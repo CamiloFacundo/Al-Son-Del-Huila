@@ -2,110 +2,143 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: #0a0908;
 }
 
 .mapa {
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Popup oscuro */
-:global(.popup-oscuro .leaflet-popup-content-wrapper) {
-  background: #0d0c0b;
-  border: 1px solid #2a2520;
-  border-radius: 10px;
-  padding: 0;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-}
-
-:global(.popup-oscuro .leaflet-popup-tip) {
-  background: #0d0c0b;
-}
-
-:global(.popup-oscuro .leaflet-popup-content) {
-  margin: 0;
-  color: white;
-}
-
-/* Leyenda */
-.leyenda {
   position: absolute;
-  bottom: 1.5rem;
-  left: 1rem;
-  z-index: 1000;
-  background: rgba(13,12,11,0.92);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(212,168,67,0.2);
-  border-radius: 12px;
-  padding: 0.75rem;
-  max-width: 220px;
-  max-height: 280px;
-  overflow-y: auto;
+  inset: 0;
+  background: #1b1b1b;
 }
 
-.leyenda::-webkit-scrollbar       { width: 3px; }
-.leyenda::-webkit-scrollbar-thumb { background: var(--color-tierra); }
-
-.leyendaHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.6rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.rutaTag {
-  background: rgba(212,168,67,0.15);
-  color: var(--color-dorado);
-  border: 1px solid rgba(212,168,67,0.3);
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.65rem;
-}
-
-.leyendaLista {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.leyendaItem {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.3rem 0.4rem;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-
-.leyendaItem:hover { background: rgba(255,255,255,0.05); }
-
-.leyendaNum {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #C4622D, #D4A843);
-  color: white;
-  font-size: 0.65rem;
-  font-weight: 800;
+/* Marcador numerado */
+.pin {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-tierra);
+  border: 2px solid #fff;
+  color: #fff;
+  font: 700 0.8rem/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.55);
+  transition: transform 0.18s ease;
 }
 
-.leyendaInfo {
+.pinActivo {
+  transform: scale(1.25);
+  background: var(--color-dorado);
+  color: #1a1206;
+}
+
+/* Leyenda con las paradas */
+.leyenda {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 500;
+  width: min(300px, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  border-radius: var(--radius-md);
+  background: rgba(17, 17, 17, 0.94);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
 }
 
+.leyendaCabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0.9rem 0.6rem;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.leyendaCabecera:focus-visible { outline: 2px solid var(--color-dorado); outline-offset: -2px; }
+
+.leyendaTitulos {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.leyendaFlecha {
+  flex: none;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.leyendaFlechaAbierta { transform: rotate(180deg); }
+
+.leyendaCabecera strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+.leyendaCabecera span {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.leyendaLista {
+  list-style: none;
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+  padding: 0.35rem;
+  overflow-y: auto;
+  max-height: 260px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-tierra-dark) transparent;
+}
+
+.leyendaItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.leyendaItem:hover,
+.leyendaActiva { background: rgba(255, 255, 255, 0.06); }
+
+.leyendaItem:focus-visible { outline: 2px solid var(--color-dorado); outline-offset: 1px; }
+
+.leyendaNum {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-tierra);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.leyendaInfo { min-width: 0; display: flex; flex-direction: column; }
+
 .leyendaNombre {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -113,31 +146,125 @@
   text-overflow: ellipsis;
 }
 
-.leyendaMuni {
-  font-size: 0.65rem;
-  color: var(--text-muted);
+.leyendaMuni { font-size: 0.7rem; color: var(--text-secondary); }
+
+/* Estado vacío */
+.vacio {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 400;
+  max-width: 280px;
+  padding: 1.25rem 1.4rem;
+  border-radius: var(--radius-md);
+  background: rgba(17, 17, 17, 0.88);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-dorado);
+  pointer-events: none;
 }
 
-/* Empty state */
-.empty {
-  position: absolute;
-  inset: 0;
+.vacio p {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Popup con la estética de la app */
+.popupLeaflet :global(.leaflet-popup-content-wrapper) {
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-noche-card);
+  color: var(--text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+.popupLeaflet :global(.leaflet-popup-content) { margin: 0; }
+.popupLeaflet :global(.leaflet-popup-tip) { background: var(--color-noche-card); }
+.popupLeaflet :global(.leaflet-popup-close-button) { color: #fff !important; text-shadow: 0 1px 3px #000; }
+
+.popup { width: 230px; }
+
+.popup img {
+  display: block;
+  width: 100%;
+  height: 115px;
+  object-fit: cover;
+}
+
+.popupCuerpo {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  z-index: 1000;
-  pointer-events: none;
-  background: rgba(10,9,8,0.7);
-  backdrop-filter: blur(4px);
+  gap: 0.2rem;
+  padding: 0.7rem 0.85rem 0.85rem;
+  font-family: var(--font-body);
 }
 
-.emptyIcon { font-size: 3rem; opacity: 0.4; }
+.popupNumero {
+  font-size: 0.66rem !important;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-tierra) !important;
+}
 
-.empty p {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  text-align: center;
-  max-width: 200px;
+.popupCuerpo strong {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.popupCuerpo span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.popupBoton {
+  align-self: flex-start;
+  margin-top: 0.45rem;
+  padding: 0.38rem 0.85rem;
+  border-radius: var(--radius-full);
+  background: var(--color-tierra);
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.popupBoton:hover { background: #d4733d; }
+
+.mapa :global(.leaflet-control-zoom a) {
+  background: rgba(17, 17, 17, 0.92);
+  color: var(--text-primary);
+  border-color: var(--color-border);
+}
+
+.mapa :global(.leaflet-control-attribution) {
+  background: rgba(8, 8, 8, 0.7);
+  color: var(--text-secondary);
+}
+
+.mapa :global(.leaflet-control-attribution a) { color: var(--color-dorado); }
+
+.leyendaLista[hidden] { display: none; }
+
+/* Celular: la leyenda arriba a la izquierda y más baja, para dejar ver los marcadores */
+@media (max-width: 900px) {
+  .leyenda {
+    top: 0.6rem;
+    bottom: auto;
+    left: 0.6rem;
+    width: min(260px, calc(100% - 4.5rem));
+    max-height: calc(100% - 1.2rem);
+  }
+
+  .leyendaCabecera { padding: 0.55rem 0.75rem; }
+  .leyendaLista { max-height: 150px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin, .leyendaFlecha { transition: none; }
 }
