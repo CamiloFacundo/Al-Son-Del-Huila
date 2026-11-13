@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\Imagenes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -29,6 +31,17 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'google_token',
     ];
+
+    /** Fotos de perfil y portada: ruta relativa en la BD, URL completa en la API (las de Google ya son URL) */
+    protected function foto(): Attribute
+    {
+        return Attribute::get(fn (?string $valor) => Imagenes::url($valor));
+    }
+
+    protected function fotoPortada(): Attribute
+    {
+        return Attribute::get(fn (?string $valor) => Imagenes::url($valor));
+    }
 
     /** Destinos guardados como favoritos (tabla favoritos) */
     public function favoritos()

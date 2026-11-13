@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use App\Support\Imagenes;
 
 class PerfilController extends Controller
 {
@@ -72,24 +74,32 @@ class PerfilController extends Controller
     public function subirFoto(Request $request)
     {
         $request->validate([
-            'foto' => 'required|image|max:2048',
+            'foto' => 'required|image|max:8192',
             'tipo' => 'required|in:perfil,portada'
         ]);
 
         $user = $request->user();
-        $path = $request->file('foto')->store('fotos', 'public');
-        $url = asset('storage/' . $path);   // URL pública completa
+        $columna = $request->tipo === 'portada' ? 'foto_portada' : 'foto';
 
-        if ($request->tipo === 'portada') {
-            $user->foto_portada = $url;
-        } else {
-            $user->foto = $url;
+        // Reducir (perfil 400 px, portada 1600 px), corregir rotación y guardar en WebP
+        $webp = Imagenes::webp($request->file('foto')->get(), $columna === 'foto' ? 400 : 1600, 78);
+        abort_if($webp === null, 422, 'No se pudo procesar la imagen.');
+
+        $archivo = 'fotos/' . Str::uuid() . '.webp';
+        Storage::disk('public')->put($archivo, $webp);
+
+        // Borrar la foto anterior si era una subida aquí (no la de Google)
+        $anterior = $user->getRawOriginal($columna);
+        if ($anterior && preg_match('#(?:^|/)storage/(fotos/[^/]+)$#', $anterior, $m)) {
+            Storage::disk('public')->delete($m[1]);
         }
-        $user->save();
+
+        // En la BD se guarda la ruta relativa; el modelo devuelve la URL completa
+        $user->forceFill([$columna => 'storage/' . $archivo])->save();
 
         return response()->json([
             'message' => 'Foto actualizada',
-            'url'     => $url
+            'url'     => $user->{$columna},
         ]);
     }
 

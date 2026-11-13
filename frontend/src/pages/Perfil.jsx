@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import styles from "./Perfil.module.css";
 import DestinoCard from "../components/DestinoCard";
+import Avatar from "../components/Avatar";
 import PreferenciasResumen from "../components/PreferenciasResumen";
 import { getFavoritos } from "../api/destinos";
 
@@ -425,11 +426,7 @@ export default function Perfil() {
                     <div key={pub.id} className={styles.post}>
                       {/* Header: avatar, nombre, ubicación debajo, tiempo a la derecha */}
                       <div className={styles.postHeader}>
-                        <img
-                          src={pub.user?.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(pub.user?.nombre || 'U')}&background=random`}
-                          alt="avatar"
-                          className={styles.avatar}
-                        />
+                        <Avatar nombre={pub.user?.nombre} foto={pub.user?.foto} tamano={42} />
                         <div className={styles.userInfo}>
                           <strong className={styles.userName}>{pub.user?.nombre || 'Usuario'}</strong>
                           {pub.ubicacion && (

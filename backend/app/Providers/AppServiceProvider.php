@@ -37,6 +37,9 @@ class AppServiceProvider extends ServiceProvider
         // Asistente Huily (cada mensaje cuesta una llamada a Groq): 20 por minuto
         RateLimiter::for('chat', fn (Request $r) => Limit::perMinute(20)->by('chat|' . $porUsuarioOIp($r)));
 
+        // Comentarios en Actividades: 10 por minuto por usuario (frena el spam)
+        RateLimiter::for('comentarios', fn (Request $r) => Limit::perMinute(10)->by('comentarios|' . $porUsuarioOIp($r)));
+
         // Recuperar contraseña: el enlace del correo abre la página de React, no una de Laravel
         ResetPassword::createUrlUsing(fn ($user, string $token) => config('services.frontend_url')
             . '/restablecer?' . http_build_query(['token' => $token, 'email' => $user->getEmailForPasswordReset()]));

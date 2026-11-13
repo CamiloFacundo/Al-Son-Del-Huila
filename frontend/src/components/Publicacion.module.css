@@ -1,0 +1,274 @@
+.post {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: visible;
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+.autor {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.autor strong {
+  color: #fff;
+  font-size: 0.92rem;
+}
+
+.ubicacion {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.tiempo {
+  font-size: 0.75rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+.menuWrap {
+  position: relative;
+}
+
+.iconoBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.iconoBtn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 20;
+  min-width: 150px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #1b1b1b;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: #eee;
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu button:hover { background: rgba(255, 255, 255, 0.06); }
+.menu .peligro { color: #ef7b7b; }
+
+.foto {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+  background: #141414;
+}
+
+.acciones {
+  display: flex;
+  gap: 18px;
+  padding: 10px 12px 6px;
+}
+
+.accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px;
+  border: none;
+  background: none;
+  color: #ccc;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, color 0.12s ease;
+}
+
+.accion:hover { color: #fff; transform: scale(1.05); }
+.accion:focus-visible { outline: 2px solid #D4A843; border-radius: 6px; }
+.activo { color: #e0453a; }
+.activo:hover { color: #ff5a4e; }
+
+.descripcion {
+  margin: 0;
+  padding: 0 12px 8px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #ddd;
+  overflow-wrap: anywhere;
+}
+
+.descripcion strong { color: #fff; margin-right: 4px; }
+
+.verComentarios {
+  display: block;
+  margin: 0 12px 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.verComentarios:hover { color: #ccc; }
+
+.comentarios {
+  padding: 8px 12px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.comentarios ul {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.comentario {
+  display: flex;
+  gap: 10px;
+}
+
+.comentarioCuerpo { min-width: 0; }
+
+.comentarioCuerpo p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #ddd;
+  overflow-wrap: anywhere;
+}
+
+.comentarioCuerpo strong { color: #fff; margin-right: 4px; }
+
+.suave {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.suave a { color: #D4A843; }
+
+.enlace {
+  margin-left: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #aaa;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.enlace:hover { color: #ef7b7b; }
+
+.nuevoComentario {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.nuevoComentario input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #333;
+  background: #181818;
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.nuevoComentario input:focus { outline: none; border-color: #C4622D; }
+
+.nuevoComentario button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  border: none;
+  border-radius: 50%;
+  background: #C4622D;
+  color: #fff;
+  cursor: pointer;
+}
+
+.nuevoComentario button:disabled { opacity: 0.4; cursor: default; }
+
+.edicion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.edicion textarea,
+.edicion input {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background: #181818;
+  color: #fff;
+  font: inherit;
+  font-size: 0.88rem;
+  resize: vertical;
+}
+
+.edicion textarea:focus,
+.edicion input:focus { outline: none; border-color: #C4622D; }
+
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primario,
+.secundario {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.primario { background: #C4622D; color: #fff; }
+.primario:disabled { opacity: 0.6; }
+.secundario { background: transparent; border-color: #444; color: #ddd; }

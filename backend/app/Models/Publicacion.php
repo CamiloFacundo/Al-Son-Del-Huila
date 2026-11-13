@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\Imagenes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,29 +12,27 @@ class Publicacion extends Model
     use HasFactory;
 
     protected $table = 'publicaciones';
+
     protected $fillable = ['user_id', 'imagen', 'descripcion', 'ubicacion'];
 
-    /**
-     * Relación con el usuario que creó la publicación
-     */
+    /** En la BD se guarda la ruta relativa; la API devuelve la URL completa */
+    protected function imagen(): Attribute
+    {
+        return Attribute::get(fn (?string $valor) => Imagenes::url($valor));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Relación con los likes de la publicación
-     */
     public function likes()
     {
         return $this->hasMany(PublicacionLike::class, 'publicacion_id');
     }
 
-    /**
-     * Verifica si un usuario específico ha dado like a esta publicación
-     */
-    public function isLikedByUser($userId)
+    public function comentarios()
     {
-        return $this->likes()->where('usuario_id', $userId)->exists();
+        return $this->hasMany(PublicacionComentario::class, 'publicacion_id');
     }
 }

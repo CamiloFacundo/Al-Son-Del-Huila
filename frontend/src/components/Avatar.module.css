@@ -1,0 +1,16 @@
+.avatar {
+  flex: none;
+  display: inline-block;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.iniciales {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  user-select: none;
+}

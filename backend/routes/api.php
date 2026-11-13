@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\DestinoController;
 use App\Http\Controllers\Api\ResenaController;
 use App\Http\Controllers\Api\FavoritoController;
 use App\Http\Controllers\Api\PublicacionController;
+use App\Http\Controllers\Api\ComentarioController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\RutaController;
 use App\Http\Controllers\Api\MunicipioController;
@@ -36,6 +37,7 @@ Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
 Route::get('/destinos/{id}', [DestinoController::class, 'show'])->whereNumber('id');
 Route::get('/destinos/{id}/resenas', [ResenaController::class, 'index'])->whereNumber('id');
 Route::get('/publicaciones', [PublicacionController::class, 'index']);
+Route::get('/publicaciones/{id}/comentarios', [ComentarioController::class, 'index'])->whereNumber('id');
 Route::get('/rutas', [RutaController::class, 'index']);
 
 // Opciones de filtros
@@ -71,6 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/publicaciones/{id}/like', [PublicacionController::class, 'like']);
     Route::put('/publicaciones/{id}', [PublicacionController::class, 'update']);
     Route::delete('/publicaciones/{id}', [PublicacionController::class, 'destroy']);
+    Route::post('/publicaciones/{id}/comentarios', [ComentarioController::class, 'store'])->whereNumber('id')->middleware('throttle:comentarios');
+    Route::delete('/comentarios/{id}', [ComentarioController::class, 'destroy'])->whereNumber('id');
 
     Route::post('/rutas', [RutaController::class, 'store']);
     Route::delete('/rutas/{id}', [RutaController::class, 'destroy']);

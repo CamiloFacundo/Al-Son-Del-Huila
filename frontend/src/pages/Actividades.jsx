@@ -1,253 +1,226 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { PiCameraPlusDuotone, PiImageSquareDuotone } from 'react-icons/pi';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import { PiMapPinDuotone, PiHeartDuotone, PiHeartFill } from 'react-icons/pi';
+import Publicacion from '../components/Publicacion';
 import styles from './Actividades.module.css';
 
-function timeAgo(date) {
-  const now = new Date();
-  const diff = Math.floor((now - new Date(date)) / 1000);
-  const intervals = [
-    { label: 'año', seconds: 31536000 },
-    { label: 'mes', seconds: 2592000 },
-    { label: 'día', seconds: 86400 },
-    { label: 'hora', seconds: 3600 },
-    { label: 'minuto', seconds: 60 },
-    { label: 'segundo', seconds: 1 }
-  ];
-  for (const interval of intervals) {
-    const count = Math.floor(diff / interval.seconds);
-    if (count >= 1) {
-      return `hace ${count} ${interval.label}${count !== 1 ? 's' : ''}`;
-    }
-  }
-  return 'hace un momento';
-}
+const MAX_MB = 8;
+const FORM_VACIO = { imagen: null, descripcion: '', ubicacion: '' };
 
+// Muro de Actividades: fotos de experiencias en el Huila, con likes y comentarios.
 export default function Actividades() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [publicaciones, setPublicaciones] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ imagen: null, descripcion: '', ubicacion: '' });
-  const [subiendo, setSubiendo] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const location = useLocation();
 
-  useEffect(() => {
-    cargarPublicaciones();
+  const [publicaciones, setPublicaciones] = useState([]);
+  const [paginaSiguiente, setPaginaSiguiente] = useState(1);
+  const [cargando, setCargando] = useState(false);
+  const [errorCarga, setErrorCarga] = useState('');
+
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState(FORM_VACIO);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [errorForm, setErrorForm] = useState('');
+  const [subiendo, setSubiendo] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  const avisar = useCallback((texto, tipo = 'success') => {
+    setToast({ texto, tipo });
+    setTimeout(() => setToast(null), 3000);
   }, []);
 
-  const cargarPublicaciones = async () => {
+  const cargarPagina = useCallback(async (pagina) => {
+    setCargando(true);
+    setErrorCarga('');
     try {
-      const res = await api.get('/publicaciones');
-      setPublicaciones(res.data);
-    } catch (err) {
-      console.error(err);
+      const { data } = await api.get('/publicaciones', { params: { page: pagina } });
+      setPublicaciones(prev => {
+        // Evitar duplicados si alguien publicó mientras se paginaba
+        const ids = new Set(prev.map(p => p.id));
+        return pagina === 1 ? data.data : [...prev, ...data.data.filter(p => !ids.has(p.id))];
+      });
+      setPaginaSiguiente(data.pagina_siguiente);
+    } catch {
+      setErrorCarga('No se pudieron cargar las publicaciones.');
     } finally {
-      setLoading(false);
+      setCargando(false);
     }
+  }, []);
+
+  useEffect(() => { cargarPagina(1); }, [cargarPagina]);
+
+  // Cerrar el modal con Escape
+  useEffect(() => {
+    if (!showModal) return;
+    const alPulsar = (e) => { if (e.key === 'Escape') cerrarModal(); };
+    window.addEventListener('keydown', alPulsar);
+    return () => window.removeEventListener('keydown', alPulsar);
+  }, [showModal]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const cambiarPublicacion = (actualizada) =>
+    setPublicaciones(prev => prev.map(p => (p.id === actualizada.id ? { ...p, ...actualizada } : p)));
+
+  const quitarPublicacion = (id) => setPublicaciones(prev => prev.filter(p => p.id !== id));
+
+  const abrirModal = () => {
+    if (!isAuthenticated) return navigate('/login', { state: { from: location } });
+    setShowModal(true);
   };
 
-  const handleLike = async (id) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-    try {
-      const res = await api.post(`/publicaciones/${id}/like`);
-      setPublicaciones(prev =>
-        prev.map(pub =>
-          pub.id === id
-            ? { ...pub, likes_count: res.data.likes, liked_by_user: res.data.liked }
-            : pub
-        )
-      );
-    } catch (err) {
-      console.error(err);
-    }
+  const cerrarModal = () => {
+    setShowModal(false);
+    setFormData(FORM_VACIO);
+    setErrorForm('');
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
   };
 
-  const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleFileChange = (e) => {
+  const elegirFoto = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, imagen: file });
-      setPreviewUrl(URL.createObjectURL(file));
-    }
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setErrorForm('El archivo debe ser una imagen.'); return; }
+    if (file.size > MAX_MB * 1024 * 1024) { setErrorForm(`La foto no puede pesar más de ${MAX_MB} MB.`); return; }
+    setErrorForm('');
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setFormData({ ...formData, imagen: file });
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async (e) => {
+  const publicar = async (e) => {
     e.preventDefault();
-    if (!formData.imagen) return;
+    if (!formData.imagen) { setErrorForm('Elige una foto.'); return; }
     setSubiendo(true);
+    setErrorForm('');
     const data = new FormData();
     data.append('imagen', formData.imagen);
-    data.append('descripcion', formData.descripcion);
-    data.append('ubicacion', formData.ubicacion);
+    if (formData.descripcion.trim()) data.append('descripcion', formData.descripcion.trim());
+    if (formData.ubicacion.trim()) data.append('ubicacion', formData.ubicacion.trim());
     try {
-      const res = await api.post('/publicaciones', data, { headers: { 'Content-Type': 'multipart/form-data' } });
-      setPublicaciones([res.data, ...publicaciones]);
-      setShowModal(false);
-      setFormData({ imagen: null, descripcion: '', ubicacion: '' });
-      setPreviewUrl(null);
+      const res = await api.post('/publicaciones', data);
+      setPublicaciones(prev => [res.data, ...prev]);
+      cerrarModal();
+      avisar('¡Publicado!');
     } catch (err) {
-      console.error(err);
-      alert('Error al publicar');
+      setErrorForm(
+        Object.values(err.response?.data?.errors || {})[0]?.[0] ||
+        err.response?.data?.message ||
+        'No se pudo publicar. Inténtalo de nuevo.'
+      );
     } finally {
       setSubiendo(false);
     }
   };
 
-  const handleAbrirModal = () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    } else {
-      setShowModal(true);
-    }
-  };
-
-  if (loading) return <div className={styles.loading}>Cargando actividades...</div>;
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Actividades</h1>
+        <div>
+          <h1>Actividades</h1>
+          <p className={styles.subtitulo}>Experiencias de viajeros en el Huila</p>
+        </div>
         {isAuthenticated && (
-          <button className={styles.btnCrear} onClick={handleAbrirModal}>
-            + Nueva publicación
+          <button className={styles.btnCrear} onClick={abrirModal}>
+            <PiCameraPlusDuotone size={18} /> Nueva publicación
           </button>
         )}
       </div>
 
+      {!isAuthenticated && (
+        <div className={styles.invitacion}>
+          <PiImageSquareDuotone size={26} />
+          <p>¿Visitaste algún rincón del Huila? <Link to="/login" state={{ from: location }}>Inicia sesión</Link> o <Link to="/register">crea una cuenta</Link> para compartir tus fotos, dar me gusta y comentar.</p>
+        </div>
+      )}
+
       <div className={styles.feed}>
-        {publicaciones.length === 0 ? (
-          <p className={styles.vacio}>No hay publicaciones aún. ¡Sé el primero en compartir tu experiencia!</p>
-        ) : (
-          publicaciones.map(pub => (
-            <div key={pub.id} className={styles.post}>
-              {/* Header: avatar, nombre, ubicación debajo, tiempo a la derecha */}
-              <div className={styles.postHeader}>
-                <img
-                  src={pub.user?.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(pub.user?.nombre || 'U')}&background=random`}
-                  alt="avatar"
-                  className={styles.avatar}
-                />
-                <div className={styles.userInfo}>
-                  <strong className={styles.userName}>{pub.user?.nombre || 'Usuario'}</strong>
-                  {pub.ubicacion && (
-                    <span className={styles.ubicacionUnder}>
-                      <PiMapPinDuotone size={12} className={styles.ubicacionIcon} /> {pub.ubicacion}
-                    </span>
-                  )}
-                </div>
-                <span className={styles.postTimeRight}>{timeAgo(pub.created_at)}</span>
-              </div>
+        {publicaciones.map(pub => (
+          <Publicacion key={pub.id} pub={pub} onCambio={cambiarPublicacion} onBorrada={quitarPublicacion} avisar={avisar} />
+        ))}
 
-              {/* Imagen */}
-              <img src={pub.imagen} alt="publicación" className={styles.postImage} />
+        {cargando && <p className={styles.loading}>Cargando publicaciones…</p>}
 
-              {/* Botones de acción */}
-              <div className={styles.postActions}>
-                <button 
-                  onClick={() => handleLike(pub.id)} 
-                  className={styles.actionBtn}
-                >
-                  {pub.liked_by_user ? (
-                    <PiHeartFill size={16} className={styles.heartRed} />
-                  ) : (
-                    <PiHeartDuotone size={16} />
-                  )}
-                  {pub.likes_count || 0}
-                </button>
-              </div>
+        {errorCarga && (
+          <div className={styles.vacio}>
+            <p>{errorCarga}</p>
+            <button className={styles.btnSecundario} onClick={() => cargarPagina(paginaSiguiente || 1)}>Reintentar</button>
+          </div>
+        )}
 
-              {/* Descripción */}
-              {pub.descripcion && (
-                <p className={styles.descripcion}>
-                  <strong>{pub.user?.nombre || 'Usuario'}</strong> {pub.descripcion}
-                </p>
-              )}
+        {!cargando && !errorCarga && publicaciones.length === 0 && (
+          <div className={styles.vacio}>
+            <p>Aún no hay publicaciones. ¡Sé el primero en compartir tu experiencia!</p>
+            <button className={styles.btnCrear} onClick={abrirModal}><PiCameraPlusDuotone size={18} /> Compartir una foto</button>
+          </div>
+        )}
 
-              {/* Fecha completa */}
-              <small className={styles.fecha}>
-                {new Date(pub.created_at).toLocaleDateString('es-CO', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </small>
-            </div>
-          ))
+        {!cargando && !errorCarga && paginaSiguiente && publicaciones.length > 0 && (
+          <button className={styles.btnSecundario} onClick={() => cargarPagina(paginaSiguiente)}>Ver más publicaciones</button>
         )}
       </div>
 
-      {/* Modal para nueva publicación */}
       {showModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
-          <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalOverlay} onClick={cerrarModal}>
+          <div className={styles.modalContainer} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="titulo-nueva">
             <div className={styles.modalHeader}>
-              <h2>Compartir experiencia</h2>
-              <button className={styles.closeBtn} onClick={() => setShowModal(false)}>✕</button>
+              <h2 id="titulo-nueva">Compartir experiencia</h2>
+              <button className={styles.closeBtn} onClick={cerrarModal} aria-label="Cerrar">✕</button>
             </div>
-            <form onSubmit={handleSubmit} className={styles.modalForm}>
+            <form onSubmit={publicar} className={styles.modalForm} noValidate>
               <div className={styles.imageUploadArea}>
                 {previewUrl ? (
                   <div className={styles.imagePreview}>
-                    <img src={previewUrl} alt="preview" />
-                    <button
-                      type="button"
-                      className={styles.changeImageBtn}
-                      onClick={() => {
-                        setFormData({ ...formData, imagen: null });
-                        setPreviewUrl(null);
-                      }}
-                    >
+                    <img src={previewUrl} alt="Vista previa de la foto" />
+                    <label className={styles.changeImageBtn}>
                       Cambiar foto
-                    </button>
+                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={elegirFoto} hidden />
+                    </label>
                   </div>
                 ) : (
                   <label className={styles.uploadLabel}>
-                    <input type="file" accept="image/*" onChange={handleFileChange} required />
-                    <div className={styles.uploadIcon}>📸</div>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={elegirFoto} />
+                    <PiCameraPlusDuotone size={40} className={styles.uploadIcon} />
                     <span>Subir foto</span>
+                    <small>JPG, PNG o WebP · hasta {MAX_MB} MB</small>
                   </label>
                 )}
               </div>
               <div className={styles.formFields}>
                 <textarea
-                  name="descripcion"
                   value={formData.descripcion}
-                  onChange={handleInputChange}
+                  onChange={e => setFormData({ ...formData, descripcion: e.target.value })}
                   placeholder="¿Qué viviste en este lugar?"
                   rows="3"
+                  maxLength={255}
                   className={styles.textarea}
+                  aria-label="Descripción"
                 />
+                <span className={styles.contador}>{formData.descripcion.length}/255</span>
                 <input
                   type="text"
-                  name="ubicacion"
                   value={formData.ubicacion}
-                  onChange={handleInputChange}
+                  onChange={e => setFormData({ ...formData, ubicacion: e.target.value })}
                   placeholder="📍 Ubicación (ej: Desierto de la Tatacoa)"
+                  maxLength={100}
                   className={styles.input}
+                  aria-label="Ubicación"
                 />
               </div>
+              {errorForm && <p className={styles.errorForm} role="alert">{errorForm}</p>}
               <div className={styles.modalActions}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>
-                  Cancelar
-                </button>
-                <button type="submit" className={styles.submitBtn} disabled={subiendo}>
-                  {subiendo ? 'Publicando...' : 'Publicar'}
+                <button type="button" className={styles.cancelBtn} onClick={cerrarModal}>Cancelar</button>
+                <button type="submit" className={styles.submitBtn} disabled={subiendo || !formData.imagen}>
+                  {subiendo ? 'Publicando…' : 'Publicar'}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {toast && <div className={`${styles.toast} ${styles[toast.tipo]}`} role="status">{toast.texto}</div>}
     </div>
   );
 }

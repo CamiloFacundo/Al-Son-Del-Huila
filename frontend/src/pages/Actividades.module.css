@@ -386,3 +386,75 @@
 .heartRed {
   color: #e74c3c;
 }
+/* ===== Muro completo: invitación, paginación, formulario ===== */
+.btnCrear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #1a1206;
+}
+
+.subtitulo {
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  color: #999;
+}
+
+.invitacion {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: rgba(196, 98, 45, 0.08);
+  border: 1px solid rgba(196, 98, 45, 0.25);
+  color: #D4A843;
+}
+
+.invitacion p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #ddd;
+}
+
+.invitacion a { color: #D4A843; font-weight: 600; }
+
+.vacio p { margin: 0 0 1rem; }
+
+.btnSecundario {
+  align-self: center;
+  padding: 0.6rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #ddd;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnSecundario:hover { border-color: #D4A843; color: #fff; }
+
+.uploadLabel small {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.contador {
+  align-self: flex-end;
+  margin-top: -0.4rem;
+  font-size: 0.72rem;
+  color: #777;
+}
+
+.errorForm {
+  margin: 0 0 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(224, 82, 82, 0.1);
+  color: #ef7b7b;
+  font-size: 0.85rem;
+}
+
+.submitBtn:disabled { cursor: default; }
