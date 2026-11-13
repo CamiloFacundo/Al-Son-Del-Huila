@@ -1,1 +1,1622 @@
-[]
+[
+    {
+        "destino_id": 1,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 1,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 1,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 2,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 2,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 3,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 4,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 4,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 5,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 6,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 6,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 7,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 8,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 8,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 9,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 9,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 10,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 11,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 11,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 12,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 13,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 14,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 14,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 15,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 15,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 16,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 16,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 16,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 17,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 17,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 17,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 18,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 18,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 18,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 18,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 19,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 19,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 20,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 20,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 21,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 21,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 21,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 21,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 22,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 22,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 22,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 22,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 23,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 23,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 23,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 23,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 24,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 24,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 24,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 25,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 25,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 26,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 26,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 26,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 27,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 27,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 27,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 28,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 28,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 28,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 28,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 29,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 29,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 29,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 30,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 30,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 30,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 31,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 31,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 32,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 32,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 33,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 33,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 34,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 34,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 35,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 35,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 35,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 36,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 36,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 37,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 37,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 37,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 37,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 38,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 38,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 39,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 39,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 40,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 40,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 40,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 40,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 41,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 41,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 41,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 42,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 42,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 42,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 43,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 43,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 44,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 45,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 45,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 46,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 46,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 46,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 47,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 48,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 48,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 48,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 49,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 49,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 50,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 50,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 50,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 51,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 51,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 51,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 52,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 52,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 53,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 53,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 54,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 54,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 54,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 55,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 56,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 57,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 57,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 58,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 58,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 58,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 59,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 59,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 60,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 60,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 61,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 61,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 61,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 62,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 62,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 63,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 64,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 65,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 65,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 65,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 66,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 66,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 67,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 68,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 68,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 69,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 69,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 69,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 70,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 70,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 71,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 71,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 72,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 72,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 73,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 73,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 74,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 74,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 75,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 75,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 75,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 75,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 76,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 76,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 76,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 77,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 77,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 78,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 79,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 79,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 80,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 80,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 81,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 82,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 82,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 82,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 82,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 83,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 83,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 83,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 83,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 84,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 84,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 85,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 85,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 85,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 86,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 86,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 87,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 88,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 89,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 89,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 90,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 90,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 91,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 91,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 92,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 92,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 92,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 93,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 94,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 94,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 95,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 95,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 95,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 96,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 96,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 96,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 96,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 97,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 97,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 97,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 98,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 98,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 98,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 99,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 100,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 100,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 100,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 101,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 101,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 101,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 101,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 102,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 103,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 103,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 104,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 105,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 105,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 106,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 106,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 107,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 107,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 107,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 108,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 109,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 109,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 110,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 110,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 110,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 110,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 111,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 111,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 112,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 112,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 113,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 114,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 115,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 115,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 116,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 116,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 117,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 117,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 118,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 118,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 118,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 119,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 119,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 120,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 120,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 121,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 121,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 122,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 122,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 122,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 123,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 124,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 125,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 125,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 125,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 126,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 127,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 127,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 128,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 128,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 129,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 130,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 130,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 130,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 131,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 132,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 132,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 133,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 133,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 133,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 134,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 134,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 134,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 135,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 135,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 136,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 136,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 137,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 137,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 138,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 138,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 139,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 139,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 140,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 140,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 141,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 142,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 142,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 143,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 144,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 144,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 144,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 145,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 145,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 146,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 147,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 147,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 148,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 149,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 149,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 149,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 150,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 150,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 150,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 151,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 151,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 151,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 152,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 152,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 153,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 153,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 154,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 155,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 155,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 155,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 156,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 156,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 157,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 158,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 158,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 159,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 159,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 159,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 159,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 160,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 160,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 161,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 161,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 161,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 162,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 163,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 163,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 164,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 165,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 165,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 166,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 167,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 167,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 167,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 167,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 168,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 168,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 168,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 168,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 169,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 170,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 170,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 171,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 171,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 172,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 172,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 172,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 173,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 173,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 174,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 174,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 174,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 175,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 175,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 176,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 176,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 177,
+        "etiqueta_id": 1
+    },
+    {
+        "destino_id": 177,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 177,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 177,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 178,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 178,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 178,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 179,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 180,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 180,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 180,
+        "etiqueta_id": 5
+    },
+    {
+        "destino_id": 181,
+        "etiqueta_id": 4
+    },
+    {
+        "destino_id": 182,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 183,
+        "etiqueta_id": 2
+    },
+    {
+        "destino_id": 183,
+        "etiqueta_id": 6
+    },
+    {
+        "destino_id": 184,
+        "etiqueta_id": 3
+    },
+    {
+        "destino_id": 184,
+        "etiqueta_id": 7
+    },
+    {
+        "destino_id": 185,
+        "etiqueta_id": 3
+    }
+]
