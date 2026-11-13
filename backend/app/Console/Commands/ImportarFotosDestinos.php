@@ -118,6 +118,27 @@ class ImportarFotosDestinos extends Command
         return $n;
     }
 
+    /** Las fotos de móvil guardan la rotación en EXIF; GD no la aplica, así que se gira a mano. */
+    private function corregirOrientacion(\GdImage $img, string $bytes): \GdImage
+    {
+        if (!function_exists('exif_read_data') || !str_starts_with($bytes, "\xFF\xD8")) {
+            return $img; // solo JPEG y si la extensión exif está activa
+        }
+        $exif = @exif_read_data('data://image/jpeg;base64,' . base64_encode($bytes));
+        $angulo = match ($exif['Orientation'] ?? 1) {
+            3 => 180,
+            6 => -90,
+            8 => 90,
+            default => 0,
+        };
+        if ($angulo === 0) {
+            return $img;
+        }
+        $girada = imagerotate($img, $angulo, 0);
+        imagedestroy($img);
+        return $girada;
+    }
+
     /** Descarga con pausas entre peticiones; si Commons responde 429, espera y reintenta. */
     private function descargar(string $url): ?string
     {
@@ -147,6 +168,8 @@ class ImportarFotosDestinos extends Command
             $this->warn("  #{$destino->id}: no es una imagen válida");
             return false;
         }
+
+        $img = $this->corregirOrientacion($img, $bytes);
 
         $ancho = imagesx($img);
         if ($ancho > self::ANCHO_MAX) {

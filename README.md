@@ -15,7 +15,7 @@ Aplicación web de turismo para el departamento del Huila (Colombia): catálogo 
 
 ## Requisitos
 
-- **PHP 8.3 o superior** con las extensiones `curl`, `fileinfo`, `mbstring`, `openssl`, `pdo_mysql`, `zip`.
+- **PHP 8.3 o superior** con las extensiones `curl`, `fileinfo`, `mbstring`, `openssl`, `pdo_mysql`, `zip`, `gd` y `exif` (las dos últimas, para convertir fotos).
   El PHP 8.2 de XAMPP **no sirve**; se puede tener otro PHP aparte (p. ej. `C:\php84`).
 - **Composer** 2
 - **Node.js** 20 o superior y npm
@@ -71,6 +71,8 @@ La web queda en `http://localhost:5173`.
 |---|---|
 | `php artisan test` | Ejecuta los tests de la API (usa la BD `al_son_del_huila_test`; créala vacía una vez) |
 | `php artisan catalogo:exportar` | Si cambias destinos/categorías/etiquetas en tu BD, regenera `database/seeders/data/*.json` para que los demás reciban los cambios |
+| `php artisan destinos:buscar-fotos` | Busca fotos con licencia libre en Wikimedia Commons para los destinos sin foto y genera `storage/app/fotos-commons/revision.html` para revisarlas |
+| `php artisan destinos:importar-fotos` | Descarga las fotos elegidas de Commons y/o importa fotos propias de `storage/app/fotos-propias/{id}.jpg` (con `--autor="Nombre"`), las convierte a WebP y guarda los créditos |
 | `php artisan schedule:work` | Ejecuta las tareas programadas (borrado diario de tokens caducados) |
 | `php artisan route:list --path=api` | Lista los endpoints |
 
