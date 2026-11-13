@@ -45,7 +45,7 @@ export default function Mapa({ destinos }) {
         const lat = parseFloat(destino.latitud);
         const lng = parseFloat(destino.longitud);
         if (!isNaN(lat) && !isNaN(lng)) {
-          const marker = L.marker([lat, lng])
+          L.marker([lat, lng])
             .bindPopup(`<b>${destino.nombre}</b><br>${destino.municipio || ''}<br>${destino.categoria || ''}`)
             .addTo(mapRef.current);
           bounds.push([lat, lng]);

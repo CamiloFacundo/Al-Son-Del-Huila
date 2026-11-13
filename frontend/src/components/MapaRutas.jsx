@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { PiMapPinDuotone } from "react-icons/pi"
 import styles from "./MapaRutas.module.css"
 
-export default function MapaRutas({ destinos = [], rutaActiva = null, onDestinoClick }) {
+export default function MapaRutas({ destinos = [], onDestinoClick }) {
   const mapaRef     = useRef(null)
   const instanceRef = useRef(null)
   const markersRef  = useRef([])

@@ -124,7 +124,7 @@ export default function ChatRutas({
         onRutaGenerada?.(rutaGenerada)
       }
 
-    } catch (err) {
+    } catch {
       setMensajes(prev => [...prev, {
         id:       Date.now() + 1,
         rol:      "assistant",

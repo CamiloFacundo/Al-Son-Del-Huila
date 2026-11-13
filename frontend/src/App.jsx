@@ -1,27 +1,32 @@
+import { lazy, Suspense } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Navbar          from "./components/Navbar"
 import Footer          from "./components/Footer"
 import CustomCursor    from "./components/CustomCursor"
 import ProtectedRoute  from "./components/ProtectedRoute"
 import Home            from "./pages/Home"
-import Catalogo        from "./pages/Catalogo"
-import Mapa from "./pages/Mapa";
-import Login           from "./pages/Login"
-import Register        from "./pages/Register"
-import Actividades     from "./pages/Actividades";
-import Rutas           from "./pages/Rutas"
-import Quiz            from "./pages/Quiz"
-import Resultado       from "./pages/Resultado"
-import Privacidad      from "./pages/Privacidad"
-import Terminos        from "./pages/Terminos"
-import Perfil          from "./pages/Perfil"
-import GoogleCallback from "./pages/GoogleCallback"
+
+// Cada página se descarga solo cuando se visita (antes todo iba en un único JS).
+// Así la portada no carga Leaflet, jsPDF, html2canvas, etc.
+const Catalogo       = lazy(() => import("./pages/Catalogo"))
+const Mapa           = lazy(() => import("./pages/Mapa"))
+const Login          = lazy(() => import("./pages/Login"))
+const Register       = lazy(() => import("./pages/Register"))
+const Actividades    = lazy(() => import("./pages/Actividades"))
+const Rutas          = lazy(() => import("./pages/Rutas"))
+const Quiz           = lazy(() => import("./pages/Quiz"))
+const Resultado      = lazy(() => import("./pages/Resultado"))
+const Privacidad     = lazy(() => import("./pages/Privacidad"))
+const Terminos       = lazy(() => import("./pages/Terminos"))
+const Perfil         = lazy(() => import("./pages/Perfil"))
+const GoogleCallback = lazy(() => import("./pages/GoogleCallback"))
 
 function App() {
   return (
     <BrowserRouter>
       <CustomCursor />
       <Navbar />
+      <Suspense fallback={<div style={{ minHeight: "60vh" }} />}>
       <Routes>
         <Route path="/"            element={<Home />}       />
         <Route path="/catalogo"    element={<Catalogo />}   />
@@ -46,6 +51,7 @@ function App() {
           </ProtectedRoute>
         }/>
       </Routes>
+      </Suspense>
       <Footer />
     </BrowserRouter>
   )

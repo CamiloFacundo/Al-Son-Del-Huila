@@ -26,7 +26,7 @@ function timeAgo(date) {
 }
 
 export default function Actividades() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [publicaciones, setPublicaciones] = useState([]);
   const [loading, setLoading] = useState(true);

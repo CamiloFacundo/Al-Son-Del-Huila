@@ -59,10 +59,10 @@ const CardSwap = ({
         };
 
   const childArr = useMemo(() => Children.toArray(children), [children]);
-  const refs = useMemo(
-    () => childArr.map(() => React.createRef()),
-    [childArr.length]
-  );
+  // Las refs solo deben recrearse si cambia el número de tarjetas (no en cada render),
+  // por eso la dependencia es childArr.length a propósito.
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization, react-hooks/exhaustive-deps
+  const refs = useMemo(() => childArr.map(() => React.createRef()), [childArr.length]);
 
   const order = useRef(Array.from({ length: childArr.length }, (_, i) => i));
   const tlRef = useRef(null);

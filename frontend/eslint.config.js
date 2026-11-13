@@ -23,7 +23,14 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // La regla base no ve los usos en JSX de <motion.div> ni de componentes recibidos
+      // como prop/parámetro (<Icon />), así que se ignoran esos nombres.
+      'no-unused-vars': ['error', { varsIgnorePattern: '^(motion|[A-Z_])', argsIgnorePattern: '^[A-Z]' }],
     },
+  },
+  {
+    // Los contextos exportan el Provider y su hook juntos; es el patrón habitual.
+    files: ['src/context/**/*.{js,jsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
   },
 ])

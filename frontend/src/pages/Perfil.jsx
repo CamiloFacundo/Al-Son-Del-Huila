@@ -42,7 +42,7 @@ function timeAgo(date) {
 }
 
 export default function Perfil() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const [perfil, setPerfil] = useState(null);
@@ -479,6 +479,44 @@ export default function Perfil() {
       </div>
 
       {/* Modal cambio de contraseña */}
+      {editandoPost && (
+        <div className={styles.modalOverlay} onClick={cancelarEdicionPost}>
+          <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Editar publicación</h2>
+              <button className={styles.closeBtn} onClick={cancelarEdicionPost}>✕</button>
+            </div>
+            <form
+              className={styles.modalForm}
+              onSubmit={(e) => { e.preventDefault(); guardarEdicionPost(); }}
+            >
+              <div className={styles.formGroup}>
+                <label>Descripción</label>
+                <textarea
+                  value={editandoPost.descripcion}
+                  onChange={(e) => setEditandoPost({ ...editandoPost, descripcion: e.target.value })}
+                  rows={3}
+                  maxLength={255}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Ubicación</label>
+                <input
+                  type="text"
+                  value={editandoPost.ubicacion}
+                  onChange={(e) => setEditandoPost({ ...editandoPost, ubicacion: e.target.value })}
+                  maxLength={100}
+                />
+              </div>
+              <div className={styles.modalActions}>
+                <button type="button" onClick={cancelarEdicionPost}>Cancelar</button>
+                <button type="submit">Guardar cambios</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {showPasswordModal && (
         <div className={styles.modalOverlay} onClick={() => setShowPasswordModal(false)}>
           <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>

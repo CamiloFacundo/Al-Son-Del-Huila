@@ -1,6 +1,4 @@
-import html2canvas from 'html2canvas';
 import Mapa from '../components/Mapa';
-import jsPDF from 'jspdf';
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -228,6 +226,8 @@ export default function Resultado() {
       elemento.style.height = 'auto';
       elemento.style.overflow = 'visible';
 
+      // Se cargan solo al descargar (pesan ~350 KB y no hacen falta para ver el itinerario)
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(elemento, {
         scale: 2.5,
         backgroundColor: '#ffffff',
@@ -249,6 +249,7 @@ export default function Resultado() {
         enlace.href = imagen;
         enlace.click();
       } else if (formato === 'pdf') {
+        const { default: jsPDF } = await import('jspdf');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgProps = pdf.getImageProperties(imagen);
         const pdfWidth = pdf.internal.pageSize.getWidth();

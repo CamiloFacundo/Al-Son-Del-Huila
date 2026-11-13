@@ -8,7 +8,8 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Solo hay que esperar si hay token guardado (se valida contra /perfil al arrancar)
+  const [loading, setLoading] = useState(() => !!localStorage.getItem("token"));
 
   // Función para refrescar los datos del usuario desde el token actual
   const refreshUser = async () => {
@@ -37,9 +38,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
+      // refreshUser pide /perfil (asíncrono); el setState ocurre al llegar la respuesta
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       refreshUser().finally(() => setLoading(false));
-    } else {
-      setLoading(false);
     }
   }, []);
 
