@@ -15,11 +15,11 @@ use App\Http\Controllers\Api\RecomendadorController;
 use App\Http\Controllers\Api\ChatController;
 
 // Rutas públicas
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:auth');
+Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:auth');
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
-Route::post('/auth/google/exchange', [GoogleAuthController::class, 'exchange'])->middleware('throttle:10,1');
+Route::post('/auth/google/exchange', [GoogleAuthController::class, 'exchange'])->middleware('throttle:google');
 Route::get('/destinos', [DestinoController::class, 'index']);
 Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
 Route::get('/destinos/{id}', [DestinoController::class, 'show'])->whereNumber('id');
@@ -36,7 +36,7 @@ Route::get('/etiquetas', [EtiquetaController::class, 'index']);
 Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
 
 // Asistente Huily (proxy a Groq; la API key solo vive en el backend)
-Route::post('/chat', [ChatController::class, 'enviar'])->middleware('throttle:20,1');
+Route::post('/chat', [ChatController::class, 'enviar'])->middleware('throttle:chat');
 
 
 // Rutas protegidas (requieren autenticación)
@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/perfil', [PerfilController::class, 'show']);
     Route::put('/perfil', [PerfilController::class, 'update']);
     Route::post('/perfil/foto', [PerfilController::class, 'subirFoto']);
-    Route::put('/perfil/password', [PerfilController::class, 'cambiarPassword']);
+    Route::put('/perfil/password', [PerfilController::class, 'cambiarPassword'])->middleware('throttle:auth');
     Route::post('/publicaciones', [PublicacionController::class, 'store']);
     Route::post('/publicaciones/{id}/like', [PublicacionController::class, 'like']);
     Route::put('/publicaciones/{id}', [PublicacionController::class, 'update']);

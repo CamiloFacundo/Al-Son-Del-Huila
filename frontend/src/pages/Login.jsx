@@ -13,11 +13,17 @@ import logo from "../assets/images/logo.png"
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
+  const location = useLocation()
+  // Mensajes que llegan por la URL: sesión caducada o fallo de Google
+  const [error, setError] = useState(() => {
+    const params = new URLSearchParams(location.search)
+    if (params.get("sesion") === "expirada") return "Tu sesión expiró. Inicia sesión de nuevo."
+    if (params.get("error") === "google_failed") return "No se pudo iniciar sesión con Google. Inténtalo de nuevo."
+    return ""
+  })
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
   const from = location.state?.from?.pathname || "/"
 
   const handleSubmit = async (e) => {
@@ -28,7 +34,11 @@ export default function Login() {
       await login(email, password)   // login del contexto
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err.response?.data?.message || "Credenciales incorrectas")
+      if (err.response?.status === 429) {
+        setError("Demasiados intentos. Espera un minuto y vuelve a intentarlo.")
+      } else {
+        setError(err.response?.data?.message || "Credenciales incorrectas")
+      }
     } finally {
       setLoading(false)
     }

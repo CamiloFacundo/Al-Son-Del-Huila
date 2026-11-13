@@ -50,6 +50,10 @@ export function useRegister() {
       navigate('/');
     } catch (error) {
       const errores = error.response?.data?.errors;
+      if (error.response?.status === 429) {
+        setGlobalError("Demasiados intentos. Espera un minuto y vuelve a intentarlo.");
+        return;
+      }
       setGlobalError(
         (errores && Object.values(errores)[0]?.[0]) ||
         error.response?.data?.message ||
