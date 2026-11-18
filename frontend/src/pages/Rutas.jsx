@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
+import { useLocation } from "react-router-dom"
 import { PiChatCircleDotsDuotone, PiMapTrifoldDuotone } from "react-icons/pi"
 import { useAuth } from "../context/AuthContext"
 import { getDestinos } from "../api/destinos"
@@ -39,6 +40,20 @@ export default function Rutas() {
       .filter(r => user && r.user_id === user.id)
       .map(r => ({ ...r, destinos: (r.destinos || []).map(id => porId.get(Number(id))).filter(Boolean) }))
   }, [rutasApi, todosDestinos, user])
+
+  // Llegada desde el perfil con «Ver en el mapa»: se abre esa ruta una sola vez
+  const location = useLocation()
+  const rutaPedida = useRef(location.state?.rutaId ?? null)
+  useEffect(() => {
+    if (!rutaPedida.current) return
+    const ruta = misRutas.find(r => r.id === rutaPedida.current)
+    if (!ruta || ruta.destinos.length === 0) return
+    rutaPedida.current = null
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reacciona a datos que llegan de la API
+    setRutaActiva(ruta)
+    setMapa({ destinos: ruta.destinos, titulo: ruta.nombre, destacado: null })
+    setPestana("rutas")
+  }, [misRutas])
 
   const mostrarAviso = (texto) => { setAviso(texto); setTimeout(() => setAviso(""), 3000) }
 

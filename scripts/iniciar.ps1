@@ -17,6 +17,14 @@ Revisar-Node
 Paso 'Base de datos'
 Asegurar-Mysql $mysqlBin
 
+# Sin APP_KEY Laravel falla al servir las fotos subidas (perfil, portada, Actividades)
+if (-not (Leer-Env (Join-Path $Backend '.env') 'APP_KEY')) {
+    Paso 'Generando APP_KEY (faltaba en backend\.env)'
+    Push-Location $Backend
+    & $php artisan key:generate --force
+    Pop-Location
+}
+
 Paso 'API (Laravel) en http://localhost:8000'
 if (Puerto-Abierto 8000) {
     Aviso 'El puerto 8000 ya está en uso: se asume que la API ya está encendida'

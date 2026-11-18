@@ -106,3 +106,20 @@
   gap: 4px;
 }
 
+
+/* Autorrelleno del navegador: sin el fondo azul-morado de Chrome, con los colores de la app */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  caret-color: var(--text-primary);
+  -webkit-box-shadow: 0 0 0 1000px #111008 inset;
+  box-shadow: 0 0 0 1000px #111008 inset;
+  transition: background-color 9999s ease-out 0s;
+  animation-name: autorrellenoInicio;
+}
+
+.input:not(:-webkit-autofill) { animation-name: autorrellenoFin; }
+
+@keyframes autorrellenoInicio { from { opacity: 1; } to { opacity: 1; } }
+@keyframes autorrellenoFin { from { opacity: 1; } to { opacity: 1; } }

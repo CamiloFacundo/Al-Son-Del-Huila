@@ -5,7 +5,8 @@ export default function ProtectedRoute({ children, soloAdmin = false }) {
   const { user, loading } = useAuth();
   const location = useLocation()
 
-  if (loading) return null
+  // Con el usuario guardado se muestra la página de inmediato; sin él, se espera a /perfil
+  if (loading && !user) return null
 
   if (!user) {
     // Guarda a dónde quería ir para redirigir después del login

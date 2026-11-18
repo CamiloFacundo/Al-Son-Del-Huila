@@ -15,10 +15,12 @@ export default function AuthInput({
 }) {
   const [focused,      setFocused]      = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  // Chrome rellena el correo y la contraseña guardados sin avisar a React: se detecta con una animación
+  const [autorrelleno, setAutorrelleno] = useState(false)
 
   const isPassword = type === "password"
   const inputType  = isPassword ? (showPassword ? "text" : "password") : type
-  const isFloating = focused || value?.length > 0
+  const isFloating = focused || autorrelleno || value?.length > 0
 
   return (
     <div className={styles.wrapper}>
@@ -53,6 +55,10 @@ export default function AuthInput({
           className={`${styles.input} ${Icon ? styles.inputWithIcon : ""} ${isPassword ? styles.inputPassword : ""}`}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
+          onAnimationStart={(e) => {
+            if (e.animationName.includes("autorrellenoInicio")) setAutorrelleno(true)
+            if (e.animationName.includes("autorrellenoFin")) setAutorrelleno(false)
+          }}
         />
 
         {isPassword && (

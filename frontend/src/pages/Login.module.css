@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 2rem;
+  padding: calc(88px + 1.5rem) 1.25rem 2.5rem; /* deja libre la barra de navegación (88px) */
   background: var(--color-noche);
   position: relative;
   overflow: hidden;

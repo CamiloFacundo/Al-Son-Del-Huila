@@ -1,0 +1,39 @@
+.pagina {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 2rem;
+  background: var(--color-noche);
+}
+
+.logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px var(--color-border-gold), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.giro {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid rgba(212, 168, 67, 0.2);
+  border-top-color: var(--color-dorado);
+  animation: girar 0.8s linear infinite;
+}
+
+.texto {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .giro { animation-duration: 2.4s; }
+}

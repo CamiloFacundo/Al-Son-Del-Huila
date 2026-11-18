@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
-import { PiMagnifyingGlassDuotone, PiXBold, PiStarFill, PiArrowsOutSimpleBold } from "react-icons/pi"
+import { PiMagnifyingGlassDuotone, PiXBold, PiStarFill, PiArrowsOutSimpleBold, PiCrosshairDuotone, PiNavigationArrowFill } from "react-icons/pi"
 import api from "../services/api"
 import { getDestinos } from "../api/destinos"
 import { capaOscura } from "../utils/mapas"
 import { visualCategoria } from "../utils/categoriaVisual"
+import { distanciaKm, formatoDistancia, pedirUbicacion } from "../utils/ubicacion"
 import DestinoModal from "../components/DestinoModal"
 import styles from "./Mapa.module.css"
 
@@ -33,12 +34,17 @@ export default function MapaPagina() {
   const [filtro, setFiltro] = useState(null) // id de categoría o null = todas
   const [activo, setActivo] = useState(null) // id del destino resaltado
   const [ficha, setFicha] = useState(null)
+  const [ubicacion, setUbicacion] = useState(null) // { lat, lng, precision }
+  const [estadoUbic, setEstadoUbic] = useState({ buscando: false, error: "" })
+  const [porCercania, setPorCercania] = useState(false)
 
   const contenedorRef = useRef(null)
   const mapaRef = useRef(null)
   const marcadoresRef = useRef(new Map())
   const filasRef = useRef(new Map())
   const listaRef = useRef(null)
+  const capaUbicacionRef = useRef(null)
+  const encuadreUbicacionRef = useRef(null) // encuadre pendiente tras ubicar al usuario
 
   useEffect(() => {
     Promise.all([getDestinos(), api.get("/categorias")])
@@ -46,14 +52,32 @@ export default function MapaPagina() {
       .catch(() => setError("No se pudieron cargar los destinos. Revisa tu conexión e inténtalo de nuevo."))
   }, [])
 
+  // Distancia desde el usuario a cada destino (cuando compartió su ubicación)
+  const distancias = useMemo(() => {
+    const m = new Map()
+    if (!ubicacion || !destinos) return m
+    for (const d of destinos) {
+      const lat = parseFloat(d.latitud), lng = parseFloat(d.longitud)
+      if (!isNaN(lat) && !isNaN(lng)) m.set(d.id, distanciaKm(ubicacion.lat, ubicacion.lng, lat, lng))
+    }
+    return m
+  }, [ubicacion, destinos])
+
   const visibles = useMemo(() => {
     if (!destinos) return []
     const q = normalizar(busqueda.trim())
-    return destinos.filter(d =>
+    const lista = destinos.filter(d =>
       (!filtro || d.categoria_id === filtro) &&
       (!q || normalizar(`${d.nombre} ${d.municipio?.nombre} ${d.categoria?.nombre}`).includes(q))
     )
-  }, [destinos, busqueda, filtro])
+    if (porCercania && distancias.size) {
+      lista.sort((a, b) => (distancias.get(a.id) ?? Infinity) - (distancias.get(b.id) ?? Infinity))
+    }
+    return lista
+  }, [destinos, busqueda, filtro, porCercania, distancias])
+
+  // Qué destinos se ven (sin importar el orden): solo si cambia se vuelve a encuadrar el mapa
+  const claveVisibles = useMemo(() => visibles.map(d => d.id).sort((a, b) => a - b).join(","), [visibles])
 
   const conteo = useMemo(() => {
     const c = {}
@@ -66,6 +90,7 @@ export default function MapaPagina() {
     const mapa = L.map(contenedorRef.current, { zoomControl: false, attributionControl: true }).setView(HUILA, 8)
     capaOscura(mapa)
     L.control.zoom({ position: "bottomright" }).addTo(mapa)
+    capaUbicacionRef.current = L.layerGroup().addTo(mapa)
     mapaRef.current = mapa
     return () => { mapa.remove(); mapaRef.current = null }
   }, [])
@@ -106,18 +131,42 @@ export default function MapaPagina() {
     }
   }, [destinos])
 
-  // Mostrar solo los marcadores filtrados y encuadrarlos
+  // Mostrar solo los marcadores filtrados y encuadrarlos (ordenar por cercanía no vuelve a encuadrar)
   useEffect(() => {
     const mapa = mapaRef.current
     if (!mapa || !destinos) return
-    const ids = new Set(visibles.map(d => d.id))
+    const ids = new Set(claveVisibles ? claveVisibles.split(",").map(Number) : [])
     const puntos = []
     marcadoresRef.current.forEach((m, id) => {
       if (ids.has(id)) { if (!mapa.hasLayer(m)) m.addTo(mapa); puntos.push(m.getLatLng()) }
       else m.remove()
     })
     if (puntos.length) mapa.fitBounds(L.latLngBounds(puntos), { padding: [48, 48], maxZoom: 12, animate: true })
-  }, [visibles, destinos])
+  }, [claveVisibles, destinos])
+
+  // Punto "Estás aquí" con el círculo de precisión del GPS
+  useEffect(() => {
+    const capa = capaUbicacionRef.current
+    if (!capa) return
+    capa.clearLayers()
+    if (!ubicacion) return
+    const punto = [ubicacion.lat, ubicacion.lng]
+    if (ubicacion.precision > 30) {
+      L.circle(punto, {
+        radius: Math.min(ubicacion.precision, 5000), color: "#D4A843", weight: 1, opacity: 0.6,
+        fillColor: "#D4A843", fillOpacity: 0.08, interactive: false,
+      }).addTo(capa)
+    }
+    L.marker(punto, {
+      icon: L.divIcon({ className: "", html: `<span class="${styles.yo}"></span>`, iconSize: [22, 22], iconAnchor: [11, 11] }),
+      title: "Tu ubicación", zIndexOffset: 2000, keyboard: false,
+    }).bindTooltip("Estás aquí", { direction: "top", offset: [0, -12], className: styles.yoEtiqueta }).addTo(capa)
+    // El vuelo va después de dibujar: el primer círculo crea la capa SVG y cortaría una animación ya empezada
+    if (encuadreUbicacionRef.current) {
+      mapaRef.current?.flyToBounds(encuadreUbicacionRef.current, { padding: [70, 70], maxZoom: 13, duration: 1 })
+      encuadreUbicacionRef.current = null
+    }
+  }, [ubicacion])
 
   // Resaltar el marcador activo y llevar su fila a la vista
   useEffect(() => {
@@ -152,6 +201,33 @@ export default function MapaPagina() {
     fila.scrollTo({ left: chip.offsetLeft - fila.offsetLeft - 24, behavior: "smooth" })
   }
 
+  const ubicarme = async () => {
+    setEstadoUbic({ buscando: true, error: "" })
+    try {
+      const u = await pedirUbicacion()
+      // Encuadrar al usuario junto con los 3 destinos visibles más cercanos
+      const cercanos = visibles
+        .map(d => ({ d, km: distanciaKm(u.lat, u.lng, parseFloat(d.latitud), parseFloat(d.longitud)) }))
+        .filter(x => !isNaN(x.km))
+        .sort((a, b) => a.km - b.km)
+        .slice(0, 3)
+        .map(x => [parseFloat(x.d.latitud), parseFloat(x.d.longitud)])
+      encuadreUbicacionRef.current = L.latLngBounds([[u.lat, u.lng], ...cercanos])
+      setUbicacion(u)
+      setPorCercania(true)
+      setEstadoUbic({ buscando: false, error: "" })
+      listaRef.current?.scrollTo({ top: 0, behavior: "smooth" })
+    } catch (e) {
+      setEstadoUbic({ buscando: false, error: e.message })
+    }
+  }
+
+  const quitarUbicacion = () => {
+    setUbicacion(null)
+    setPorCercania(false)
+    setEstadoUbic({ buscando: false, error: "" })
+  }
+
   const verTodo = () => {
     setBusqueda(""); setFiltro(null); setActivo(null)
     mapaRef.current?.closePopup()
@@ -163,6 +239,14 @@ export default function MapaPagina() {
         <header className={styles.cabecera}>
           <h1>Mapa de destinos</h1>
           <p>{destinos ? `${visibles.length} de ${destinos.length} destinos` : error ? "" : "Cargando destinos…"}</p>
+          {ubicacion && (
+            <div className={styles.cercania}>
+              <PiNavigationArrowFill size={12} aria-hidden="true" />
+              <span>{porCercania ? "Ordenados por cercanía a ti" : "Tu ubicación está en el mapa"}</span>
+              <button type="button" onClick={() => setPorCercania(p => !p)}>{porCercania ? "Orden normal" : "Más cercanos"}</button>
+              <button type="button" onClick={quitarUbicacion}>Quitar</button>
+            </div>
+          )}
         </header>
 
         <label className={styles.buscador}>
@@ -223,9 +307,12 @@ export default function MapaPagina() {
                       {d.municipio?.nombre} · {d.categoria?.nombre}
                     </span>
                   </span>
-                  {Number(d.rating_promedio) > 0 && (
-                    <span className={styles.nota}><PiStarFill size={11} aria-hidden="true" /> {Number(d.rating_promedio).toFixed(1)}</span>
-                  )}
+                  <span className={styles.extras}>
+                    {distancias.has(d.id) && <span className={styles.distancia}>{formatoDistancia(distancias.get(d.id))}</span>}
+                    {Number(d.rating_promedio) > 0 && (
+                      <span className={styles.nota}><PiStarFill size={11} aria-hidden="true" /> {Number(d.rating_promedio).toFixed(1)}</span>
+                    )}
+                  </span>
                 </button>
               </li>
             )
@@ -235,6 +322,21 @@ export default function MapaPagina() {
 
       <section className={styles.mapaZona} aria-label="Mapa">
         <div ref={contenedorRef} className={styles.mapa} />
+        <div className={styles.ubicarZona}>
+          <button type="button" className={styles.ubicar} onClick={ubicarme} disabled={estadoUbic.buscando}
+            aria-label={ubicacion ? "Actualizar mi ubicación" : "Mostrar mi ubicación"}>
+            {estadoUbic.buscando
+              ? <span className={styles.ubicarGiro} aria-hidden="true" />
+              : <PiCrosshairDuotone size={18} aria-hidden="true" />}
+            <span>{estadoUbic.buscando ? "Buscando…" : "Mi ubicación"}</span>
+          </button>
+          {estadoUbic.error && (
+            <p className={styles.ubicarError} role="alert">
+              {estadoUbic.error}
+              <button type="button" onClick={() => setEstadoUbic({ buscando: false, error: "" })} aria-label="Cerrar aviso"><PiXBold size={10} /></button>
+            </p>
+          )}
+        </div>
         {(filtro || busqueda) && (
           <button type="button" className={styles.verTodo} onClick={verTodo}>
             <PiArrowsOutSimpleBold size={14} aria-hidden="true" /> Ver todo el Huila

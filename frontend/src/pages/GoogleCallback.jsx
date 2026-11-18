@@ -1,49 +1,62 @@
-import { useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import logo from "../assets/images/logo.png";
+import styles from "./GoogleCallback.module.css";
 
+// Vuelta del login con Google: cambia el código de un solo uso por el token y lleva al usuario
+// a donde estaba, sin recargar la página (así la barra ya muestra la sesión iniciada).
 export default function GoogleCallback() {
   const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const { refreshUser } = useAuth();
+  const [fallo, setFallo] = useState(false);
   const yaEjecutado = useRef(false); // StrictMode ejecuta el efecto dos veces y el código solo sirve una vez
 
   useEffect(() => {
     if (yaEjecutado.current) return;
     yaEjecutado.current = true;
 
-    const redirigir = (ruta) => {
+    const destino = localStorage.getItem("redirectAfterGoogle") || "/";
+    const irA = (ruta) => {
       localStorage.removeItem("redirectAfterGoogle");
-      window.location.href = ruta;
+      navigate(ruta, { replace: true });
     };
 
-    // Si ya hay token, redirigir a la página guardada (o al inicio)
     if (localStorage.getItem("token")) {
-      redirigir(localStorage.getItem("redirectAfterGoogle") || "/");
+      irA(destino);
       return;
     }
 
     const code = params.get("code");
     if (params.get("error") || !code) {
-      redirigir("/login?error=google_failed");
+      irA("/login?error=google_failed");
       return;
     }
 
-    // El backend manda un código de un solo uso (no el token) y aquí lo cambiamos por el token
     api
       .post("/auth/google/exchange", { code })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const { token, user } = data;
-        if (!user.nombre) {
-          user.nombre = user.email ? user.email.split("@")[0] : "Usuario";
-        }
+        if (!user.nombre) user.nombre = user.email ? user.email.split("@")[0] : "Usuario";
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.removeItem("usuario");
-
-        // Volver a la página donde estaba el usuario antes de ir a Google
-        redirigir(localStorage.getItem("redirectAfterGoogle") || "/");
+        await refreshUser();
+        irA(destino);
       })
-      .catch(() => redirigir("/login?error=google_failed"));
-  }, [params]);
+      .catch(() => {
+        setFallo(true);
+        setTimeout(() => irA("/login?error=google_failed"), 1200);
+      });
+  }, [params, navigate, refreshUser]);
 
-  return <div>Iniciando sesión con Google...</div>;
+  return (
+    <div className={styles.pagina} role="status" aria-live="polite">
+      <img src={logo} alt="" className={styles.logo} />
+      {!fallo && <span className={styles.giro} aria-hidden="true" />}
+      <p className={styles.texto}>{fallo ? "No se pudo iniciar sesión con Google" : "Iniciando sesión con Google…"}</p>
+    </div>
+  );
 }

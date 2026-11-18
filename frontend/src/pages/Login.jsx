@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { API_URL } from "../api/config"
-import { Link, useNavigate, useLocation } from "react-router-dom"
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom"
 import { motion } from "framer-motion"
 import { PiEnvelopeDuotone, PiLockDuotone } from "react-icons/pi"
 import AuthInput    from "../components/Auth/AuthInput"
@@ -22,7 +22,7 @@ export default function Login() {
     return ""
   })
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
+  const { login, user } = useAuth()
   const navigate = useNavigate()
   const from = location.state?.from?.pathname || "/"
 
@@ -43,6 +43,9 @@ export default function Login() {
       setLoading(false)
     }
   }
+
+  // Con la sesión ya iniciada no tiene sentido ver el formulario
+  if (user && !loading) return <Navigate to={from} replace />
 
   const handleGoogle = () => {
     // Volver a la página que pidió el login (p. ej. /resultado), no al propio /login

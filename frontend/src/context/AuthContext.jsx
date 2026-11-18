@@ -6,8 +6,20 @@ const AuthContext = createContext(null);
 // Hook personalizado para usar el contexto (exportamos 'useAuth' para consistencia)
 export const useAuth = () => useContext(AuthContext);
 
+// Usuario guardado de la última visita: se muestra al instante mientras /perfil lo confirma,
+// así la barra no enseña "Ingresar" y luego cambia al nombre del usuario.
+function usuarioGuardado() {
+  if (!localStorage.getItem("token")) return null;
+  try {
+    const guardado = JSON.parse(localStorage.getItem("user"));
+    return guardado && typeof guardado === "object" ? guardado : null;
+  } catch {
+    return null;
+  }
+}
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(usuarioGuardado);
   // Solo hay que esperar si hay token guardado (se valida contra /perfil al arrancar)
   const [loading, setLoading] = useState(() => !!localStorage.getItem("token"));
 
@@ -26,11 +38,14 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (error) {
-      console.error("Error al refrescar usuario:", error);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      setUser(null);
-      return null;
+      // Solo se cierra la sesión si el servidor rechaza el token; sin conexión se mantiene el usuario guardado
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+        return null;
+      }
+      return usuarioGuardado();
     }
   };
 

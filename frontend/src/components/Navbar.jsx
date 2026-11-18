@@ -17,6 +17,7 @@ import {
 } from "react-icons/pi"
 import { useAuth } from "../context/AuthContext"
 import styles from "./Navbar.module.css"
+import Avatar from "./Avatar"
 import logo from "../assets/images/logo.png"
 
 const LINKS = [
@@ -113,7 +114,7 @@ export default function Navbar() {
             <>
               <Link to="/perfil" className={styles.userInfoLink}>
                 <div className={styles.userInfo}>
-                  <PiUserDuotone size={18} />
+                  <Avatar nombre={getDisplayName()} foto={user?.foto} tamano={26} />
                   <span className={styles.userName}>
                     {getDisplayName()}
                   </span>
