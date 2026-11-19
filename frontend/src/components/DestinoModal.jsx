@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   PiMapPinDuotone,
@@ -13,8 +14,14 @@ import CreditoImagen from "./CreditoImagen";
 import BotonFavorito from "./BotonFavorito";
 import Resenas from "./Resenas";
 import { visualCategoria } from "../utils/categoriaVisual";
+import { registrarVisita } from "../api/destinos";
 
 export default function DestinoModal({ destino, isOpen, onClose }) {
+  // Cada ficha abierta cuenta como visita (alimenta «Los más visitados» de la portada)
+  useEffect(() => {
+    if (isOpen && destino?.id) registrarVisita(destino.id);
+  }, [isOpen, destino?.id]);
+
   if (!isOpen || !destino) return null;
 
   const { Icon: IconoCategoria, fondo } = visualCategoria(destino.categoria_id);

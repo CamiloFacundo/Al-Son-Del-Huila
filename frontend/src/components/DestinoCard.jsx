@@ -14,6 +14,7 @@ import CreditoImagen from "./CreditoImagen";
 import BotonFavorito from "./BotonFavorito";
 import Resenas from "./Resenas";
 import { visualCategoria } from "../utils/categoriaVisual";
+import { registrarVisita } from "../api/destinos";
 
 export default function DestinoCard({ destino, index, onFavoritoChange }) {
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +22,7 @@ export default function DestinoCard({ destino, index, onFavoritoChange }) {
   const openModal = (e) => {
     e.preventDefault();
     setShowModal(true);
+    registrarVisita(destino.id); // cuenta para «Los más visitados»
   };
 
   const closeModal = () => setShowModal(false);

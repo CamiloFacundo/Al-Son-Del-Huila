@@ -18,7 +18,7 @@ const SECCIONES = [
   },
   {
     titulo: "4. Derechos del usuario",
-    contenido: `Como usuario tienes derecho a acceder, modificar o eliminar tu información personal en cualquier momento desde tu perfil. También puedes solicitar la eliminación completa de tu cuenta y todos los datos asociados enviando un correo a info@alsondelhuila.co.`
+    contenido: `Como usuario tienes derecho a acceder, modificar o eliminar tu información personal en cualquier momento desde tu perfil. También puedes eliminar tu cuenta y todos los datos asociados cuando quieras desde Perfil → Cuenta → «Eliminar mi cuenta»; el borrado es inmediato y definitivo.`
   },
   {
     titulo: "5. Uso de cookies",

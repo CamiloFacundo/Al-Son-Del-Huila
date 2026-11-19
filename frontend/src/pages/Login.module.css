@@ -159,3 +159,14 @@
   font-size: 0.82rem;
   color: #6fd394;
 }
+
+.legal {
+  margin: 0.25rem 0 0;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.legal a { color: var(--text-secondary); text-decoration: underline; }
+.legal a:hover { color: var(--color-dorado); }

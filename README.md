@@ -87,6 +87,7 @@ La web queda en `http://localhost:5173`.
 | `php artisan destinos:buscar-fotos` | Busca fotos con licencia libre en Wikimedia Commons para los destinos sin foto y genera `storage/app/fotos-commons/revision.html` para revisarlas |
 | `php artisan destinos:importar-fotos` | Descarga las fotos elegidas de Commons y/o importa fotos propias de `storage/app/fotos-propias/{id}.jpg` (con `--autor="Nombre"`), las convierte a WebP y guarda los créditos |
 | `php artisan usuarios:admin correo@ejemplo.com` | Da el rol de administrador (acceso a `/admin` para gestionar destinos, etiquetas y fotos). Con `--quitar` lo retira |
+| `php artisan correo:probar tu@correo.com` | Envía un correo de prueba para comprobar la configuración `MAIL_*` (recuperación de contraseña) |
 | `php artisan schedule:work` | Ejecuta las tareas programadas (borrado diario de tokens caducados) |
 | `php artisan route:list --path=api` | Lista los endpoints |
 
@@ -127,7 +128,9 @@ Cuando acumules varias, puedes regenerarlo con `php artisan schema:dump`.
   y permite ver la ruta recomendada sin repetir el quiz.
 - **Recuperar contraseña**: *Login → ¿Olvidaste tu contraseña?* envía un enlace a `/restablecer`.
   En local los correos no se envían: se escriben en `backend/storage/logs/laravel.log` (`MAIL_MAILER=log`).
-  Para enviarlos de verdad configura `MAIL_MAILER=smtp` y `MAIL_HOST`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` en `backend/.env`.
+  Para enviarlos de verdad configura `MAIL_MAILER=smtp` y `MAIL_HOST`, `MAIL_PORT`, `MAIL_ENCRYPTION`, `MAIL_USERNAME`,
+  `MAIL_PASSWORD` y `MAIL_FROM_ADDRESS` en `backend/.env` (en `.env.example` hay un ejemplo con Gmail y contraseña de aplicación)
+  y compruébalo con `php artisan correo:probar tu@correo.com`.
 - **Panel de administración** (`/admin`, solo rol admin): crear, editar y desactivar destinos, asignar etiquetas y
   tipos de viajero y subir fotos. Después de cambiar el catálogo ejecuta `php artisan catalogo:exportar`.
 

@@ -16,6 +16,10 @@ public function register(Request $request)
         'nombre'   => 'required|string|max:100',
         'email'    => 'required|email|unique:usuarios,email', // 👈 cámbialo de 'users' a 'usuarios'
         'password' => 'required|min:8',
+        // Consentimiento informado (Ley 1581 de 2012): sin aceptar no se crea la cuenta
+        'acepta_terminos' => 'accepted',
+    ], [
+        'acepta_terminos.accepted' => 'Debes aceptar los Términos de uso y la Política de privacidad.',
     ]);
 
     $user = User::create([
@@ -23,6 +27,7 @@ public function register(Request $request)
         'email'    => $request->email,
         'password' => Hash::make($request->password),
         'provider' => 'local',
+        'terminos_aceptados_at' => now(),
     ]);
 
     $token = $user->createToken('auth_token')->plainTextToken;

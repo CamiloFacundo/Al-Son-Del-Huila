@@ -25,6 +25,14 @@ if (-not (Leer-Env (Join-Path $Backend '.env') 'APP_KEY')) {
     Pop-Location
 }
 
+# Cambios de la base de datos que llegaron con git pull (si no hay pendientes, no hace nada)
+Paso 'Actualizando la base de datos'
+Push-Location $Backend
+$env:PATH = "$mysqlBin;$env:PATH"
+& $php artisan migrate --force --no-interaction
+if ($LASTEXITCODE -ne 0) { Aviso 'No se pudieron aplicar las migraciones: revisa el mensaje de arriba' } else { Ok 'Base de datos al día' }
+Pop-Location
+
 Paso 'API (Laravel) en http://localhost:8000'
 if (Puerto-Abierto 8000) {
     Aviso 'El puerto 8000 ya está en uso: se asume que la API ya está encendida'

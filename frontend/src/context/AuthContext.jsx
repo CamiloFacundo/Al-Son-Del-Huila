@@ -60,12 +60,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Registro normal (email + password)
-  const register = async (nombre, email, password) => {
+  const register = async (nombre, email, password, aceptaTerminos = false) => {
     try {
       const response = await api.post("/auth/register", {
         nombre,
         email,
         password,
+        acepta_terminos: aceptaTerminos,
       });
       const { user: userData, token } = response.data;
       localStorage.setItem("token", token);

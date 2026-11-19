@@ -116,6 +116,10 @@ export default function Login() {
         <p className={styles.footer}>
           ¿No tienes cuenta? <Link to="/register">Crear una cuenta</Link>
         </p>
+        <p className={styles.legal}>
+          Al continuar con Google aceptas los <Link to="/terminos" target="_blank" rel="noopener">Términos de uso</Link> y
+          la <Link to="/privacidad" target="_blank" rel="noopener">Política de privacidad</Link>.
+        </p>
       </motion.div>
     </div>
   )

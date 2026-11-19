@@ -57,3 +57,19 @@ export async function cambiarPassword(passwordActual, passwordNuevo) {
   }
   return res.json();
 }
+
+// DELETE /api/perfil — elimina la cuenta y todos sus datos (Ley 1581 de 2012)
+// Cuentas con contraseña envían { password }; cuentas de Google envían { confirmacion: 'ELIMINAR' }
+export async function eliminarCuenta(datos) {
+  const res = await fetch(`${API_URL}/perfil`, {
+    method: 'DELETE',
+    headers: { ...authHeader(), Accept: 'application/json' },
+    body: JSON.stringify(datos)
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const primero = data.errors && Object.values(data.errors)[0]?.[0]
+    throw new Error(primero || data.message || 'No se pudo eliminar la cuenta')
+  }
+  return data
+}

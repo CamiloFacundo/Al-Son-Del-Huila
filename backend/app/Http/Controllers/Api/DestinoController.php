@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Destino;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DestinoController extends Controller
 {
@@ -53,6 +54,44 @@ class DestinoController extends Controller
     {
         $userId = auth('sanctum')->id() ?? 0;
         $query->withExists(['favoritoDe as es_favorito' => fn ($q) => $q->where('usuario_id', $userId)]);
+    }
+
+    /**
+     * GET /api/destinos/populares?limite=6 — los destinos cuya ficha más se ha abierto.
+     * Desempata con la valoración y luego con un orden diario, para que al empezar sin visitas haya variedad.
+     */
+    public function populares(Request $request)
+    {
+        $limite = min(max((int) $request->input('limite', 6), 1), 24);
+        $query = Destino::with(['categoria', 'municipio', 'entorno'])->where('estado', true);
+        $this->marcarFavoritos($query);
+
+        return response()->json(
+            $query->orderByDesc('visitas')
+                ->orderByDesc('rating_promedio')
+                ->orderByRaw('imagen IS NULL') // primero los que tienen foto
+                // Empates (p. ej. al empezar sin visitas): orden al azar pero fijo durante el día,
+                // así la portada muestra todo el departamento y no solo los primeros IDs (Neiva)
+                ->orderByRaw('RAND(?)', [(int) now()->format('Ymd')])
+                ->limit($limite)
+                ->get()
+        );
+    }
+
+    /**
+     * POST /api/destinos/{id}/visita — suma una visita al abrir la ficha.
+     * Cuenta una vez por persona (IP) y destino cada 6 horas para que recargar no infle el contador.
+     */
+    public function visita(Request $request, int $id)
+    {
+        $destino = Destino::where('estado', true)->findOrFail($id);
+        $clave = 'visita:' . $destino->id . ':' . sha1((string) $request->ip());
+
+        if (Cache::add($clave, true, now()->addHours(6))) {
+            $destino->increment('visitas');
+        }
+
+        return response()->json(['visitas' => (int) $destino->fresh()->visitas]);
     }
 
     // GET /api/destinos/{id}

@@ -15,10 +15,12 @@ import { recomendar } from "../api/recomendador";
 import { getPreferencias } from "../api/destinos";
 import { crearRuta } from "../api/rutas";
 import DestinoModal from "../components/DestinoModal";
+import ComoRecomendamos from "../components/ComoRecomendamos";
 import styles from "./Resultado.module.css";
 import logo from "../assets/images/logo.png";
 
 export default function Resultado() {
+  const [respuestas, setRespuestas] = useState(null); // lo que respondió en el quiz (para explicar la recomendación)
   const [itinerario, setItinerario] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -291,6 +293,7 @@ export default function Resultado() {
         // Si no hay respuestas en este navegador, usar las guardadas en la cuenta
         const respuestas = saved ? JSON.parse(saved) : await getPreferencias().catch(() => null);
         if (!respuestas) { navigate("/quiz"); return; }
+        setRespuestas(respuestas);
         const data = await recomendar(respuestas);
         setItinerario(data.itinerario || []);
       } catch (err) {
@@ -329,6 +332,10 @@ export default function Resultado() {
         <button className={styles.btnNuevo} onClick={() => navigate("/quiz")}>
           <PiArrowLeftDuotone size={16} /> Nueva ruta
         </button>
+      </div>
+
+      <div className={styles.explicacion}>
+        <ComoRecomendamos respuestas={respuestas} />
       </div>
 
       <div className={styles.layout}>

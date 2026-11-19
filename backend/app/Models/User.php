@@ -26,6 +26,7 @@ class User extends Authenticatable
         'google_id',
         'provider',
         'google_token',
+        'terminos_aceptados_at',
     ];
 
     protected $hidden = [

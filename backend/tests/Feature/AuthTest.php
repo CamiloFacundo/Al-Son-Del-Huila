@@ -13,7 +13,7 @@ class AuthTest extends TestCase
     public function test_registro_devuelve_token_y_usuario(): void
     {
         $res = $this->postJson('/api/auth/register', [
-            'nombre' => 'Ana', 'email' => 'ana@test.local', 'password' => 'secreto123',
+            'nombre' => 'Ana', 'email' => 'ana@test.local', 'password' => 'secreto123', 'acepta_terminos' => true,
         ]);
 
         $res->assertCreated()->assertJsonStructure(['token', 'user' => ['id', 'nombre', 'email']]);
@@ -25,7 +25,7 @@ class AuthTest extends TestCase
         $this->usuarioConToken(['email' => 'repe@test.local']);
 
         $this->postJson('/api/auth/register', [
-            'nombre' => 'Otro', 'email' => 'repe@test.local', 'password' => 'secreto123',
+            'nombre' => 'Otro', 'email' => 'repe@test.local', 'password' => 'secreto123', 'acepta_terminos' => true,
         ])->assertStatus(422)->assertJsonValidationErrors('email');
     }
 

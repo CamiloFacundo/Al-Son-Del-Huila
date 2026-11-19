@@ -42,6 +42,8 @@ class GoogleAuthController extends Controller
                     'foto'         => $googleUser->getAvatar(),
                     'google_token' => $googleUser->token,
                     'password'     => null,
+                    // El botón de Google avisa que al continuar se aceptan los Términos y la Privacidad
+                    'terminos_aceptados_at' => now(),
                 ]);
             }
 

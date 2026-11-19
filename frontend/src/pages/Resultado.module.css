@@ -418,3 +418,7 @@
 .btnGuardar:disabled { opacity: 0.6; cursor: default; }
 
 .guardarRuta .errorGuardar { margin-top: 0.5rem; color: #ef7b7b; }
+
+/* Panel «¿Por qué te recomendamos estos destinos?» */
+.explicacion { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+@media (max-width: 768px) { .explicacion { padding: 0 1rem; } }

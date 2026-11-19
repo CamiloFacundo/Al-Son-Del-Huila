@@ -53,3 +53,12 @@ export const guardarPreferencias = (prefs) =>
     tipo_viajero: prefs.tipo_viajero ?? null,
     dias:         prefs.dias ?? null,
   }).then(r => r.data)
+
+// «Los más visitados»
+export const getPopulares = (limite = 6) =>
+  api.get('/destinos/populares', { params: { limite } }).then(r => r.data)
+
+// Suma una visita al abrir la ficha (el backend cuenta una por persona cada 6 horas). No bloquea ni muestra errores.
+export const registrarVisita = (destinoId) => {
+  if (destinoId) api.post(`/destinos/${destinoId}/visita`).catch(() => {})
+}

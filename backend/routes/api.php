@@ -35,6 +35,8 @@ Route::post('/auth/reset-password', [PasswordController::class, 'restablecer'])-
 
 Route::get('/destinos', [DestinoController::class, 'index']);
 Route::get('/destinos/buscar', [DestinoController::class, 'buscar']);
+Route::get('/destinos/populares', [DestinoController::class, 'populares']);
+Route::post('/destinos/{id}/visita', [DestinoController::class, 'visita'])->whereNumber('id')->middleware('throttle:60,1');
 Route::get('/destinos/{id}', [DestinoController::class, 'show'])->whereNumber('id');
 Route::get('/destinos/{id}/resenas', [ResenaController::class, 'index'])->whereNumber('id');
 Route::get('/publicaciones', [PublicacionController::class, 'index']);
@@ -62,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/perfil', [PerfilController::class, 'update']);
     Route::post('/perfil/foto', [PerfilController::class, 'subirFoto']);
     Route::put('/perfil/password', [PerfilController::class, 'cambiarPassword'])->middleware('throttle:auth');
+    Route::delete('/perfil', [PerfilController::class, 'eliminarCuenta'])->middleware('throttle:auth');
     Route::get('/perfil/mis-publicaciones', [PublicacionController::class, 'misPublicaciones']);
     Route::get('/perfil/favoritos', [FavoritoController::class, 'index']);
     Route::get('/perfil/preferencias', [PreferenciaController::class, 'show']);

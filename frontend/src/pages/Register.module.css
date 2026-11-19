@@ -164,3 +164,41 @@
   .card    { padding: 2rem 1.5rem; }
   .heading { font-size: 1.5rem;    }
 }
+
+/* Casilla de consentimiento (Ley 1581 de 2012) */
+.consentimiento {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #2a2520;
+  background: #111008;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.consentimiento:hover { border-color: rgba(212, 168, 67, 0.4); }
+.consentimientoError { border-color: rgba(224, 82, 82, 0.6); }
+
+.consentimiento input {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  accent-color: var(--color-tierra);
+  cursor: pointer;
+}
+
+.consentimiento input:focus-visible { outline: 2px solid var(--color-dorado); outline-offset: 2px; }
+
+.consentimiento a { color: var(--color-dorado); text-decoration: underline; }
+
+.consentimientoMensaje {
+  margin: -0.35rem 0 0;
+  font-size: 0.75rem;
+  color: #e05252;
+}

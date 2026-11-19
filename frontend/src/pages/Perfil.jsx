@@ -9,7 +9,7 @@ import {
   PiSquaresFourDuotone, PiUserCircleDuotone, PiImageSquareDuotone, PiWarningCircleDuotone,
 } from "react-icons/pi"
 import { useAuth } from "../context/AuthContext"
-import { getPerfil, updatePerfil, subirFoto, cambiarPassword } from "../api/perfil"
+import { getPerfil, updatePerfil, subirFoto, cambiarPassword, eliminarCuenta } from "../api/perfil"
 import { getMisPublicaciones, updatePublicacion, deletePublicacion } from "../api/publicaciones"
 import { getFavoritos, getDestinos, getPreferencias } from "../api/destinos"
 import { getRutas, eliminarRuta } from "../api/rutas"
@@ -108,6 +108,7 @@ export default function Perfil() {
   const [editando, setEditando] = useState(false)
   const [editandoPost, setEditandoPost] = useState(null)
   const [ficha, setFicha] = useState(null)
+  const [eliminando, setEliminando] = useState(false)
   const [subiendo, setSubiendo] = useState({ perfil: null, portada: null }) // vista previa mientras sube
   const fotoRef = useRef(null)
   const portadaRef = useRef(null)
@@ -481,6 +482,17 @@ export default function Perfil() {
                   </div>
                   <button type="button" className={styles.btnPeligro} onClick={logout}><PiSignOutDuotone size={16} /> Cerrar sesión</button>
                 </section>
+
+                <section className={`${styles.tarjeta} ${styles.tarjetaPeligro}`}>
+                  <div>
+                    <h3><PiTrashDuotone size={20} aria-hidden="true" /> Eliminar mi cuenta</h3>
+                    <p className={styles.textoSuave}>
+                      Borra tu cuenta y todos tus datos: perfil, fotos, favoritos, rutas, publicaciones, comentarios y reseñas.
+                      No se puede deshacer.
+                    </p>
+                  </div>
+                  <button type="button" className={styles.btnPeligro} onClick={() => setEliminando(true)}><PiTrashDuotone size={16} /> Eliminar cuenta</button>
+                </section>
               </div>
             )}
           </motion.div>
@@ -491,6 +503,11 @@ export default function Perfil() {
         {editando && (
           <Modal titulo="Editar perfil" onCerrar={() => setEditando(false)}>
             <FormularioPerfil perfil={perfil} onGuardar={guardarPerfil} onCancelar={() => setEditando(false)} />
+          </Modal>
+        )}
+        {eliminando && (
+          <Modal titulo="Eliminar mi cuenta" onCerrar={() => setEliminando(false)}>
+            <FormularioEliminar esGoogle={esGoogle} onCancelar={() => setEliminando(false)} />
           </Modal>
         )}
         {editandoPost && (
@@ -614,6 +631,69 @@ function FormularioPost({ pub, onGuardar, onBorrar }) {
       <div className={styles.formAcciones}>
         <button type="button" className={styles.btnPeligroSuave} onClick={onBorrar}><PiTrashDuotone size={15} /> Eliminar</button>
         <button type="submit" className={styles.btnPrimario} disabled={guardando}>{guardando ? "Guardando…" : <><PiCheckBold size={14} /> Guardar</>}</button>
+      </div>
+    </form>
+  )
+}
+
+// Derecho de supresión (Ley 1581 de 2012): borra la cuenta y todos sus datos
+function FormularioEliminar({ esGoogle, onCancelar }) {
+  const [valor, setValor] = useState("")
+  const [enviando, setEnviando] = useState(false)
+  const [error, setError] = useState("")
+  const [listo, setListo] = useState(false)
+  const puedeEnviar = esGoogle ? valor.trim().toUpperCase() === "ELIMINAR" : valor.length > 0
+
+  const enviar = async (e) => {
+    e.preventDefault()
+    if (!puedeEnviar) return
+    setEnviando(true)
+    setError("")
+    try {
+      await eliminarCuenta(esGoogle ? { confirmacion: valor } : { password: valor })
+      setListo(true)
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      setTimeout(() => { window.location.href = "/" }, 1800)
+    } catch (err) {
+      setError(err.message)
+      setEnviando(false)
+    }
+  }
+
+  if (listo) {
+    return (
+      <div className={styles.eliminado} role="status">
+        <PiCheckCircleFill size={32} aria-hidden="true" />
+        <p>Tu cuenta y todos tus datos fueron eliminados. Gracias por recorrer el Huila con nosotros.</p>
+      </div>
+    )
+  }
+
+  return (
+    <form className={styles.formulario} onSubmit={enviar} noValidate>
+      <div className={styles.advertencia}>
+        <PiWarningCircleDuotone size={22} aria-hidden="true" />
+        <p>
+          Se borrarán para siempre tu perfil, fotos, favoritos, rutas guardadas, publicaciones, comentarios, reseñas
+          y preferencias del quiz. Esta acción <strong>no se puede deshacer</strong>.
+        </p>
+      </div>
+      {esGoogle ? (
+        <Campo label="Escribe ELIMINAR para confirmar" valor={valor}>
+          <input value={valor} onChange={e => setValor(e.target.value)} autoComplete="off" autoFocus />
+        </Campo>
+      ) : (
+        <Campo label="Escribe tu contraseña para confirmar" valor={valor}>
+          <input type="password" value={valor} onChange={e => setValor(e.target.value)} autoComplete="current-password" autoFocus />
+        </Campo>
+      )}
+      {error && <p className={styles.error} role="alert">{error}</p>}
+      <div className={styles.formAcciones}>
+        <button type="button" className={styles.btnSecundario} onClick={onCancelar}>Cancelar</button>
+        <button type="submit" className={styles.btnPeligro} disabled={!puedeEnviar || enviando}>
+          {enviando ? "Eliminando…" : <><PiTrashDuotone size={15} /> Eliminar definitivamente</>}
+        </button>
       </div>
     </form>
   )

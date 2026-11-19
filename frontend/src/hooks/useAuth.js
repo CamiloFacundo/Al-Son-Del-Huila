@@ -13,14 +13,14 @@ const validatePassword = (password) => password.length >= 8;
 export function useRegister() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [fields, setFields] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [fields, setFields] = useState({ name: "", email: "", password: "", confirmPassword: "", aceptaTerminos: false });
   const [errors, setErrors] = useState({});
   const [globalError, setGlobalError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFields((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFields((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
     if (globalError) setGlobalError("");
   };
@@ -34,6 +34,8 @@ export function useRegister() {
     else if (!validatePassword(fields.password)) err.password = "Mínimo 8 caracteres";
     if (!fields.confirmPassword) err.confirmPassword = "Confirma tu contraseña";
     else if (fields.password !== fields.confirmPassword) err.confirmPassword = "Las contraseñas no coinciden";
+    // Consentimiento informado (Ley 1581 de 2012)
+    if (!fields.aceptaTerminos) err.aceptaTerminos = "Debes aceptar los Términos de uso y la Política de privacidad";
     return err;
   };
 
@@ -46,7 +48,7 @@ export function useRegister() {
     }
     setLoading(true);
     try {
-      await register(fields.name, fields.email, fields.password);
+      await register(fields.name, fields.email, fields.password, fields.aceptaTerminos);
       navigate('/');
     } catch (error) {
       const errores = error.response?.data?.errors;

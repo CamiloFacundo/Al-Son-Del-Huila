@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Support\Imagenes;
+use App\Models\Resena;
+use Illuminate\Support\Facades\DB;
 
 class PerfilController extends Controller
 {
@@ -125,5 +127,48 @@ class PerfilController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Contraseña actualizada']);
+    }
+
+    /**
+     * Eliminar la cuenta y todos sus datos (derecho de supresión, Ley 1581 de 2012).
+     * DELETE /api/perfil
+     * Cuentas con contraseña: piden la contraseña. Cuentas de Google: piden escribir ELIMINAR.
+     */
+    public function eliminarCuenta(Request $request)
+    {
+        $user = $request->user();
+        $conPassword = $user->provider !== 'google' && $user->password;
+
+        if ($conPassword) {
+            $request->validate(['password' => 'required|string'], ['password.required' => 'Escribe tu contraseña para confirmar.']);
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json(['message' => 'La contraseña no es correcta.'], 422);
+            }
+        } elseif (mb_strtoupper(trim((string) $request->confirmacion)) !== 'ELIMINAR') {
+            return response()->json(['message' => 'Escribe ELIMINAR para confirmar.'], 422);
+        }
+
+        // Archivos subidos por el usuario (fotos de perfil y portada, fotos de sus publicaciones)
+        $archivos = collect([$user->getRawOriginal('foto'), $user->getRawOriginal('foto_portada')])
+            ->merge(DB::table('publicaciones')->where('user_id', $user->id)->pluck('imagen'))
+            ->filter(fn ($r) => $r && preg_match('#^storage/(fotos|publicaciones)/[^/]+$#', $r))
+            ->map(fn ($r) => substr($r, strlen('storage/')));
+
+        // Los triggers de MySQL no se disparan con ON DELETE CASCADE: el promedio se recalcula aquí
+        $destinosResenados = DB::table('reseñas')->where('usuario_id', $user->id)->pluck('destino_id');
+
+        DB::transaction(function () use ($user, $destinosResenados) {
+            $user->tokens()->delete();
+            DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+            DB::table('sessions')->where('user_id', $user->id)->delete();
+            $user->delete(); // favoritos, rutas, publicaciones, likes, comentarios, reseñas y preferencias: ON DELETE CASCADE
+            foreach ($destinosResenados as $destinoId) {
+                Resena::recalcular((int) $destinoId);
+            }
+        });
+
+        Storage::disk('public')->delete($archivos->all());
+
+        return response()->json(['message' => 'Tu cuenta y todos tus datos fueron eliminados.']);
     }
 }

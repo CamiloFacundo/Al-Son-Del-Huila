@@ -1,0 +1,120 @@
+.seccion {
+  position: relative;
+  padding: 5rem 0 6rem;
+  background: linear-gradient(180deg, #080808 0%, var(--color-noche-soft) 100%);
+  border-top: 1px solid var(--color-border);
+}
+
+.contenedor {
+  width: min(1200px, 100% - 2.5rem);
+  margin: 0 auto;
+}
+
+.cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2.25rem;
+}
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-tierra);
+}
+
+.cabecera h2 {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.cabecera p {
+  max-width: 52ch;
+  margin: 0.6rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.verTodos {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: none;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-gold);
+  color: var(--color-dorado);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.verTodos:hover { background: rgba(212, 168, 67, 0.08); border-color: var(--color-dorado); }
+.verTodos:focus-visible { outline: 2px solid var(--color-dorado); outline-offset: 2px; }
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.celda { position: relative; min-width: 0; }
+
+/* Número de puesto sobre la tarjeta */
+.puesto {
+  position: absolute;
+  top: -12px;
+  left: -10px;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-tierra), var(--color-dorado));
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.esqueleto {
+  display: block;
+  height: 360px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, #141312 0%, #1d1b18 50%, #141312 100%);
+  background-size: 200% 100%;
+  animation: brillo 1.4s ease-in-out infinite;
+}
+
+@keyframes brillo { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+@media (max-width: 1000px) {
+  .rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .seccion { padding: 3.5rem 0 4rem; }
+  .contenedor { width: calc(100% - 2rem); }
+  .cabecera { flex-direction: column; align-items: flex-start; }
+  .rejilla { grid-template-columns: 1fr; gap: 1.75rem; }
+  .puesto { left: -4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto { animation: none; }
+}

@@ -117,13 +117,23 @@ const handleGoogle = () => {
             autoComplete="new-password"
           />
 
+          <label className={`${styles.consentimiento} ${errors.aceptaTerminos ? styles.consentimientoError : ""}`}>
+            <input type="checkbox" name="aceptaTerminos" checked={fields.aceptaTerminos} onChange={handleChange}
+              aria-invalid={!!errors.aceptaTerminos} aria-describedby={errors.aceptaTerminos ? "error-terminos" : undefined} />
+            <span>
+              Acepto los <Link to="/terminos" target="_blank" rel="noopener">Términos de uso</Link> y autorizo el
+              tratamiento de mis datos según la <Link to="/privacidad" target="_blank" rel="noopener">Política de privacidad</Link>.
+            </span>
+          </label>
+          {errors.aceptaTerminos && <p id="error-terminos" className={styles.consentimientoMensaje}>{errors.aceptaTerminos}</p>}
+
           <AuthButton loading={loading}>Crear cuenta</AuthButton>
         </form>
 
         <p className={styles.terms}>
-          Al registrarte aceptas nuestros{" "}
-          <a href="#">Términos de uso</a> y{" "}
-          <a href="#">Política de privacidad</a>
+          Si te registras con Google, al continuar aceptas los{" "}
+          <Link to="/terminos" target="_blank" rel="noopener">Términos de uso</Link> y la{" "}
+          <Link to="/privacidad" target="_blank" rel="noopener">Política de privacidad</Link>.
         </p>
 
         <p className={styles.footer}>
