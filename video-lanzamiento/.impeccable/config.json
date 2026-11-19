@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-18T23:00:30.625Z",
+        "reason": "Claude: Inter is the project's existing brand body font (frontend/src/styles/variables.css --font-body); the launch video must match the app"
+      },
+      {
+        "rule": "italic-serif-display",
+        "value": "*",
+        "files": [
+          "folleto/index.html"
+        ],
+        "createdAt": "2026-11-18T23:16:23.072Z",
+        "reason": "Claude: matches the app's existing brand headline pattern (frontend Hero: Playfair with italic gold accent, 'a tu manera'); brochure must match the app"
+      }
+    ]
+  }
+}

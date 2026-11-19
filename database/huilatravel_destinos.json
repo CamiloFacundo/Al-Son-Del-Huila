@@ -1,0 +1,54 @@
+{
+  "fuente": "https://www.huilatravel.com/inicio/",
+  "extraido_el": "2026-11-13",
+  "nota": "huilatravel.com es una landing page de una sola pagina: solo publica 4 destinos destacados, con copy corto. No publica latitud, longitud, direccion ni horario.",
+  "destinos": [
+    {
+      "orden": "01",
+      "rol": "MEMORIA",
+      "nombre": "San Agustín",
+      "descripcion_corta": "Arqueología, paisaje y legado ancestral.",
+      "imagen": "https://www.huilatravel.com/inicio/media/san-agustin.jpg",
+      "imagen_alt": "Escultura arqueológica en el Parque de San Agustín, Huila",
+      "cta": "Consultar por San Agustín",
+      "coincide_en_bd": "Parque Arqueológico de San Agustín (Destinos.sql linea 1777)"
+    },
+    {
+      "orden": "02",
+      "rol": "DESIERTO",
+      "nombre": "Desierto de la Tatacoa",
+      "descripcion_corta": "Horizontes rojizos y noches bajo las estrellas.",
+      "imagen": "https://www.huilatravel.com/inicio/media/tatacoa.jpg",
+      "imagen_alt": "Formaciones rojizas del Desierto de la Tatacoa, Huila",
+      "cta": "Consultar por la Tatacoa",
+      "coincide_en_bd": "Desierto de la Tatacoa (Sector El Cardon, El Cuzco, Los Hoyos) - Destinos.sql linea 1056"
+    },
+    {
+      "orden": "03",
+      "rol": "AGUA",
+      "nombre": "Rivera y Betania",
+      "descripcion_corta": "Termales, agua y descanso en el paisaje huilense.",
+      "imagen": "https://www.huilatravel.com/inicio/media/rivera-betania.jpg",
+      "imagen_alt": "Actividad de remo en el embalse de Betania, Huila",
+      "cta": "Consultar por Rivera y Betania",
+      "coincide_en_bd": "Varios: Termales Tierra de Promision / Embalse de Betania (Destinos.sql)"
+    },
+    {
+      "orden": "04",
+      "rol": "NATURALEZA",
+      "nombre": "Cueva de los Guacharos",
+      "descripcion_corta": "Bosques, montana y vida silvestre.",
+      "imagen": "https://www.huilatravel.com/inicio/media/cueva-guacharos.jpg",
+      "imagen_alt": "Visitantes durante un recorrido por la Cueva de los Guacharos",
+      "cta": "Consultar por la Cueva de los Guacharos",
+      "coincide_en_bd": "NO EXISTE en la base de datos"
+    }
+  ],
+  "datos_de_contacto": {
+    "organizacion": "Huila Travel / Vladetur",
+    "telefono": "+57 321 799 8895",
+    "direccion": "Carrera 3 # 6 - 107, Timana, Huila, Colombia",
+    "instagram": "https://www.instagram.com/vladetur/",
+    "facebook": "https://www.facebook.com/huilatraveloficialpag/"
+  }
+}

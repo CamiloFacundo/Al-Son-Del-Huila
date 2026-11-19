@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Al Son del Huila — Video de lanzamiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=block" rel="stylesheet">
+<style>
+  :root {
+    --tierra: #C4622D; --tierra-dark: #8B3A1A; --dorado: #D4A843; --selva: #2D5A27;
+    --arena: #F2E8D9; --noche: #080808; --txt: #F0EAE0; --txt2: #A09080;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #000; overflow: hidden; width: 100%; height: 100%; }
+  #stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden;
+    background: var(--noche); transform-origin: 0 0; font-family: Inter, sans-serif; color: var(--txt);
+  }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .abs { position: absolute; }
+  .serif { font-family: 'Playfair Display', serif; }
+  .gold { color: var(--dorado); }
+  .mask { display: block; overflow: hidden; padding-bottom: .08em; }
+  .mask > span { display: inline-block; }
+
+  /* Fondo aurora (compartido) */
+  #aurora { position: absolute; inset: 0; overflow: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(140px); opacity: .55; }
+  #b1 { width: 900px; height: 900px; background: var(--tierra); }
+  #b2 { width: 800px; height: 800px; background: var(--dorado); opacity: .28; }
+  #b3 { width: 1000px; height: 1000px; background: var(--selva); opacity: .45; }
+  #particles { position: absolute; inset: 0; }
+  .pt { position: absolute; border-radius: 50%; background: var(--dorado); }
+
+  /* Escena 1: intro */
+  #logoWrap { left: 50%; top: 360px; width: 470px; height: 470px; margin: -235px 0 0 -235px; }
+  #logo { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; clip-path: circle(48.6%);
+          box-shadow: 0 0 0 6px rgba(212,168,67,.0); }
+  #logo img { width: 100%; height: 100%; object-fit: cover; }
+  .ring { position: absolute; inset: -14px; border-radius: 50%; border: 2px solid var(--dorado); }
+  #s1title { left: 0; right: 0; top: 650px; text-align: center; font-size: 132px; line-height: 1.05; font-weight: 700; }
+  #s1title em { font-style: italic; color: var(--dorado); font-weight: 400; }
+  #s1line { left: 50%; top: 838px; height: 2px; width: 520px; margin-left: -260px;
+            background: linear-gradient(90deg, transparent, var(--dorado), transparent); }
+  #s1kicker { left: 0; right: 0; top: 866px; text-align: center; font-size: 26px; font-weight: 500;
+              letter-spacing: .5em; color: var(--txt2); text-transform: uppercase; }
+
+  /* Escena 2/3: destinos */
+  .slide { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+  .slide .ph { position: absolute; inset: -2%; background-size: cover; background-position: center; }
+  .slide .shade { position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(8,8,8,.55) 0%, rgba(8,8,8,0) 30%, rgba(8,8,8,0) 45%, rgba(8,8,8,.92) 100%),
+                radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.55) 100%); }
+  #s2dark { position: absolute; inset: 0; background: #080808; }
+  #s2text { left: 0; right: 0; top: 330px; text-align: center; }
+  #s2kicker { font-size: 28px; letter-spacing: .45em; font-weight: 600; color: var(--dorado); margin-bottom: 34px; }
+  #s2big { font-size: 150px; line-height: 1.04; font-weight: 700; }
+  #s2big em { font-style: italic; font-weight: 400; color: var(--dorado); }
+  .lower { left: 130px; bottom: 120px; width: 1500px; }
+  .pill { display: inline-block; padding: 12px 26px; border: 1.5px solid rgba(212,168,67,.7); border-radius: 999px;
+          font-size: 22px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--dorado);
+          background: rgba(8,8,8,.45); }
+  .lname { font-size: 112px; font-weight: 700; line-height: 1.02; margin: 24px 0 18px; text-shadow: 0 4px 30px rgba(0,0,0,.5); }
+  .lsub { font-size: 34px; font-weight: 400; color: #E6DCCD; }
+  .lsub b { color: var(--dorado); font-weight: 600; }
+  #counter { right: 130px; top: 96px; font-size: 26px; font-weight: 600; letter-spacing: .2em; color: var(--txt); }
+  #counter .bar { display: inline-block; width: 120px; height: 2px; background: rgba(255,255,255,.25);
+                  vertical-align: middle; margin: 0 18px; position: relative; overflow: hidden; }
+  #counter .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--dorado); }
+  #brandTag { left: 130px; top: 84px; display: flex; align-items: center; gap: 18px; font-size: 30px; }
+  #brandTag img { width: 64px; height: 64px; border-radius: 50%; clip-path: circle(48.6%); }
+
+  /* Escena 4: cifras */
+  #mosaic { left: 50%; top: 50%; width: 2600px; height: 1300px; margin: -650px 0 0 -1300px;
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 20px; }
+  #mosaic div { border-radius: 18px; background-size: cover; background-position: center; }
+  #s4veil { position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, rgba(8,8,8,.86) 0%, rgba(8,8,8,.93) 55%, rgba(8,8,8,.98) 100%); }
+  #s4head { left: 0; right: 0; top: 190px; text-align: center; font-size: 84px; font-weight: 700; }
+  #s4head em { font-style: italic; font-weight: 400; color: var(--dorado); }
+  #stats { left: 160px; right: 160px; top: 420px; display: flex; justify-content: space-between; }
+  .stat { width: 480px; text-align: center; }
+  .stat .n { font-family: 'Playfair Display', serif; font-size: 240px; font-weight: 900; line-height: 1;
+             color: var(--dorado); }
+  .stat .l { margin-top: 18px; font-size: 32px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase; color: var(--txt); }
+  .stat .d { margin-top: 12px; font-size: 24px; color: var(--txt2); }
+  .vsep { position: absolute; top: 470px; width: 1px; height: 300px; background: linear-gradient(transparent, rgba(212,168,67,.5), transparent); }
+
+  /* Escena 5: funciones */
+  .feat { position: absolute; inset: 0; opacity: 0; }
+  .ftext { left: 130px; top: 0; bottom: 0; width: 660px; display: flex; flex-direction: column; justify-content: center; }
+  .fnum { font-family: 'Playfair Display', serif; font-size: 150px; font-weight: 900; line-height: 1;
+          color: transparent; -webkit-text-stroke: 2px rgba(212,168,67,.75); }
+  .ftitle { font-size: 92px; font-weight: 700; line-height: 1.02; margin-top: 18px; }
+  .ftitle em { font-style: italic; font-weight: 400; color: var(--dorado); }
+  .fdesc { font-size: 34px; line-height: 1.45; color: #D9CFC0; margin-top: 30px; font-weight: 300; }
+  .fdesc b { color: var(--txt); font-weight: 600; }
+  .fkicker { margin-top: 26px; font-size: 24px; font-weight: 600; letter-spacing: .35em; color: var(--tierra); text-transform: uppercase; }
+  .mock { left: 840px; top: 200px; width: 960px; border-radius: 18px; overflow: hidden; background: #111;
+          border: 1px solid rgba(255,255,255,.1);
+          box-shadow: 0 50px 120px rgba(0,0,0,.7), 0 0 0 1px rgba(212,168,67,.12); }
+  .mbar { height: 46px; background: #1A1A1A; display: flex; align-items: center; padding: 0 20px; gap: 10px;
+          border-bottom: 1px solid rgba(255,255,255,.06); }
+  .mbar i { width: 13px; height: 13px; border-radius: 50%; background: #3a3a3a; }
+  .mbar i:nth-child(1) { background: #C4622D; } .mbar i:nth-child(2) { background: #D4A843; } .mbar i:nth-child(3) { background: #2D5A27; }
+  .mbar span { margin-left: 22px; font-size: 16px; color: #8a7f72; letter-spacing: .04em; }
+  .mbody { position: relative; height: 600px; overflow: hidden; }
+  .mbody img.shot { position: absolute; left: 0; top: 0; width: 100%; transform-origin: 50% 0; }
+
+  /* Huily chat */
+  .chat { position: absolute; inset: 0; background: #0E0E0E; padding: 26px 34px; }
+  .chead { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .chead img { width: 54px; height: 54px; border-radius: 50%; clip-path: circle(48.6%); }
+  .chead b { display: block; font-size: 24px; font-family: 'Playfair Display', serif; }
+  .chead small { font-size: 16px; color: var(--txt2); }
+  .chead .on { margin-left: auto; font-size: 15px; color: #7fbf6f; letter-spacing: .1em; }
+  .msg { position: absolute; max-width: 620px; font-size: 22px; line-height: 1.45; border-radius: 22px; padding: 16px 24px; }
+  .msg.user { right: 34px; top: 112px; background: linear-gradient(135deg, var(--tierra), #A84E22); color: #fff; border-bottom-right-radius: 6px; }
+  .msg.bot { left: 34px; top: 190px; width: 620px; max-width: 620px; padding: 14px 22px; background: #191919; border: 1px solid rgba(212,168,67,.18); border-bottom-left-radius: 6px; }
+  .typing { position: absolute; left: 34px; top: 190px; background: #191919; border-radius: 22px; padding: 20px 26px; display: flex; gap: 9px; }
+  .typing i { width: 11px; height: 11px; border-radius: 50%; background: var(--dorado); }
+  .day { font-size: 15px; font-weight: 700; letter-spacing: .2em; color: var(--dorado); margin: 10px 0 2px; }
+  .stop { display: flex; align-items: center; gap: 16px; padding: 5px 0; }
+  .stop .th { width: 72px; height: 48px; border-radius: 10px; background-size: cover; background-position: center; flex: none; }
+  .stop b { font-size: 21px; font-weight: 600; display: block; }
+  .stop small { font-size: 16px; color: var(--txt2); }
+  .saved { position: absolute; right: 34px; bottom: 26px; padding: 12px 22px; border-radius: 999px; font-size: 18px; font-weight: 600;
+           background: var(--dorado); color: #1a1209; }
+
+  /* Escena 6: categorías */
+  .cut { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+  .cut .ph { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .cut .shade { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(8,8,8,.35) 0%, rgba(8,8,8,.78) 100%); }
+  .cut .word { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center;
+               font-family: 'Playfair Display', serif; font-size: 190px; font-weight: 900; letter-spacing: .02em;
+               text-shadow: 0 10px 60px rgba(0,0,0,.6); }
+  #s6kicker { text-shadow: 0 2px 20px rgba(0,0,0,.8); }
+  #s6kicker { left: 0; right: 0; top: 300px; text-align: center; font-size: 30px; font-weight: 600; letter-spacing: .5em; color: var(--dorado); }
+  #s6dots { left: 0; right: 0; bottom: 110px; display: flex; justify-content: center; gap: 14px; }
+  #s6dots i { width: 46px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25); }
+
+  /* Escena 7: cierre */
+  #s7logo { left: 50%; top: 150px; width: 330px; height: 330px; margin-left: -165px; }
+  #s7logo img { width: 100%; height: 100%; border-radius: 50%; clip-path: circle(48.6%); object-fit: cover; }
+  #s7title { left: 0; right: 0; top: 520px; text-align: center; font-size: 124px; font-weight: 700; line-height: 1.05; }
+  #s7title em { font-style: italic; font-weight: 400; color: var(--dorado); }
+  #s7sub { left: 0; right: 0; top: 685px; text-align: center; font-size: 42px; font-weight: 300; color: #E3D8C8; }
+  #s7cta { left: 50%; top: 790px; transform: translateX(-50%); white-space: nowrap; padding: 26px 56px; border-radius: 999px;
+           background: linear-gradient(135deg, #E2B955, #C4622D); color: #160d06; font-size: 36px; font-weight: 700; letter-spacing: .02em;
+           box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+  #s7foot { left: 0; right: 0; bottom: 70px; text-align: center; font-size: 22px; letter-spacing: .5em; color: var(--txt2); font-weight: 500; }
+  #fade { position: absolute; inset: 0; background: #000; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- Fondo compartido -->
+  <div id="aurora"><div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div></div>
+  <div id="particles"></div>
+
+  <!-- 1. Intro -->
+  <div class="scene" id="s1">
+    <div class="abs" id="logoWrap">
+      <div class="ring" id="ring1"></div><div class="ring" id="ring2"></div>
+      <div id="logo"><img src="assets/logo.jpg" alt=""></div>
+    </div>
+    <h1 class="abs serif" id="s1title">
+      <span class="mask"><span id="s1w1">Al Son</span> <span id="s1w2"><em>del Huila</em></span></span>
+    </h1>
+    <div class="abs" id="s1line"></div>
+    <div class="abs" id="s1kicker">Turismo del Huila — Colombia</div>
+  </div>
+
+  <!-- 2+3. Destinos (las fotos) -->
+  <div class="scene" id="s3">
+    <div class="slide" id="sl0"><div class="ph" style="background-image:url(assets/tatacoa.jpg)"></div><div class="shade"></div></div>
+    <div class="slide" id="sl1"><div class="ph" style="background-image:url(assets/san-agustin.jpg)"></div><div class="shade"></div></div>
+    <div class="slide" id="sl2"><div class="ph" style="background-image:url(assets/magdalena.jpg)"></div><div class="shade"></div></div>
+    <div class="slide" id="sl3"><div class="ph" style="background-image:url(assets/rivera.jpg)"></div><div class="shade"></div></div>
+
+    <div class="abs lower" id="lw0"><span class="pill">Naturaleza · Astronómico</span>
+      <div class="lname serif">Desierto de la Tatacoa</div>
+      <div class="lsub"><b>Villavieja</b> — paisajes rojos bajo un cielo estrellado único</div></div>
+    <div class="abs lower" id="lw1"><span class="pill">Arqueológico</span>
+      <div class="lname serif">San Agustín</div>
+      <div class="lsub"><b>Parque Arqueológico</b> — guardianes de piedra de una civilización ancestral</div></div>
+    <div class="abs lower" id="lw2"><span class="pill">Naturaleza</span>
+      <div class="lname serif">Río Magdalena</div>
+      <div class="lsub">El gran río que nace en el <b>corazón del Huila</b></div></div>
+    <div class="abs lower" id="lw3"><span class="pill">Bienestar y descanso</span>
+      <div class="lname serif">Termales de Rivera</div>
+      <div class="lsub"><b>Rivera</b> — aguas que sanan, paisajes que enamoran</div></div>
+
+    <div class="abs" id="brandTag"><img src="assets/logo.jpg" alt=""><span class="serif">Al Son <em class="gold">del Huila</em></span></div>
+    <div class="abs" id="counter"><span id="cnum">01</span><span class="bar"><i id="cbar"></i></span><span>04</span></div>
+
+    <!-- Intro de texto encima de la primera foto -->
+    <div id="s2dark"></div>
+    <div class="abs" id="s2text">
+      <div id="s2kicker">UNA NUEVA FORMA DE VIAJAR</div>
+      <div class="serif" id="s2big">
+        <span class="mask"><span id="s2l1">Descubre el Huila</span></span>
+        <span class="mask"><span id="s2l2"><em>como nunca antes.</em></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Cifras -->
+  <div class="scene" id="s4">
+    <div class="abs" id="mosaic"></div>
+    <div id="s4veil"></div>
+    <div class="abs serif" id="s4head"><span class="mask"><span id="s4h">Todo el Huila <em>en un solo lugar</em></span></span></div>
+    <div class="abs" id="stats">
+      <div class="stat" id="st0"><div class="n" id="n0">0</div><div class="l">Destinos</div><div class="d">con fotos, horarios y ubicación</div></div>
+      <div class="stat" id="st1"><div class="n" id="n1">0</div><div class="l">Municipios</div><div class="d">de norte a sur del departamento</div></div>
+      <div class="stat" id="st2"><div class="n" id="n2">0</div><div class="l">Categorías</div><div class="d">de la aventura a la gastronomía</div></div>
+    </div>
+    <div class="vsep" style="left:707px"></div><div class="vsep" style="left:1213px"></div>
+  </div>
+
+  <!-- 5. Funciones -->
+  <div class="scene" id="s5">
+    <div class="feat" id="f0">
+      <div class="abs ftext"><div class="fnum">01</div><div class="fkicker">Catálogo</div>
+        <div class="ftitle serif">Encuentra tu <em>próximo destino</em></div>
+        <div class="fdesc">Filtra por <b>categoría</b> y <b>municipio</b> y conoce cada lugar antes de ir.</div></div>
+      <div class="abs mock"><div class="mbar"><i></i><i></i><i></i><span>Al Son del Huila · Destinos</span></div>
+        <div class="mbody"><img class="shot" src="capturas/catalogo.png" alt=""></div></div>
+    </div>
+    <div class="feat" id="f1">
+      <div class="abs ftext"><div class="fnum">02</div><div class="fkicker">Mapa</div>
+        <div class="ftitle serif">Todo el Huila <em>en un mapa</em></div>
+        <div class="fdesc">Ubica los <b>185 destinos</b> y descubre qué tienes cerca.</div></div>
+      <div class="abs mock"><div class="mbar"><i></i><i></i><i></i><span>Al Son del Huila · Mapa de destinos</span></div>
+        <div class="mbody"><img class="shot" src="capturas/mapa.png" alt=""></div></div>
+    </div>
+    <div class="feat" id="f2">
+      <div class="abs ftext"><div class="fnum">03</div><div class="fkicker">Quiz de viaje</div>
+        <div class="ftitle serif">Responde <em>y te recomendamos</em></div>
+        <div class="fdesc">Cuéntanos qué te gusta y recibe un <b>itinerario a tu medida</b>.</div></div>
+      <div class="abs mock"><div class="mbar"><i></i><i></i><i></i><span>Al Son del Huila · Quiz</span></div>
+        <div class="mbody"><img class="shot quiz" src="capturas/quiz.png" alt=""></div></div>
+    </div>
+    <div class="feat" id="f3">
+      <div class="abs ftext"><div class="fnum">04</div><div class="fkicker">Inteligencia artificial</div>
+        <div class="ftitle serif">Conoce a <em>Huily</em></div>
+        <div class="fdesc">Tu guía con IA: pídele una <b>ruta por días o por región</b>, guárdala y síguela en el mapa.</div></div>
+      <div class="abs mock"><div class="mbar"><i></i><i></i><i></i><span>Al Son del Huila · Huily</span></div>
+        <div class="mbody"><div class="chat">
+          <div class="chead"><img src="assets/logo.jpg" alt=""><div><b>Huily</b><small>Asistente de rutas del Huila</small></div><span class="on">● EN LÍNEA</span></div>
+          <div class="msg user" id="cuser">Ruta de 2 días por el sur del Huila</div>
+          <div class="typing" id="ctyping"><i></i><i></i><i></i></div>
+          <div class="msg bot" id="cbot">
+            <div id="cb0">¡Listo! Esta es tu ruta por el sur:</div>
+            <div class="day" id="cb1">DÍA 1</div>
+            <div class="stop" id="cb2"><div class="th" style="background-image:url(assets/destino_180.jpg)"></div><div><b>Parque Arqueológico de San Agustín</b><small>Arqueológico · San Agustín</small></div></div>
+            <div class="stop" id="cb3"><div class="th" style="background-image:url(assets/destino_165.jpg)"></div><div><b>Alto de los Ídolos</b><small>Arqueológico</small></div></div>
+            <div class="day" id="cb4">DÍA 2</div>
+            <div class="stop" id="cb5"><div class="th" style="background-image:url(assets/destino_181.jpg)"></div><div><b>Estrecho del Magdalena</b><small>Naturaleza · San Agustín</small></div></div>
+            <div class="stop" id="cb6"><div class="th" style="background-image:url(assets/destino_140.jpg)"></div><div><b>Cascada de Bordones</b><small>Naturaleza</small></div></div>
+          </div>
+          <div class="saved" id="csaved">✓ Ruta guardada</div>
+        </div></div></div>
+    </div>
+  </div>
+
+  <!-- 6. Categorías (cortes rápidos) -->
+  <div class="scene" id="s6">
+    <div class="cut" id="c0"><div class="ph" style="background-image:url(assets/destino_45.jpg)"></div><div class="shade"></div><div class="word">Naturaleza</div></div>
+    <div class="cut" id="c1"><div class="ph" style="background-image:url(assets/destino_180.jpg)"></div><div class="shade"></div><div class="word">Arqueología</div></div>
+    <div class="cut" id="c2"><div class="ph" style="background-image:url(assets/destino_128.jpg)"></div><div class="shade"></div><div class="word">Aventura</div></div>
+    <div class="cut" id="c3"><div class="ph" style="background-image:url(assets/destino_138.jpg)"></div><div class="shade"></div><div class="word">Gastronomía</div></div>
+    <div class="cut" id="c4"><div class="ph" style="background-image:url(assets/destino_116.jpg)"></div><div class="shade"></div><div class="word">Astronomía</div></div>
+    <div class="cut" id="c5"><div class="ph" style="background-image:url(assets/festival.jpg);background-position:50% 25%"></div><div class="shade"></div><div class="word">Festivales</div></div>
+    <div class="abs" id="s6kicker">VIVE EL HUILA</div>
+    <div class="abs" id="s6dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <!-- 7. Cierre -->
+  <div class="scene" id="s7">
+    <div class="abs" id="s7logo"><div class="ring" id="ring3"></div><img src="assets/logo.jpg" alt=""></div>
+    <div class="abs serif" id="s7title"><span class="mask"><span id="s7t">Al Son <em>del Huila</em></span></span></div>
+    <div class="abs" id="s7sub">Tu viaje por el Huila empieza aquí.</div>
+    <div class="abs" id="s7cta">Pruébala ahora en nuestro stand</div>
+    <div class="abs" id="s7foot">TURISMO DEL HUILA — COLOMBIA</div>
+  </div>
+
+  <div id="fade"></div>
+</div>
+
+<script>
+// ───────── Utilidades de animación (todo depende solo de t: render determinista) ─────────
+const DUR = 62;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const E = {
+  lin: x => x,
+  out: x => 1 - Math.pow(1 - x, 3),
+  out5: x => 1 - Math.pow(1 - x, 5),
+  inout: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  expo: x => x === 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  in: x => x * x * x,
+};
+const p = (t, a, b, e = E.out) => e(clamp((t - a) / (b - a)));
+const lerp = (a, b, k) => a + (b - a) * k;
+// envolvente: entra en [a, a+fi] y sale en [b-fo, b]
+const env = (t, a, b, fi = .6, fo = .6) => p(t, a, a + fi, E.inout) * (1 - p(t, b - fo, b, E.inout));
+const set = (el, o, tr, extra) => { el.style.opacity = o; if (tr !== undefined) el.style.transform = tr; if (extra) Object.assign(el.style, extra); };
+
+// Partículas doradas
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(7), PTS = [];
+for (let i = 0; i < 70; i++) {
+  const el = document.createElement('div'); el.className = 'pt';
+  const s = 2 + R() * 4; el.style.width = el.style.height = s + 'px';
+  $('particles').appendChild(el);
+  PTS.push({ el, x: R() * 1920, y: R() * 1080, vy: 12 + R() * 30, vx: (R() - .5) * 14, ph: R() * 6.28, sp: .6 + R() * 1.4 });
+}
+
+// Mosaico de fotos
+const MOS = [2,20,23,45,49,5,50,59,8,82,86,88,99,111,115,116,124,128,131,132,138,144,159,165,170,176,180,181,140,163,30,6,46,87,175];
+MOS.forEach(n => { const d = document.createElement('div'); d.style.backgroundImage = `url(assets/destino_${n}.jpg)`; $('mosaic').appendChild(d); });
+
+// ───────── Línea de tiempo ─────────
+function renderAt(t) {
+  // Fondo aurora y partículas (siempre activos, se atenúan sobre fotos)
+  $('b1').style.transform = `translate(${-200 + Math.sin(t * .23) * 260}px, ${-250 + Math.cos(t * .17) * 180}px)`;
+  $('b2').style.transform = `translate(${1250 + Math.cos(t * .19) * 240}px, ${-150 + Math.sin(t * .21) * 200}px)`;
+  $('b3').style.transform = `translate(${700 + Math.sin(t * .13) * 300}px, ${520 + Math.cos(t * .15) * 160}px)`;
+  const auroraOn = Math.max(env(t, 0, 7.2, 1.5, .8), env(t, 29.6, 49.4, .8, .8), env(t, 54.0, DUR, .8, .1));
+  $('aurora').style.opacity = auroraOn;
+  const ptsOn = Math.max(env(t, 0.2, 7.0, 1.5, .8), env(t, 29.6, 49.4, .8, .8) * .6, env(t, 54.0, DUR, .8, .1));
+  $('particles').style.opacity = ptsOn;
+  for (const q of PTS) {
+    const y = ((q.y - t * q.vy) % 1080 + 1080) % 1080, x = ((q.x + t * q.vx + Math.sin(t * .5 + q.ph) * 30) % 1920 + 1920) % 1920;
+    q.el.style.transform = `translate(${x}px, ${y}px)`;
+    q.el.style.opacity = .25 + .55 * (0.5 + 0.5 * Math.sin(t * q.sp + q.ph));
+  }
+
+  // ── 1. Intro (0 – 7) ──
+  { const T = t, o = env(t, 0, 7.1, .01, .7);
+    $('s1').style.opacity = o;
+    const k = p(T, .3, 2.0, E.expo);
+    set($('logoWrap'), k, `scale(${lerp(.55, 1, k) * lerp(1, 1.06, p(T, 2, 7, E.lin))}) rotate(${lerp(-30, 0, k)}deg)`);
+    const r1 = p(T, 1.3, 3.0, E.out), r2 = p(T, 1.7, 3.6, E.out);
+    set($('ring1'), (1 - r1) * .9 * (r1 > 0), `scale(${1 + r1 * .45})`);
+    set($('ring2'), (1 - r2) * .6 * (r2 > 0), `scale(${1 + r2 * .7})`);
+    set($('s1w1'), 1, `translateY(${lerp(110, 0, p(T, 2.0, 3.0, E.out5))}%)`);
+    set($('s1w2'), 1, `translateY(${lerp(110, 0, p(T, 2.2, 3.2, E.out5))}%)`);
+    set($('s1line'), p(T, 2.6, 3.4), `scaleX(${p(T, 2.6, 3.8, E.out5)})`);
+    const kk = p(T, 2.9, 4.2, E.out);
+    set($('s1kicker'), kk, '', { letterSpacing: lerp(1.1, .5, kk) + 'em' });
+    $('s1').style.transform = `scale(${lerp(1, 1.08, p(T, 6.3, 7.1, E.in))})`;
+  }
+
+  // ── 2+3. Texto + destinos (6.5 – 23.6) ──
+  { const o = env(t, 6.4, 23.7, .7, .6);
+    $('s3').style.opacity = o;
+    const S = [[6.4, 13.2], [12.6, 16.8], [16.2, 20.4], [19.8, 23.7]];
+    const LW = [[10.9, 12.9], [13.3, 16.4], [16.9, 20.0], [20.5, 23.3]];
+    S.forEach(([a, b], i) => {
+      const so = i === 0 ? 1 - p(t, b - .6, b, E.inout) : env(t, a, b, .6, .6);
+      const k = clamp((t - a) / (b - a));
+      const dir = i % 2 ? -1 : 1;
+      set($('sl' + i), so);
+      $('sl' + i).firstElementChild.style.transform = `scale(${lerp(1.06, 1.18, k)}) translateX(${dir * lerp(-1.5, 1.5, k)}%)`;
+      const [la, lb] = LW[i], lo = p(t, la, la + .7) * (1 - p(t, lb - .4, lb, E.inout));
+      const lw = $('lw' + i);
+      lw.style.opacity = lo;
+      lw.children[0].style.transform = `translateY(${lerp(30, 0, p(t, la, la + .6))}px)`;
+      lw.children[1].style.transform = `translateY(${lerp(60, 0, p(t, la + .08, la + .8, E.out5))}px)`;
+      lw.children[2].style.transform = `translateY(${lerp(40, 0, p(t, la + .2, la + .9, E.out5))}px)`;
+    });
+    // primera foto: arranca oscura y desenfocada bajo el texto
+    const reveal = p(t, 9.9, 11.0, E.inout);
+    $('sl0').firstElementChild.style.filter = `blur(${lerp(10, 0, reveal)}px)`;
+    $('s2dark').style.opacity = lerp(.74, 0, reveal);
+    const ti = p(t, 6.9, 7.6), to = p(t, 9.8, 10.5, E.inout);
+    $('s2text').style.opacity = ti * (1 - to);
+    $('s2text').style.transform = `translateY(${-40 * to}px) scale(${lerp(1, .97, to)})`;
+    $('s2kicker').style.letterSpacing = lerp(.9, .45, p(t, 6.9, 8.0)) + 'em';
+    set($('s2l1'), 1, `translateY(${lerp(110, 0, p(t, 7.2, 8.1, E.out5))}%)`);
+    set($('s2l2'), 1, `translateY(${lerp(110, 0, p(t, 7.5, 8.4, E.out5))}%)`);
+    const ui = p(t, 10.9, 11.6);
+    $('brandTag').style.opacity = ui; $('counter').style.opacity = ui;
+    const idx = t < 13.0 ? 0 : t < 16.6 ? 1 : t < 20.2 ? 2 : 3;
+    $('cnum').textContent = '0' + (idx + 1);
+    $('cbar').style.width = (clamp((t - 10.9) / (23.4 - 10.9)) * 100) + '%';
+  }
+
+  // ── 4. Cifras (23.3 – 30.2) ──
+  { const T = t - 23.3, o = env(t, 23.3, 30.2, .7, .6);
+    $('s4').style.opacity = o;
+    $('mosaic').style.transform = `rotate(-7deg) translate(${lerp(90, -90, T / 7)}px, ${lerp(-30, 30, T / 7)}px) scale(${lerp(1.08, 1.0, p(T, 0, 7, E.lin))})`;
+    set($('s4h'), 1, `translateY(${lerp(110, 0, p(T, .4, 1.3, E.out5))}%)`);
+    [185, 37, 10].forEach((n, i) => {
+      const a = 1.0 + i * .35, k = p(T, a, a + 1.8, E.out5);
+      $('n' + i).textContent = Math.round(n * k);
+      set($('st' + i), p(T, a - .1, a + .5), `translateY(${lerp(60, 0, p(T, a - .1, a + .9, E.out5))}px)`);
+    });
+    document.querySelectorAll('.vsep').forEach((v, i) => set(v, p(T, 1.6 + i * .3, 2.4 + i * .3), `scaleY(${p(T, 1.6 + i * .3, 2.6 + i * .3, E.out5)})`));
+    $('s4').style.transform = `scale(${lerp(1, 1.05, p(T, 6.2, 6.9, E.in))})`;
+  }
+
+  // ── 5. Funciones (29.8 – 49.2) ──
+  { const o = env(t, 29.8, 49.2, .6, .6);
+    $('s5').style.opacity = o;
+    const F = [[29.8, 34.6], [34.4, 39.2], [39.0, 43.8], [43.6, 49.2]];
+    F.forEach(([a, b], i) => {
+      const f = $('f' + i), T = t - a;
+      const fo = (i === 0 ? p(t, a, a + .3) : p(t, a, a + .5)) * (i === 3 ? 1 : 1 - p(t, b - .5, b, E.inout));
+      f.style.opacity = fo;
+      const tx = f.querySelector('.ftext').children;
+      [...tx].forEach((c, j) => {
+        const k = p(T, .2 + j * .12, 1.1 + j * .12, E.out5);
+        c.style.opacity = k; c.style.transform = `translateY(${lerp(50, 0, k)}px)`;
+      });
+      const m = f.querySelector('.mock'), mk = p(T, .25, 1.4, E.out5), ex = p(t, b - .5, b, E.in) * (i === 3 ? 0 : 1);
+      m.style.transform = `perspective(2200px) translateX(${lerp(260, 0, mk) - ex * 120}px) rotateY(${lerp(-24, -7, mk)}deg) rotateX(${lerp(6, 2, mk)}deg)`;
+      m.style.opacity = mk;
+      const shot = m.querySelector('img.shot');
+      if (shot) { const z = shot.classList.contains('quiz') ? 1.45 : 1; shot.style.transformOrigin = z > 1 ? '50% 22%' : '50% 0'; shot.style.transform = `scale(${z * lerp(1, 1.07, clamp(T / (b - a)))}) translateY(${lerp(0, -2, clamp(T / (b - a)))}%)`; }
+      f.querySelector('.ftext').style.transform = `translateX(${-ex * 80}px)`;
+    });
+    // Chat de Huily
+    const T = t - 43.6;
+    set($('cuser'), p(T, 1.0, 1.4), `translateY(${lerp(20, 0, p(T, 1.0, 1.5, E.out5))}px)`);
+    const ty = p(T, 1.6, 1.8) * (1 - p(T, 2.6, 2.75));
+    $('ctyping').style.opacity = ty;
+    [...$('ctyping').children].forEach((d, j) => d.style.transform = `translateY(${-6 * Math.max(0, Math.sin((T * 7) - j * .9))}px)`);
+    set($('cbot'), p(T, 2.7, 2.95), `translateY(${lerp(16, 0, p(T, 2.7, 3.1, E.out5))}px)`);
+    for (let j = 0; j < 7; j++) { const k = p(T, 2.8 + j * .22, 3.2 + j * .22, E.out5); set($('cb' + j), k, `translateX(${lerp(-16, 0, k)}px)`); }
+    set($('csaved'), p(T, 4.8, 5.1), `scale(${lerp(.8, 1, p(T, 4.8, 5.2, E.out5))})`);
+  }
+
+  // ── 6. Categorías (49.0 – 54.6) ──
+  { const a0 = 49.0, d = .93, o = env(t, a0, 54.6, .35, .5);
+    $('s6').style.opacity = o;
+    for (let i = 0; i < 6; i++) {
+      const a = a0 + i * d, b = a + d;
+      const co = i === 5 ? p(t, a, a + .12) : p(t, a, a + .12) * (1 - p(t, b, b + .12));
+      const c = $('c' + i), k = clamp((t - a) / (d + .3));
+      c.style.opacity = co;
+      c.querySelector('.ph').style.transform = `scale(${lerp(1.16, 1.02, E.out(k))})`;
+      const w = c.querySelector('.word');
+      w.style.transform = `translateY(-50%) scale(${lerp(1.12, 1, E.out5(clamp((t - a) / .5)))})`;
+      w.style.letterSpacing = lerp(.12, .02, E.out5(clamp((t - a) / .6))) + 'em';
+      $('s6dots').children[i].style.background = t >= a ? 'var(--dorado)' : 'rgba(255,255,255,.25)';
+    }
+    $('s6kicker').style.opacity = p(t, a0 + .2, a0 + .6);
+  }
+
+  // ── 7. Cierre (54.2 – 62) ──
+  { const T = t - 54.2, o = p(t, 54.2, 54.9, E.inout);
+    $('s7').style.opacity = o;
+    const k = p(T, .3, 1.8, E.expo);
+    set($('s7logo'), k, `scale(${lerp(.6, 1, k)}) rotate(${lerp(-20, 0, k)}deg)`);
+    const r = p(T, 1.0, 2.8);
+    set($('ring3'), (1 - r) * .9 * (r > 0), `scale(${1 + r * .5})`);
+    set($('s7t'), 1, `translateY(${lerp(110, 0, p(T, .9, 1.9, E.out5))}%)`);
+    set($('s7sub'), p(T, 1.6, 2.4), `translateY(${lerp(30, 0, p(T, 1.6, 2.5, E.out5))}px)`);
+    const c = p(T, 2.3, 3.1, E.out5), pulse = 1 + .03 * Math.max(0, Math.sin((T - 3.2) * 3)) * (T > 3.2);
+    set($('s7cta'), c, `translateX(-50%) translateY(${lerp(40, 0, c)}px) scale(${pulse})`);
+    $('s7foot').style.opacity = p(T, 2.8, 3.6);
+  }
+
+  // Fundido final a negro (para que el bucle empalme con el inicio en negro)
+  $('fade').style.opacity = p(t, 61.0, 62.0, E.inout);
+}
+
+// ───────── Arranque ─────────
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const st = $('stage'); st.style.transform = `scale(${s})`;
+  st.style.left = (innerWidth - 1920 * s) / 2 + 'px'; st.style.top = (innerHeight - 1080 * s) / 2 + 'px';
+}
+window.renderAt = renderAt;
+window.DUR = DUR;
+window.ready = (async () => {
+  await document.fonts.ready;
+  const urls = new Set();
+  document.querySelectorAll('img').forEach(i => urls.add(i.src));
+  document.querySelectorAll('[style*="background-image"]').forEach(e => { const m = e.style.backgroundImage.match(/url\("?(.*?)"?\)/); if (m) urls.add(new URL(m[1], location.href).href); });
+  await Promise.all([...urls].map(u => { const im = new Image(); im.src = u; return im.decode().catch(() => console.warn('no carga', u)); }));
+  return true;
+})();
+
+if (!/render/.test(location.search)) {
+  // Modo reproducción: se puede abrir directamente en pantalla completa (F11) y se repite sola
+  fit(); addEventListener('resize', fit);
+  const q = new URLSearchParams(location.search); const start = parseFloat(q.get('t') || 0);
+  window.ready.then(() => {
+    const t0 = performance.now() - start * 1000;
+    const loop = now => { renderAt(((now - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  });
+} else {
+  renderAt(0);
+}
+</script>
+</body>
+</html>

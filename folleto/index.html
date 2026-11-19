@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Al Son del Huila — Folleto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=block" rel="stylesheet">
+<style>
+  /* Tríptico A4 horizontal. Hoja 1 = exterior, hoja 2 = interior.
+     El panel que se dobla hacia dentro mide 97 mm y los otros dos 100 mm, para que cierre bien. */
+  @page { size: 297mm 210mm; margin: 0; }
+  :root {
+    --tierra: #C4622D; --tierra-dark: #8B3A1A; --dorado: #D4A843; --oro-print: #A87B22; --selva: #2D5A27;
+    --arena: #F5EEE3; --arena-2: #EADFCC; --tinta: #1C1612; --tinta-2: #5E5246; --noche: #0E0B09; --txt: #F0EAE0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #777; font-family: Inter, sans-serif; color: var(--tinta);
+               -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sheet { width: 297mm; height: 210mm; display: flex; overflow: hidden; position: relative; background: var(--arena);
+           page-break-after: always; break-after: page; }
+  .sheet:last-child { page-break-after: auto; break-after: auto; }
+  @media screen { .sheet { margin: 10mm auto; box-shadow: 0 4mm 12mm rgba(0,0,0,.35); } }
+  .panel { position: relative; height: 210mm; padding: 13mm 11mm 11mm; overflow: hidden; }
+  .w97 { width: 97mm; } .w100 { width: 100mm; }
+  .fold::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 0; }
+  .serif { font-family: 'Playfair Display', serif; }
+  .stat .n, .step .num { font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
+
+  .kicker { font-size: 6.6pt; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: var(--tierra); }
+  h2 { font-family: 'Playfair Display', serif; font-size: 22pt; line-height: 1.05; font-weight: 700; margin: 2.5mm 0 4mm; }
+  h2 em { font-style: italic; font-weight: 400; color: var(--tierra-dark); }
+  p.lead { font-size: 8.6pt; line-height: 1.55; color: var(--tinta-2); }
+  p.lead b { color: var(--tinta); font-weight: 600; }
+  .rule { height: .35mm; width: 14mm; background: var(--tierra); margin: 5mm 0; }
+
+  /* ───── Exterior: solapa (Huily) ───── */
+  .huily { background: var(--arena); }
+  .chat { margin-top: 5mm; background: #fff; border-radius: 4mm; padding: 4mm; border: .25mm solid var(--arena-2);
+          box-shadow: 0 1.5mm 4mm rgba(60,40,20,.08); }
+  .chead { display: flex; align-items: center; gap: 2.5mm; padding-bottom: 2.5mm; border-bottom: .25mm solid var(--arena-2); }
+  .chead img { width: 8mm; height: 8mm; border-radius: 50%; clip-path: circle(48.6%); }
+  .chead b { font-family: 'Playfair Display', serif; font-size: 9.5pt; display: block; }
+  .chead small { font-size: 6pt; color: var(--tinta-2); }
+  .bub { font-size: 7.4pt; line-height: 1.45; border-radius: 3mm; padding: 2.2mm 3mm; margin-top: 3mm; }
+  .bub.u { background: var(--tierra); color: #fff; margin-left: auto; width: fit-content; border-bottom-right-radius: .8mm; }
+  .bub.b { background: var(--arena); border-bottom-left-radius: .8mm; }
+  .day { font-size: 5.8pt; font-weight: 700; letter-spacing: .2em; color: var(--oro-print); margin: 2mm 0 1mm; }
+  .stop { display: flex; align-items: center; gap: 2.2mm; padding: .8mm 0; }
+  .stop i { width: 9mm; height: 6.5mm; border-radius: 1.2mm; background-size: cover; background-position: center; flex: none; }
+  .stop b { font-size: 7pt; font-weight: 600; display: block; line-height: 1.2; }
+  .stop small { font-size: 5.8pt; color: var(--tinta-2); }
+  ul.can { list-style: none; margin-top: 5mm; }
+  ul.can li { font-size: 8pt; line-height: 1.45; padding: 1.6mm 0 1.6mm 6mm; position: relative; color: var(--tinta-2); border-bottom: .2mm solid var(--arena-2); }
+  ul.can li:last-child { border-bottom: 0; }
+  ul.can li::before { content: ''; position: absolute; left: 0; top: 2.9mm; width: 2.4mm; height: 2.4mm; border-radius: 50%; border: .5mm solid var(--tierra); }
+  ul.can li b { color: var(--tinta); font-weight: 600; }
+
+  /* ───── Exterior: contraportada (QR) ───── */
+  .back { background: var(--noche); color: var(--txt); display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .back .kicker { color: var(--dorado); margin-top: 6mm; }
+  .back h2 { color: var(--txt); font-size: 21pt; margin-bottom: 6mm; }
+  .back h2 em { color: var(--dorado); }
+  .back p.lead { color: #CFC3B2; font-size: 8.4pt; }
+  .back p.lead b { color: var(--txt); }
+  .why { width: 100%; margin-top: 7mm; text-align: left; }
+  .why li { list-style: none; display: flex; gap: 4mm; align-items: flex-start; padding: 4mm 0; border-top: .25mm solid rgba(212,168,67,.22); }
+  .why li:last-child { border-bottom: .25mm solid rgba(212,168,67,.22); }
+  .why svg { width: 9mm; height: 9mm; flex: none; stroke: var(--dorado); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .why b { display: block; font-family: 'Playfair Display', serif; font-size: 11pt; color: var(--txt); margin-bottom: .8mm; }
+  .why small { display: block; font-size: 7.4pt; line-height: 1.45; color: #B9AD9C; }
+  .back .foot { margin-top: auto; }
+  .back .foot img { width: 14mm; height: 14mm; border-radius: 50%; clip-path: circle(48.6%); }
+  .back .foot div { font-family: 'Playfair Display', serif; font-style: italic; font-size: 10pt; color: var(--dorado); margin-top: 2mm; }
+  .back .foot small { display: block; font-size: 5.8pt; letter-spacing: .3em; color: #8a7d6e; margin-top: 2mm; }
+
+  /* ───── Exterior: portada ───── */
+  .cover { background: var(--noche); color: var(--txt); padding: 0; }
+  .cover .photo { position: absolute; left: 0; right: 0; top: 0; height: 118mm; background: url(../video-lanzamiento/assets/tatacoa.jpg) center/cover; }
+  .cover .photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,11,9,.15) 0%, rgba(14,11,9,0) 40%, rgba(14,11,9,1) 100%); }
+  .cover .top { position: absolute; top: 10mm; left: 0; right: 0; text-align: center; font-size: 6.4pt; letter-spacing: .4em; font-weight: 600; color: #fff; text-shadow: 0 .5mm 2mm rgba(0,0,0,.6); }
+  .cover .logo { position: absolute; left: 50%; top: 82mm; width: 52mm; height: 52mm; margin-left: -26mm; border-radius: 50%;
+                 background: var(--noche); padding: 1.6mm; }
+  .cover .logo img { width: 100%; height: 100%; border-radius: 50%; clip-path: circle(48.6%); }
+  .cover .title { position: absolute; left: 0; right: 0; top: 140mm; text-align: center; }
+  .cover .title h1 { font-family: 'Playfair Display', serif; font-size: 31pt; line-height: 1; font-weight: 700; }
+  .cover .title h1 em { font-style: italic; font-weight: 400; color: var(--dorado); }
+  .cover .title .line { width: 30mm; height: .3mm; margin: 5mm auto; background: linear-gradient(90deg, transparent, var(--dorado), transparent); }
+  .cover .title .slogan { font-family: 'Playfair Display', serif; font-style: italic; font-size: 13pt; color: #E9DDCB; }
+  .cover .title .sub { font-size: 7.4pt; color: #A99B8A; margin-top: 3mm; letter-spacing: .04em; }
+  .cover .bottom { position: absolute; bottom: 10mm; left: 0; right: 0; text-align: center; font-size: 6pt; letter-spacing: .4em; color: #7d7062; }
+
+  /* ───── Interior ───── */
+  .stats { margin-top: 6mm; }
+  .stat { display: flex; align-items: baseline; gap: 4mm; padding: 3mm 0; border-top: .25mm solid var(--arena-2); }
+  .stat:last-child { border-bottom: .25mm solid var(--arena-2); }
+  .stat .n { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 30pt; line-height: 1; color: var(--tierra); width: 24mm; }
+  .stat .l b { display: block; font-size: 8pt; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+  .stat .l small { font-size: 7pt; color: var(--tinta-2); }
+  .cats { display: flex; flex-wrap: wrap; gap: 1.6mm; margin-top: 5mm; }
+  .cats span { font-size: 6.6pt; font-weight: 500; padding: 1.2mm 2.6mm; border-radius: 99mm; background: var(--arena-2); color: var(--tinta); }
+  .intro .festival { position: absolute; left: 0; right: 0; bottom: 0; height: 52mm; background: url(../video-lanzamiento/assets/festival.jpg) 50% 22%/cover; }
+  .intro .festival span { position: absolute; left: 11mm; bottom: 5mm; font-size: 6pt; color: #fff; letter-spacing: .2em; font-weight: 600; text-shadow: 0 .4mm 2mm rgba(0,0,0,.7); }
+
+  .steps { margin-top: 2mm; }
+  .step { display: flex; gap: 3.5mm; padding: 3.2mm 0; border-bottom: .25mm solid var(--arena-2); }
+  .step:last-child { border-bottom: 0; }
+  .step .num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 15pt; color: transparent; -webkit-text-stroke: .3mm var(--tierra); width: 9mm; flex: none; line-height: 1; padding-top: .5mm; }
+  .step b { display: block; font-size: 9pt; font-weight: 700; margin-bottom: .8mm; }
+  .step p { font-size: 7.6pt; line-height: 1.45; color: var(--tinta-2); }
+  .shot { margin-top: 4mm; border-radius: 2.5mm; overflow: hidden; border: .25mm solid #2a2420; background: #111; }
+  .shot .bar { height: 4mm; background: #1c1916; display: flex; align-items: center; gap: 1.2mm; padding: 0 2.2mm; }
+  .shot .bar i { width: 1.4mm; height: 1.4mm; border-radius: 50%; background: #555; }
+  .shot .bar i:nth-child(1) { background: var(--tierra); } .shot .bar i:nth-child(2) { background: var(--dorado); } .shot .bar i:nth-child(3) { background: var(--selva); }
+  .shot img { display: block; width: 100%; height: 40mm; object-fit: cover; object-position: 50% 0; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin-top: 2mm; }
+  .card { border-radius: 2.5mm; overflow: hidden; background: #fff; border: .25mm solid var(--arena-2); }
+  .card i { display: block; height: 30mm; background-size: cover; background-position: center; }
+  .card div { padding: 2mm 2.4mm 2.4mm; }
+  .card b { display: block; font-size: 7.4pt; font-weight: 700; line-height: 1.2; }
+  .card small { font-size: 6.2pt; color: var(--tierra); font-weight: 600; letter-spacing: .04em; }
+  .cta { margin-top: 5mm; background: var(--noche); color: var(--txt); border-radius: 3mm; padding: 4mm; display: flex; align-items: center; gap: 3.5mm; }
+  .cta img { width: 10mm; height: 10mm; border-radius: 50%; clip-path: circle(48.6%); flex: none; }
+  .cta b { font-family: 'Playfair Display', serif; font-size: 10pt; display: block; }
+  .cta small { font-size: 6.8pt; color: #B5A893; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HOJA 1 · EXTERIOR ═══════════ -->
+<section class="sheet">
+
+  <!-- Solapa (se ve al abrir la portada) -->
+  <div class="panel w97 huily">
+    <div class="kicker">Inteligencia artificial</div>
+    <h2>Conoce a <em>Huily</em></h2>
+    <p class="lead">Tu guía de viaje con IA. Escríbele como a un amigo y <b>te arma la ruta</b> en segundos.</p>
+
+    <div class="chat">
+      <div class="chead"><img src="../video-lanzamiento/assets/logo.jpg" alt=""><div><b>Huily</b><small>Asistente de rutas del Huila</small></div></div>
+      <div class="bub u">Ruta de 2 días por el sur del Huila</div>
+      <div class="bub b">
+        ¡Listo! Esta es tu ruta por el sur:
+        <div class="day">DÍA 1</div>
+        <div class="stop"><i style="background-image:url(../video-lanzamiento/assets/destino_180.jpg)"></i><div><b>Parque Arqueológico de San Agustín</b><small>San Agustín</small></div></div>
+        <div class="stop"><i style="background-image:url(../video-lanzamiento/assets/destino_165.jpg)"></i><div><b>Alto de los Ídolos</b><small>Isnos</small></div></div>
+        <div class="day">DÍA 2</div>
+        <div class="stop"><i style="background-image:url(../video-lanzamiento/assets/destino_140.jpg)"></i><div><b>Cascada de Bordones</b><small>Acevedo</small></div></div>
+      </div>
+    </div>
+
+    <ul class="can">
+      <li><b>Arma rutas por días</b> según lo que te guste.</li>
+      <li><b>Recomienda destinos</b> por región, tipo de viaje o actividad.</li>
+      <li><b>Reconoce lugares</b>: muéstrale una foto y te dice a qué rincón del Huila se parece.</li>
+      <li><b>Guarda tus rutas</b> y síguelas en el mapa.</li>
+    </ul>
+  </div>
+
+  <!-- Contraportada -->
+  <div class="panel w100 back">
+    <div class="kicker">Viaja mejor</div>
+    <h2>¿Por qué <em>Al Son del Huila?</em></h2>
+    <p class="lead">Todo lo que necesitas para conocer el Huila, <b>en una sola app</b>.</p>
+    <ul class="why">
+      <li><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <div><b>Todo en un solo lugar</b><small>185 destinos de 37 municipios, con fotos, horarios y ubicación.</small></div></li>
+      <li><svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="15" cy="18" r="2"/></svg>
+        <div><b>Rutas a tu medida</b><small>Según tus gustos, tus días y la región que quieras recorrer.</small></div></li>
+      <li><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M9 10h.01M12 10h.01M15 10h.01"/></svg>
+        <div><b>Un guía que te responde</b><small>Huily, con inteligencia artificial, te ayuda a planear cuando quieras.</small></div></li>
+      <li><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+        <div><b>Comparte tu viaje</b><small>Sube tus fotos e inspira a otros a descubrir el Huila.</small></div></li>
+    </ul>
+    <div class="foot">
+      <img src="../video-lanzamiento/assets/logo.jpg" alt="">
+      <div>El ritmo que nos une</div>
+      <small>TURISMO DEL HUILA — COLOMBIA</small>
+    </div>
+  </div>
+
+  <!-- Portada -->
+  <div class="panel w100 cover">
+    <div class="photo"></div>
+    <div class="top">HUILA · COLOMBIA</div>
+    <div class="logo"><img src="../video-lanzamiento/assets/logo.jpg" alt=""></div>
+    <div class="title">
+      <h1>Al Son<br><em>del Huila</em></h1>
+      <div class="line"></div>
+      <div class="slogan">El ritmo que nos une</div>
+      <div class="sub">Tu guía para descubrir, planear y vivir el Huila</div>
+    </div>
+    <div class="bottom">TURISMO DEL HUILA</div>
+  </div>
+</section>
+
+<!-- ═══════════ HOJA 2 · INTERIOR ═══════════ -->
+<section class="sheet">
+
+  <!-- Interior izquierdo -->
+  <div class="panel w100 intro">
+    <div class="kicker">Bienvenido al Huila</div>
+    <h2>Todo el Huila <em>en un solo lugar</em></h2>
+    <p class="lead"><b>Al Son del Huila</b> es una plataforma web para descubrir los destinos del departamento, planear tus rutas y compartir lo que vives en cada rincón.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">185</div><div class="l"><b>Destinos</b><small>con fotos, horarios y ubicación</small></div></div>
+      <div class="stat"><div class="n">37</div><div class="l"><b>Municipios</b><small>de norte a sur del departamento</small></div></div>
+      <div class="stat"><div class="n">10</div><div class="l"><b>Categorías</b><small>para todos los gustos</small></div></div>
+    </div>
+    <div class="cats">
+      <span>Naturaleza</span><span>Cultural</span><span>Arqueológico</span><span>Aventura</span><span>Gastronómico</span>
+      <span>Religioso</span><span>Histórico</span><span>Astronómico</span><span>Festivales</span><span>Bienestar</span>
+    </div>
+    <div class="festival"><span>EVENTOS Y FESTIVALES</span></div>
+  </div>
+
+  <!-- Interior centro -->
+  <div class="panel w100">
+    <div class="kicker">Así funciona</div>
+    <h2>Planea tu viaje <em>en minutos</em></h2>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><div><b>Explora el catálogo</b><p>Filtra por categoría y municipio, y conoce cada lugar antes de ir.</p></div></div>
+      <div class="step"><div class="num">02</div><div><b>Ubícalo en el mapa</b><p>Los 185 destinos en un mapa interactivo para ver qué tienes cerca.</p></div></div>
+      <div class="step"><div class="num">03</div><div><b>Haz el quiz</b><p>Responde unas preguntas y recibe un itinerario a tu medida.</p></div></div>
+      <div class="step"><div class="num">04</div><div><b>Pídele una ruta a Huily</b><p>Por días o por región, y guárdala en tu perfil.</p></div></div>
+      <div class="step"><div class="num">05</div><div><b>Comparte tu experiencia</b><p>Sube fotos de tu viaje, da me gusta y comenta en Actividades.</p></div></div>
+    </div>
+    <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="../video-lanzamiento/capturas/catalogo.png" alt=""></div>
+  </div>
+
+  <!-- Interior derecho (cara interna de la solapa) -->
+  <div class="panel w97">
+    <div class="kicker">Imperdibles</div>
+    <h2>Lugares que <em>tienes que ver</em></h2>
+    <div class="grid">
+      <div class="card"><i style="background-image:url(../video-lanzamiento/assets/tatacoa.jpg)"></i><div><b>Desierto de la Tatacoa</b><small>Villavieja</small></div></div>
+      <div class="card"><i style="background-image:url(../video-lanzamiento/assets/san-agustin.jpg)"></i><div><b>Parque Arqueológico</b><small>San Agustín</small></div></div>
+      <div class="card"><i style="background-image:url(../video-lanzamiento/assets/rivera.jpg)"></i><div><b>Termales</b><small>Rivera</small></div></div>
+      <div class="card"><i style="background-image:url(../video-lanzamiento/assets/destino_159.jpg)"></i><div><b>Mano del Gigante</b><small>Gigante</small></div></div>
+      <div class="card"><i style="background-image:url(../video-lanzamiento/assets/magdalena.jpg)"></i><div><b>Río Magdalena</b><small>El gran río del Huila</small></div></div>
+      <div class="card"><i style="background-image:url(../video-lanzamiento/assets/destino_116.jpg)"></i><div><b>Observatorios</b><small>Tatacoa · Villavieja</small></div></div>
+    </div>
+    <div class="cta"><img src="../video-lanzamiento/assets/logo.jpg" alt=""><div><b>Y 179 destinos más</b><small>Encuéntralos todos en Al Son del Huila.</small></div></div>
+  </div>
+</section>
+
+</body>
+</html>
